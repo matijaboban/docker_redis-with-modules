@@ -16,7 +16,7 @@ executors:
 
 jobs:
   setup:
-    # executor: linux-executor
+    executor: docker-publish
 
     steps:
       - checkout
