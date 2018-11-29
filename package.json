@@ -1,0 +1,17 @@
+{
+  "name": "docker-redismodules",
+  "version": "0.0.1",
+  "description": "docker-redismodules",
+  "author": "Matija Boban <code@matijaboban.com",
+  "license": "MIT",
+  "scripts": {
+    "lint": "node_modules/.bin/eslint ."
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-docker": "^0.1.0"
+  }
+}
