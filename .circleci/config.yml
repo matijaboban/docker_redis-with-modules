@@ -31,6 +31,20 @@ jobs:
             curl -fsSL https://goss.rocks/install | sh
             goss -version
 
+      # - docker-publish/publish:
+      #     after_checkout:
+      #       - run:
+      #           name: Do this after checkout.
+      #           command: echo "Did this after checkout"
+      #     before_build:
+      #       - run:
+      #           name: Do this before the build.
+      #           command: echo "Did this before the build"
+      #     after_build:
+      #       - run:
+      #           name: Do this after the build.
+      #           command: echo "Did this after the build"
+
 workflows:
   version: 2.1
 
