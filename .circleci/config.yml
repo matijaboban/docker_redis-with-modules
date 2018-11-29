@@ -4,14 +4,14 @@ version: 2.1
 
 executors:
     linux-executor:
-    docker:
-      - image: digitaltownorg/circleci:app
-        user: root
+      docker:
+        - image: digitaltownorg/circleci:app
+          user: root
 
-    environment:
-      CC_TEST_REPORTER_ID: 1ce2c894983929f01f1a2e38b99f695de00efa01a38043280c6849761de2578a
+      environment:
+        CC_TEST_REPORTER_ID: 1ce2c894983929f01f1a2e38b99f695de00efa01a38043280c6849761de2578a
 
-    working_directory: ~/project
+      working_directory: ~/project
 
 jobs:
   setup:
