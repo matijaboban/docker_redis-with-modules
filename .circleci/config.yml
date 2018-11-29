@@ -16,7 +16,7 @@ executors:
 
 jobs:
   setup:
-    executor: circleci/docker-publish
+    executor: linux-executor
 
     steps:
       - checkout
