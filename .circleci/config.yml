@@ -52,25 +52,26 @@ workflows:
 
   docker_with_lifecycle:
     jobs:
+      steps:
 
-      - checkout
+        - checkout
 
-      - docker-publish/publish:
-          after_checkout:
-            - run:
-                name: Do this after checkout.
-                command: echo "Did this after checkout"
-          before_build:
-            - run:
-                name: Do this before the build.
-                command: echo "Did this before the build"
-            - run:
-                name: docker-publish/check.
-                command: docker-publish/check
-          after_build:
-            - run:
-                name: Do this after the build.
-                command: echo "Did this after the build"
+        - docker-publish/publish:
+            after_checkout:
+              - run:
+                  name: Do this after checkout.
+                  command: echo "Did this after checkout"
+            before_build:
+              - run:
+                  name: Do this before the build.
+                  command: echo "Did this before the build"
+              - run:
+                  name: docker-publish/check.
+                  command: docker-publish/check
+            after_build:
+              - run:
+                  name: Do this after the build.
+                  command: echo "Did this after the build"
 
   # test:
   #   jobs:
