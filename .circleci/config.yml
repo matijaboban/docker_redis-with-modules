@@ -1,6 +1,7 @@
 version: 2.1
-# orbs:
-#   docker-publish: circleci/docker-publish@1.0.0
+
+orbs:
+  docker-publish: circleci/docker-publish@1.0.0
 
 executors:
     linux-executor:
