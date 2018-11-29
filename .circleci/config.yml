@@ -15,7 +15,7 @@ executors:
 
 jobs:
   setup:
-    executor: mac-executor
+    executor: linux-executor
 
     steps:
       - checkout
