@@ -20,19 +20,15 @@ jobs:
     steps:
       - checkout
 
-      - setup_remote_docker:   # (2)
-            docker_layer_caching: true # (3)
-
-        - run:
-            name: Install goss
-            command: |
-              # rather than give internet scripts SU rights, we install to local user bin and add to path
-              mkdir ~/bin
-              export GOSS_DST=~/bin
-              export PATH=$PATH:~/bin
-              curl -fsSL https://goss.rocks/install | sh
-              goss -version
-
+      - run:
+          name: Install goss
+          command: |
+            # rather than give internet scripts SU rights, we install to local user bin and add to path
+            mkdir ~/bin
+            export GOSS_DST=~/bin
+            export PATH=$PATH:~/bin
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
 
 workflows:
   version: 2.1
