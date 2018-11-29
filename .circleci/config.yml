@@ -21,6 +21,8 @@ jobs:
     steps:
       - checkout
 
+      - docker-publish/publish
+
       - run:
           name: Install goss
           command: |
