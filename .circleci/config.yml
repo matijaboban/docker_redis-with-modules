@@ -1,24 +1,42 @@
 version: 2.1
-orbs:
-  docker-publish: circleci/docker-publish@1.0.0
+# orbs:
+#   docker-publish: circleci/docker-publish@1.0.0
 
-jobs:
-  build:
+executors:
+    linux-executor:
+    docker:
+      - image: digitaltownorg/circleci:app
+        user: root
+
     environment:
       CC_TEST_REPORTER_ID: 1ce2c894983929f01f1a2e38b99f695de00efa01a38043280c6849761de2578a
+
+    working_directory: ~/project
+
+jobs:
+  setup:
+    executor: mac-executor
 
     steps:
       - checkout
 
       - setup_remote_docker:   # (2)
-          docker_layer_caching: true # (3)
+            docker_layer_caching: true # (3)
 
-      - run:
-          name: Install goss
-          command: |
-            # rather than give internet scripts SU rights, we install to local user bin and add to path
-            mkdir ~/bin
-            export GOSS_DST=~/bin
-            export PATH=$PATH:~/bin
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
+        - run:
+            name: Install goss
+            command: |
+              # rather than give internet scripts SU rights, we install to local user bin and add to path
+              mkdir ~/bin
+              export GOSS_DST=~/bin
+              export PATH=$PATH:~/bin
+              curl -fsSL https://goss.rocks/install | sh
+              goss -version
+
+
+workflows:
+  version: 2.1
+
+  test:
+    jobs:
+      - setup
