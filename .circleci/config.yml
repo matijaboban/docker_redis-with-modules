@@ -16,7 +16,7 @@ executors:
 
 jobs:
   setup:
-    executor: linux-executor
+    # executor: linux-executor
 
     steps:
       - checkout
