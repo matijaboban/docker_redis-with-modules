@@ -52,8 +52,10 @@ workflows:
 
   docker_with_lifecycle:
     jobs:
+
+      - checkout
+
       - docker-publish/publish:
-        - checkout
           after_checkout:
             - run:
                 name: Do this after checkout.
