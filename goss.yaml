@@ -7,16 +7,12 @@ service:
   sshd:
     enabled: false
     running: false
-
-addr:
-  tcp://mysql:6379:
-    reachable: true
-    timeout: 500
-
-
-# command:
-#     redis-cli info":
-#         exit-status": "0",
-#             "stdout": ["redis_version"]
-#         }
-#     }
+command:
+  redis-cli info:
+    # required attributes
+    exit-status: 0
+    # optional attributes
+    stdout:
+    - redis_version
+    stderr: []
+    timeout: 500 # in milliseconds
