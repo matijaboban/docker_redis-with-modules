@@ -130,6 +130,8 @@ workflows:
       - test:
           requires:
             - lint
-      - build
-      # - dockerprocess/publish
+      # - build
+      - dockerprocess/check:
+        requires:
+            - lint
 
