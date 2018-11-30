@@ -38,21 +38,28 @@ jobs:
           name: Run linting
           command: npm run lint
 
-  test:
-    build:
-      docker:
-        - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+  build:
+    docker:
+      - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+    steps:
+      - checkout
+      - run: echo "bla"
 
-      steps:
-        - run:
-            name: Install goss
-            command: |
-              # rather than give internet scripts SU rights, we install to local user bin and add to path
-              mkdir ~/bin
-              export GOSS_DST=~/bin
-              export PATH=$PATH:~/bin
-              curl -fsSL https://goss.rocks/install | sh
-              goss -version
+  # test:
+  #   build:
+  #     docker:
+  #       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+
+  #     steps:
+  #       - run:
+  #           name: Install goss
+  #           command: |
+  #             # rather than give internet scripts SU rights, we install to local user bin and add to path
+  #             mkdir ~/bin
+  #             export GOSS_DST=~/bin
+  #             export PATH=$PATH:~/bin
+  #             curl -fsSL https://goss.rocks/install | sh
+  #             goss -version
 
       # - docker-publish/publish:
       #     after_checkout:
