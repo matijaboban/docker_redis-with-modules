@@ -100,5 +100,5 @@ workflows:
     jobs:
       - lint
       - test:
-        requires:
+          requires:
             - lint
