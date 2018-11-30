@@ -4,11 +4,14 @@
   "description": "docker-redismodules",
   "author": "Matija Boban <code@matijaboban.com",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/matijaboban/docker-redismoduls.git"
+  },
   "scripts": {
     "lint": "node_modules/.bin/eslint ."
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "eslint": "^5.9.0",
