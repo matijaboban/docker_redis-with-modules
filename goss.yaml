@@ -5,11 +5,8 @@ port:
     listening: false
 service:
   sshd:
-    enabled: true
-    running: true
-user:
-  ubuntu:
-    exists: true
+    enabled: false
+    running: false
 
 
 # command:
