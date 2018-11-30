@@ -131,7 +131,7 @@ workflows:
           requires:
             - lint
       # - build
-      - dockerprocess/check
+      # - dockerprocess/check
           # requires:
           #   - lint
 
