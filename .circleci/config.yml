@@ -69,6 +69,7 @@ jobs:
       #           command: echo "Did this after the build"
 
   build:
+    executor: node-executor
 
     steps:
         - checkout
