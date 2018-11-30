@@ -99,4 +99,6 @@ workflows:
   pre-build:
     jobs:
       - lint
-      - test
+      - test:
+        requires:
+            - lint
