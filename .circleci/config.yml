@@ -158,9 +158,11 @@ workflows:
   pre-build:
     jobs:
       - lint
+      - docker-publish/check
       - docker-publish/publish:
           requires:
             - lint
+            - docker-publish/check
       - test:
           requires:
             - docker-publish/publish
