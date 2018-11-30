@@ -96,7 +96,7 @@ workflows:
       #             name: Do this after the build.
       #             command: echo "Did this after the build"
 
-  test:
+  pre-build:
     jobs:
       - lint
       - test
