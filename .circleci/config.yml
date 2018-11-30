@@ -40,10 +40,17 @@ jobs:
 
   test:
     docker:
+      - image: ubuntu:14.04
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+
+    working_directory: /project
 
     steps:
       - checkout
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
     #   - run: echo "bla"
 
   # test:
