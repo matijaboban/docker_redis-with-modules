@@ -69,14 +69,7 @@ jobs:
       #           command: echo "Did this after the build"
 
   build:
-    executor: node-executor
-
-    steps:
-        - checkout
-
-        - run:
-            name: docker-publish/check.
-            command: docker-publish/check
+    - docker-publish/check
 
 workflows:
   version: 2.1
