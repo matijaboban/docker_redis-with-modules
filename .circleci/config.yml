@@ -123,10 +123,10 @@ workflows:
 
   pre-build:
     jobs:
-      # - lint
-      # - test:
-      #     requires:
-      #       - lint
+      - lint
+      - test:
+          requires:
+            - lint
       # - build
       - dockerprocess/publish
 
