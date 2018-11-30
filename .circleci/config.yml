@@ -68,15 +68,18 @@ jobs:
       #           name: Do this after the build.
       #           command: echo "Did this after the build"
 
-  # build:
+  build:
 
-  #   steps:
+    steps:
 
-  #     - run:
-  #       name: Do this after checkout.
-  #       command: echo "test"
+      - run:
+        name: Do this after checkout.
+        command: echo "test"
 
       # - docker-publish/check
+      #
+      #
+      - dockerprocess/publish
 
 
       # - docker-publish/publish:
@@ -127,6 +130,6 @@ workflows:
       - test:
           requires:
             - lint
-      # - build
-      - dockerprocess/publish
+      - build
+      # - dockerprocess/publish
 
