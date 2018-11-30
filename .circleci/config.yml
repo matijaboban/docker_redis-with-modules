@@ -128,5 +128,5 @@ workflows:
       #     requires:
       #       - lint
       # - build
-      - dockerprocess/check
+      - dockerprocess/publish
 
