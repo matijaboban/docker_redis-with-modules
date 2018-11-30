@@ -127,10 +127,10 @@ workflows:
   pre-build:
     jobs:
       - lint
+      - test:
+          requires:
+            - lint
       - docker-publish/publish
-      # - test:
-      #     requires:
-      #       - lint
       # - build
       # - docker-publish/check
           # requires:
