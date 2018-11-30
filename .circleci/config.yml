@@ -3,70 +3,70 @@ version: 2.1
 orbs:
   dockerprocess: circleci/docker-publish@0.1.1
 
-executors:
-    node-executor:
-      docker:
-        - image: circleci/node:8.11.4
-          user: root
+# executors:
+#     node-executor:
+#       docker:
+#         - image: circleci/node:8.11.4
+#           user: root
 
-      environment:
-        CC_TEST_REPORTER_ID: 1ce2c894983929f01f1a2e38b99f695de00efa01a38043280c6849761de2578a
+#       environment:
+#         CC_TEST_REPORTER_ID: 1ce2c894983929f01f1a2e38b99f695de00efa01a38043280c6849761de2578a
 
-      working_directory: ~/project
+#       working_directory: ~/project
 
-jobs:
-  lint:
-    executor: node-executor
+# jobs:
+#   lint:
+#     executor: node-executor
 
-    steps:
-      - checkout
+#     steps:
+#       - checkout
 
-      - restore_cache:
-          key: npm-dependency-cache-v1-{{ checksum "package-lock.json" }}
+#       - restore_cache:
+#           key: npm-dependency-cache-v1-{{ checksum "package-lock.json" }}
 
-      - run:
-            name: Install NPM
-            command: |
-                npm install
+#       - run:
+#             name: Install NPM
+#             command: |
+#                 npm install
 
-      - save_cache:
-          key: npm-dependency-cache-v1-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
+#       - save_cache:
+#           key: npm-dependency-cache-v1-{{ checksum "package-lock.json" }}
+#           paths:
+#             - ./node_modules
 
-      - run:
-          name: Run linting
-          command: npm run lint
+#       - run:
+#           name: Run linting
+#           command: npm run lint
 
-  test:
-    executor: node-executor
+#   test:
+#     executor: node-executor
 
-    steps:
-      - checkout
+#     steps:
+#       - checkout
 
-      - run:
-          name: Install goss
-          command: |
-            # rather than give internet scripts SU rights, we install to local user bin and add to path
-            mkdir ~/bin
-            export GOSS_DST=~/bin
-            export PATH=$PATH:~/bin
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
+#       - run:
+#           name: Install goss
+#           command: |
+#             # rather than give internet scripts SU rights, we install to local user bin and add to path
+#             mkdir ~/bin
+#             export GOSS_DST=~/bin
+#             export PATH=$PATH:~/bin
+#             curl -fsSL https://goss.rocks/install | sh
+#             goss -version
 
-      # - docker-publish/publish:
-      #     after_checkout:
-      #       - run:
-      #           name: Do this after checkout.
-      #           command: echo "Did this after checkout"
-      #     before_build:
-      #       - run:
-      #           name: Do this before the build.
-      #           command: echo "Did this before the build"
-      #     after_build:
-      #       - run:
-      #           name: Do this after the build.
-      #           command: echo "Did this after the build"
+#       # - docker-publish/publish:
+#       #     after_checkout:
+#       #       - run:
+#       #           name: Do this after checkout.
+#       #           command: echo "Did this after checkout"
+#       #     before_build:
+#       #       - run:
+#       #           name: Do this before the build.
+#       #           command: echo "Did this before the build"
+#       #     after_build:
+#       #       - run:
+#       #           name: Do this after the build.
+#       #           command: echo "Did this after the build"
 
   # build:
 
@@ -96,7 +96,7 @@ jobs:
     # - docker-publish/check
 
 workflows:
-  version: 2.1
+  # version: 2.1
 
   # docker_with_lifecycle:
   #   jobs:
