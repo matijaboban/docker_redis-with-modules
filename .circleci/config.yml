@@ -6,7 +6,7 @@ orbs:
 executors:
     node-executor:
       docker:
-        - image: docker pull circleci/node:app
+        - image: circleci/node:8.11.4
           user: root
 
       environment:
