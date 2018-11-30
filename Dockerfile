@@ -3,7 +3,7 @@ FROM redis:latest as redis
 FROM redislabs/redisearch:latest as redisearch
 FROM redislabs/redisml:latest as redisml
 FROM redislabs/rejson:latest as rejson
-FROM redislabs/redisgraph:1.0.2 as redisgraph
+# FROM redislabs/redisgraph:1.0.2 as redisgraph
 FROM redislabs/rebloom:latest as rebloom
 
 ENV LIBDIR /usr/lib/redis/modules
@@ -22,5 +22,5 @@ ENTRYPOINT ["redis-server"]
 CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
     "--loadmodule", "/usr/lib/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/lib/redis/modules/rejson.so", \
-    "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", \
+    # "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", \
     "--loadmodule", "/usr/lib/redis/modules/rebloom.so"]

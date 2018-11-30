@@ -9,11 +9,14 @@
     "url": "git://github.com/matijaboban/docker-redismoduls.git"
   },
   "scripts": {
-    "lint": "node_modules/.bin/eslint ."
+    "lint-eslint": "node_modules/.bin/eslint .",
+    "lint-docker": "node_modules/.bin/dockerfilelint Dockerfile",
+    "lint": "npm run lint-eslint && npm run lint-docker"
   },
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "dockerfilelint": "^1.4.0",
     "eslint": "^5.9.0",
     "eslint-plugin-docker": "^0.1.0"
   }
