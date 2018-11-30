@@ -1,6 +1,6 @@
+FROM redis:5.0.2 as redis
 FROM redislabs/redisearch:latest as redisearch
 FROM redislabs/rebloom:latest as rebloom
-FROM redis:latest as redis
 
 ENV LIBDIR /usr/lib/redis/modules
 
