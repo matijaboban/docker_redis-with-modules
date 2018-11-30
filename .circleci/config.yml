@@ -41,9 +41,9 @@ jobs:
   build:
     docker:
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
-    steps:
-      - checkout
-      - run: echo "bla"
+    # steps:
+    #   - checkout
+    #   - run: echo "bla"
 
   # test:
   #   build:
