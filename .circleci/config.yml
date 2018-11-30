@@ -72,7 +72,11 @@ jobs:
 
     steps:
 
-      - docker-publish/check
+      - run:
+        name: Do this after checkout.
+        command: echo "test"
+
+      # - docker-publish/check
 
 
       # - docker-publish/publish:
