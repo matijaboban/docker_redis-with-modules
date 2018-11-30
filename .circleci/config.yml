@@ -4,9 +4,9 @@ orbs:
   docker-publish: circleci/docker-publish@0.1.1
 
 executors:
-    linux-executor:
+    node-executor:
       docker:
-        - image: digitaltownorg/circleci:app
+        - image: docker pull circleci/node:app
           user: root
 
       environment:
@@ -15,13 +15,16 @@ executors:
       working_directory: ~/project
 
 jobs:
-  setup:
-    executor: docker-publish/docker
+  lint:
+    executor: node-executor
 
     steps:
+
       - checkout
 
-      - docker-publish/check
+      - run:
+          name: Run linting
+          command: npm run lint
 
       # - run:
       #     name: Install goss
@@ -50,29 +53,29 @@ jobs:
 workflows:
   version: 2.1
 
-  docker_with_lifecycle:
-    jobs:
-      steps:
-
-        - checkout
-
-        - docker-publish/publish:
-            after_checkout:
-              - run:
-                  name: Do this after checkout.
-                  command: echo "Did this after checkout"
-            before_build:
-              - run:
-                  name: Do this before the build.
-                  command: echo "Did this before the build"
-              - run:
-                  name: docker-publish/check.
-                  command: docker-publish/check
-            after_build:
-              - run:
-                  name: Do this after the build.
-                  command: echo "Did this after the build"
-
-  # test:
+  # docker_with_lifecycle:
   #   jobs:
-  #     - setup
+      # steps:
+
+      #   - checkout
+
+      #   - docker-publish/publish:
+      #       after_checkout:
+      #         - run:
+      #             name: Do this after checkout.
+      #             command: echo "Did this after checkout"
+      #       before_build:
+      #         - run:
+      #             name: Do this before the build.
+      #             command: echo "Did this before the build"
+      #         - run:
+      #             name: docker-publish/check.
+      #             command: docker-publish/check
+      #       after_build:
+      #         - run:
+      #             name: Do this after the build.
+      #             command: echo "Did this after the build"
+
+  test:
+    jobs:
+      - lint
