@@ -51,7 +51,7 @@ jobs:
       - run: |
           apt-get update && apt-get install -y redis-tools
           echo "CONFIG SET save ''" | redis-cli -x
-    #   - run: echo "bla"
+      - run: redis-cli info
 
   # test:
   #   build:
