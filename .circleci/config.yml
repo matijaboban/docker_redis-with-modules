@@ -19,7 +19,6 @@ jobs:
     executor: node-executor
 
     steps:
-
       - checkout
 
       - restore_cache:
@@ -43,7 +42,6 @@ jobs:
     executor: node-executor
 
     steps:
-
       - checkout
 
       - run:
@@ -69,6 +67,15 @@ jobs:
       #       - run:
       #           name: Do this after the build.
       #           command: echo "Did this after the build"
+
+  build:
+
+    steps:
+        - checkout
+
+        - run:
+            name: docker-publish/check.
+            command: docker-publish/check
 
 workflows:
   version: 2.1
@@ -102,3 +109,4 @@ workflows:
       - test:
           requires:
             - lint
+      - build
