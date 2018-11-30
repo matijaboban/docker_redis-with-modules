@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  dockerprocess: circleci/docker-publish@0.1.1
+  docker-publish: circleci/docker-publish@0.1.1
 
 executors:
     node-executor:
@@ -126,12 +126,13 @@ workflows:
 
   pre-build:
     jobs:
-      - lint
-      - test:
-          requires:
-            - lint
+      - docker-publish/publish
+      # - lint
+      # - test:
+      #     requires:
+      #       - lint
       # - build
-      - docker-publish/check
+      # - docker-publish/check
           # requires:
             # - lint
 
