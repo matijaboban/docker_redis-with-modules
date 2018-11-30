@@ -3,6 +3,7 @@ FROM redis:latest as redis
 FROM redislabs/redisearch:1.4.2 as redisearch
 FROM redislabs/redisml:latest as redisml
 FROM redislabs/rejson:latest as rejson
+# FROM redislabs/redisgraph:1.0.2 as redisgraph
 FROM redislabs/rebloom:latest as rebloom
 
 ENV LIBDIR /usr/lib/redis/modules
@@ -14,11 +15,12 @@ RUN set -ex;\
 COPY --from=redisearch ${LIBDIR}/redisearch.so ${LIBDIR}
 COPY --from=redisml ${LIBDIR}/redis-ml.so ${LIBDIR}
 COPY --from=rejson ${LIBDIR}/rejson.so ${LIBDIR}
-COPY --from=redisgraph ${LIBDIR}/redisgraph.so ${LIBDIR}
+# COPY --from=redisgraph ${LIBDIR}/redisgraph.so ${LIBDIR}
 COPY --from=rebloom ${LIBDIR}/rebloom.so ${LIBDIR}
 
 ENTRYPOINT ["redis-server"]
 CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
     "--loadmodule", "/usr/lib/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/lib/redis/modules/rejson.so", \
+    # "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", \
     "--loadmodule", "/usr/lib/redis/modules/rebloom.so"]
