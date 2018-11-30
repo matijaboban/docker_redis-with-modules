@@ -38,7 +38,7 @@ jobs:
           name: Run linting
           command: npm run lint
 
-  build:
+  test:
     docker:
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
