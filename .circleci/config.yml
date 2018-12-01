@@ -141,7 +141,7 @@ jobs:
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
             make
-            cp redisearch.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -182,7 +182,7 @@ jobs:
           command: |
             cd r*/src
             make
-            cp redis-ml.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -215,13 +215,12 @@ jobs:
             curl -OL https://github.com/RedisLabsModules/rebloom/archive/master.zip
             unzip *.zip
 
-
       - run:
           name: Build module
           command: |
             cd r*
             make
-            cp rebloom.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -255,13 +254,51 @@ jobs:
             curl -OL https://github.com/RedisLabsModules/rejson/archive/master.zip
             unzip *.zip
 
-
       - run:
           name: Build module
           command: |
             cd r*/src
             make
-            cp rejson.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - redis
+
+  build-timeseries:
+    docker:
+      - image: python:3.7.1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get update
+            apt-get install -y zip
+            apt-get install -y build-essential
+
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/RedisLabsModules/redis-timeseries/archive/master.zip
+            unzip *.zip
+
+      - run:
+          name: Build module
+          command: |
+            cd r*/src
+            make all
+            cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -397,6 +434,9 @@ workflows:
       - build-rejson:
           requires:
             - lint
+      - build-timeseries:
+          requires:
+            - lint
       - temptest:
           requires:
             - build-redis
@@ -404,6 +444,7 @@ workflows:
             - build-redisml
             - build-redisbloom
             - build-rejson
+            - build-timeseries
 
       # - docker-publish/publish:
       #     requires:
