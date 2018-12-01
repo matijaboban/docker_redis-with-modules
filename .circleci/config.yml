@@ -82,11 +82,9 @@ jobs:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
-      - checkout
-
       - *attach_workspace
 
       - run: |
@@ -153,18 +151,32 @@ jobs:
           paths:
             - redis
 
-
   build-redisml:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
-      - checkout
+      - *attach_workspace
 
-      - run: |
-          echo "build-redisml"
+      - run:
+          name: Install CMake
+          command: |
+            apt-get update
+            apt-get install -y cmake
+
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/RedisLabsModules/redis-ml/archive/master.zip
+            unzip *.zip
+            ls
 
   build-redisbloom:
     docker:
