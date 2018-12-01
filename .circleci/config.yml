@@ -90,8 +90,8 @@ jobs:
       - run: |
           echo "build-redis"
 
-      - run: mkdir -p /tmp/workspace/redis
-      - run: echo "build-redis!" > /tmp/workspace/redis/echo-output.txt
+      - run: mkdir -p /tmp/workspace/redis/core
+      - run: echo "build-redis!" > /tmp/workspace/redis/core/echo-output.txt
 
       - run: |
           ls
@@ -125,7 +125,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -141,7 +141,7 @@ jobs:
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
             make
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -168,7 +168,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -182,7 +182,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -207,7 +207,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -220,7 +220,7 @@ jobs:
           command: |
             cd ~/project/r*
             make
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -246,7 +246,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -259,7 +259,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -284,7 +284,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -305,7 +305,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -330,7 +330,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -344,7 +344,7 @@ jobs:
             cd ~/project/r*
             make
             cd src
-            cp *.so /tmp/workspace/redis/
+            cp *.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -370,7 +370,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis
+            mkdir -p /tmp/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -383,7 +383,7 @@ jobs:
           command: |
             cd ~/project/R*
             make
-            cp src/*.so /tmp/workspace/redis/
+            cp src/*.so /tmp/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -409,8 +409,11 @@ jobs:
           at: /project/workspace
 
       - run: |
-          echo "qqqqqq"
           cd workspace/redis
+          ls
+          cd core
+          ls
+          cd cd ../modules
           ls
 
       # - run: cat /project/workspace/echo-output
