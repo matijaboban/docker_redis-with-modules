@@ -219,7 +219,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd r*/src
+            cd r*
             make
             cp rebloom.so /tmp/workspace/redis/
 
