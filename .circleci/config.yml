@@ -102,7 +102,7 @@ jobs:
           root: *workspace_root
           # Must be relative path from root
           paths:
-            - echo-output
+            - workspace/echo-output
 
   build-redisearch:
     docker:
