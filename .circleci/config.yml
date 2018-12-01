@@ -121,7 +121,9 @@ jobs:
       - run: |
           echo "build-redisearch"
           curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
-          tar xvzf v1.4.2.tar.gz
+          tar xzf v1.4.2.tar.gz module
+          cd module
+          make
 
 
   build-redisml:
