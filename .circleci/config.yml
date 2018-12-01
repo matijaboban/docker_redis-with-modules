@@ -124,8 +124,8 @@ jobs:
             apt-get update
             apt-get install -y cmake
 
-      - run: |
-          mkdir -p /tmp/workspace/redis
+      # - run: |
+      #     mkdir -p /tmp/workspace/redis
 
       - run: |
           echo "build-redisearch"
