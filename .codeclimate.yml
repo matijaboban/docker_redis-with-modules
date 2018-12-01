@@ -37,11 +37,11 @@ checks:
   identical-code:
     enabled: true
 plugins:
-  editorconfig:
-    enabled: true
-    channel: beta
-    config:
-      editorconfig: .editorconfig
+  # editorconfig:
+  #   enabled: true
+  #   channel: beta
+  #   config:
+  #     editorconfig: .editorconfig
   fixme:
     enabled: true
   git-legal:

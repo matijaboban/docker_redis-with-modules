@@ -351,6 +351,46 @@ jobs:
           paths:
             - redis
 
+  build-redisgraph:
+    docker:
+      - image: python:3.7.1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get update
+            apt-get install -y build-essential
+            apt-get install -y cmake
+
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/RedisLabsModules/RedisGraph/archive/v1.0.2.tar.gz
+            tar xzf *.tar.gz
+
+      - run:
+          name: Build module
+          command: |
+            cd ~/project/R*
+            make
+            cp src/*.so /tmp/workspace/redis/
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - redis
+
+
   temptest:
     docker:
       - image: python:3.7.1
@@ -486,6 +526,9 @@ workflows:
       - build-redex:
           requires:
             - lint
+      - build-redisgraph:
+          requires:
+            - lint
       - temptest:
           requires:
             - build-redis
@@ -495,6 +538,7 @@ workflows:
             - build-rejson
             - build-timeseries
             - build-redex
+            - build-redisgraph
 
       # - docker-publish/publish:
       #     requires:
