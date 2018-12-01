@@ -116,10 +116,13 @@ jobs:
     working_directory: /project
 
     steps:
-      - checkout
+      - *attach_workspace
 
       - run: |
           echo "build-redisearch"
+          curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
+          tar xvzf v1.4.2.tar.gz
+
 
   build-redisml:
     docker:
@@ -164,7 +167,7 @@ jobs:
 
       - run: |
           echo "qqqqqq"
-          cd workspace
+          cd workspace/redis
           ls
 
       # - run: cat /project/workspace/echo-output
