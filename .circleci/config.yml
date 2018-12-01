@@ -144,10 +144,7 @@ jobs:
             cp redisearch.so /tmp/workspace/redis/
 
       - persist_to_workspace:
-      #     # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-      #     # taken to be the root directory of the workspace.
           root: *workspace_root
-      #     # Must be relative path from root
           paths:
             - redis
 
@@ -186,6 +183,11 @@ jobs:
             cd r*/src
             make
             cp redis-ml.so /tmp/workspace/redis/
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - redis
 
   build-redisbloom:
     docker:
