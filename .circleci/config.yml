@@ -136,7 +136,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd R*
+            cd ~/project/R*
             mkdir build
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -180,7 +180,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd r*/src
+            cd ~/project/r*/src
             make
             cp *.so /tmp/workspace/redis/
 
@@ -218,7 +218,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd r*
+            cd ~/project/r*
             make
             cp *.so /tmp/workspace/redis/
 
@@ -257,7 +257,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd r*/src
+            cd ~/project/r*/src
             make
             cp *.so /tmp/workspace/redis/
 
@@ -280,7 +280,6 @@ jobs:
           command: |
             apt-get update
             apt-get install -y zip
-            apt-get install -y cmake
 
       - run:
           name: Create workspace directory
@@ -294,10 +293,18 @@ jobs:
             unzip *.zip
 
       - run:
+          name: Get utility SDK from Github
+          command: |
+            cd r*/RedisModulesSDK/
+            curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip
+            unzip *.zip
+            mv R*/* .
+
+      - run:
           name: Build module
           command: |
-            cd r*/src
-            make -j 8
+            cd ~/project/r*/src
+            make
             cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
