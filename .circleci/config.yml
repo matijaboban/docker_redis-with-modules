@@ -152,14 +152,21 @@ jobs:
     working_directory: /project
 
     steps:
+      - *attach_workspace
+
       - run: |
           echo "temptest"
+          ls
 
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: /project/workspace
 
-      - run: cat /project/workspace/echo-output
+      - run: |
+          echo "qqqqqq"
+          ls
+
+      # - run: cat /project/workspace/echo-output
 
 
   # test:
