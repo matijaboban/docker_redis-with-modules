@@ -222,7 +222,6 @@ workflows:
       - build-redisbloom:
           requires:
             - lint
-
       - temptest:
           requires:
             - build-redis
