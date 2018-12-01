@@ -92,7 +92,7 @@ jobs:
       - run: |
           echo "build-redis"
 
-      # - run: mkdir -p workspace
+      - run: mkdir -p workspace
       - run: echo "build-redis!" > workspace/echo-output.txt
 
       - run: |
