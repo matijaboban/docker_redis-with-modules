@@ -125,6 +125,9 @@ jobs:
             apt-get install -y cmake
 
       - run: |
+          mkdir -p /tmp/workspace/redis
+
+      - run: |
           echo "build-redisearch"
           curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
           tar xzf *.tar.gz
@@ -133,10 +136,12 @@ jobs:
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
           make
+          ls
+          cp redisearch.so /tmp/workspace/redis/
 
-      - run: |
-          mkdir -p /tmp/workspace/redis
-          cp project/R*/build/redisearch.so /tmp/workspace/redis/
+      # - run: |
+      #     mkdir -p /tmp/workspace/redis
+      #     cp project/R*/build/redisearch.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
