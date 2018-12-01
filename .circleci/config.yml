@@ -136,7 +136,7 @@ jobs:
 
       - run: |
           mkdir -p /tmp/workspace/redis
-          cp redisearch.so /tmp/workspace/redis
+          cp redisearch.so /tmp/workspace/redis/
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
