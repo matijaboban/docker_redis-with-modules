@@ -113,7 +113,7 @@ jobs:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
       - *attach_workspace
@@ -124,32 +124,46 @@ jobs:
             apt-get update
             apt-get install -y cmake
 
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
+            tar xzf *.tar.gz
+
+      - run:
+          name: QQQ
+          command: |
+            cd $CIRCLE_WORKING_DIRECTORY
+            pwd
+
+
       # - run: |
-      #     mkdir -p /tmp/workspace/redis
+      #     curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
+      #     tar xzf *.tar.gz
+      #     cd R*
+      #     mkdir build
+      #     cd build
+      #     cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      #     make
+      #     ls
+      #     cp redisearch.so /tmp/workspace/redis/
 
-      - run: |
-          echo "build-redisearch"
-          curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
-          tar xzf *.tar.gz
-          cd R*
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          make
-          ls
-          cp redisearch.so /tmp/workspace/redis/
+      # # - run: |
+      # #     mkdir -p /tmp/workspace/redis
+      # #     cp project/R*/build/redisearch.so /tmp/workspace/redis/
 
-      # - run: |
-      #     mkdir -p /tmp/workspace/redis
-      #     cp project/R*/build/redisearch.so /tmp/workspace/redis/
-
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: *workspace_root
-          # Must be relative path from root
-          paths:
-            - redis
+      # - persist_to_workspace:
+      #     # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+      #     # taken to be the root directory of the workspace.
+      #     root: *workspace_root
+      #     # Must be relative path from root
+      #     paths:
+      #       - redis
 
 
   build-redisml:
