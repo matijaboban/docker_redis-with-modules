@@ -67,6 +67,58 @@ jobs:
           name: Test goss
           command: goss validate
 
+  build-redis:
+    docker:
+      - image: ubuntu:18.10
+
+    working_directory: /project
+
+    steps:
+      - checkout
+
+      - run: |
+          echo "build-redis"
+
+  build-redisearch:
+    docker:
+      - image: ubuntu:18.10
+
+    working_directory: /project
+
+    steps:
+      - checkout
+
+      - run: |
+          echo "build-redisearch"
+
+  build-redisml:
+    docker:
+      - image: ubuntu:18.10
+
+    working_directory: /project
+
+    steps:
+      - checkout
+
+      - run: |
+          echo "build-redisml"
+
+  build-redisbloom:
+    docker:
+      - image: ubuntu:18.10
+
+    working_directory: /project
+
+    steps:
+      - checkout
+
+      - run: |
+          echo "build-redisbloom"
+
+  temptest:
+    steps:
+      - run: |
+          echo "temptest"
 
 
   # test:
@@ -158,12 +210,33 @@ workflows:
   pre-build:
     jobs:
       - lint
-      - docker-publish/publish:
+      - build-redis:
           requires:
             - lint
-      - test:
+      - build-redisearch:
           requires:
-            - docker-publish/publish
+            - lint
+      - build-redisml:
+          requires:
+            - lint
+      - build-redisbloom:
+          requires:
+            - lint
+
+      - temptest:
+          requires:
+            - build-redis
+            - build-redisearch
+            - build-redisml
+            - build-redisbloom
+
+      # - docker-publish/publish:
+      #     requires:
+      #       - lint
+      # - test:
+      #     requires:
+      #       - docker-publish/publish
+
       # - build
       # - docker-publish/check
           # requires:
