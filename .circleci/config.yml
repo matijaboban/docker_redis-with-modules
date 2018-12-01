@@ -139,9 +139,9 @@ jobs:
 
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
+          at: /project/workspace
 
-      - run: cat /tmp/workspace/echo-output
+      - run: cat /project/workspace/echo-output
 
 
   # test:
