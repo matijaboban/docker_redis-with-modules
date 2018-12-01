@@ -105,24 +105,33 @@ jobs:
             tar xzf *.tar.gz
 
       - run:
-          name: Build module
+          name: Build redis core
           command: |
-            cd ~/project/R*
+            cd ~/project/r*
             make
 
+      - run:
+          name: Test redis core
+          command: |
+            cd ~/project/r*
+            make test
+            cp src/redis-benchmark /tmp/workspace/redis/core/
+            cp src/redis-check-aof /tmp/workspace/redis/core/
+            cp src/redis-check-rdb /tmp/workspace/redis/core/
+            cp src/redis-cli /tmp/workspace/redis/core/
+            cp src/redis-sentinel /tmp/workspace/redis/core/
+            cp src/redis-server /tmp/workspace/redis/core/
 
+      # - run: |
+      #     echo "build-redis"
 
+      # - run: mkdir -p /tmp/workspace/redis/core
+      # - run: echo "build-redis!" > /tmp/workspace/redis/core/echo-output.txt
 
-      - run: |
-          echo "build-redis"
-
-      - run: mkdir -p /tmp/workspace/redis/core
-      - run: echo "build-redis!" > /tmp/workspace/redis/core/echo-output.txt
-
-      - run: |
-          ls
-          cd /tmp/workspace
-          ls
+      # - run: |
+      #     ls
+      #     cd /tmp/workspace
+      #     ls
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -540,9 +549,9 @@ workflows:
       # - build-redisearch:
       #     requires:
       #       - lint
-      # - build-redisml:
-      #     requires:
-      #       - lint
+      - build-redisml:
+          requires:
+            - lint
       # - build-redisbloom:
       #     requires:
       #       - lint
@@ -562,7 +571,7 @@ workflows:
           requires:
             - build-redis
             # - build-redisearch
-            # - build-redisml
+            - build-redisml
             # - build-redisbloom
             # - build-rejson
             # - build-timeseries
