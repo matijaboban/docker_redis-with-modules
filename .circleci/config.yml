@@ -413,7 +413,7 @@ jobs:
           ls
           cd core
           ls
-          cd cd ../modules
+          cd ../modules
           ls
 
       # - run: cat /project/workspace/echo-output
