@@ -116,6 +116,11 @@ jobs:
           echo "build-redisbloom"
 
   temptest:
+    docker:
+      - image: ubuntu:18.10
+
+    working_directory: /project
+
     steps:
       - run: |
           echo "temptest"
