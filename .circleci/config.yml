@@ -1,5 +1,12 @@
 version: 2.1
 
+references:
+  workspace_root: &workspace_root
+    /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 orbs:
   docker-publish: circleci/docker-publish@0.1.1
 
@@ -75,6 +82,8 @@ jobs:
 
     steps:
       - checkout
+
+      - *attach_workspace
 
       - run: |
           echo "build-redis"
