@@ -193,13 +193,40 @@ jobs:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
-      - checkout
+      - *attach_workspace
 
-      - run: |
-          echo "build-redisbloom"
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get update
+            apt-get install -y zip
+
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/RedisLabsModules/rebloom/archive/master.zip
+            unzip *.zip
+
+
+      - run:
+          name: Build module
+          command: |
+            cd r*/src
+            make
+            cp rebloom.so /tmp/workspace/redis/
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - redis
 
   temptest:
     docker:
