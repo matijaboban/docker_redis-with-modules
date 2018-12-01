@@ -92,12 +92,12 @@ jobs:
       - run: |
           echo "build-redis"
 
-      - run: mkdir -p workspace
-      - run: echo "build-redis!" > workspace/echo-output.txt
+      - run: mkdir -p /tmp/workspace/redis
+      - run: echo "build-redis!" > /tmp/workspace/redis/echo-output.txt
 
       - run: |
           ls
-          cd workspace
+          cd /tmp/workspace
           ls
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
@@ -107,7 +107,7 @@ jobs:
           root: *workspace_root
           # Must be relative path from root
           paths:
-            - workspace/echo-output
+            - redis
 
   build-redisearch:
     docker:
