@@ -49,7 +49,7 @@ jobs:
 
   test:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
     working_directory: /project
@@ -80,7 +80,7 @@ jobs:
 
   build-redis:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
 
     working_directory: /project
 
@@ -106,7 +106,7 @@ jobs:
 
   build-redisearch:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
 
     working_directory: /project
 
@@ -118,7 +118,7 @@ jobs:
 
   build-redisml:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
 
     working_directory: /project
 
@@ -130,7 +130,7 @@ jobs:
 
   build-redisbloom:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
 
     working_directory: /project
 
@@ -142,7 +142,7 @@ jobs:
 
   temptest:
     docker:
-      - image: ubuntu:18.10
+      - image: python:3.7.1
 
     working_directory: /project
 
