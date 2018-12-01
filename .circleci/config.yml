@@ -117,7 +117,7 @@ jobs:
       - *attach_workspace
 
       - run:
-          name: Install CMake
+          name: Install Dependencies
           command: |
             apt-get update
             apt-get install -y cmake
@@ -161,10 +161,12 @@ jobs:
       - *attach_workspace
 
       - run:
-          name: Install CMake
+          name: Install Dependencies
           command: |
             apt-get update
             apt-get install -y cmake
+            apt-get install -y zip
+            apt-get install -y libatlas-base-dev
 
       - run:
           name: Create workspace directory
@@ -176,7 +178,14 @@ jobs:
           command: |
             curl -OL https://github.com/RedisLabsModules/redis-ml/archive/master.zip
             unzip *.zip
-            ls
+
+
+      - run:
+          name: Build module
+          command: |
+            cd r*/src
+            make
+            cp redis-ml.so /tmp/workspace/redis/
 
   build-redisbloom:
     docker:
