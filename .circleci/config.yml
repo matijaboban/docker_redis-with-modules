@@ -87,6 +87,32 @@ jobs:
     steps:
       - *attach_workspace
 
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get update
+            apt-get install -y cmake
+
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/redis/core
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
+            tar xzf *.tar.gz
+
+      - run:
+          name: Build module
+          command: |
+            cd ~/project/R*
+            make
+
+
+
+
       - run: |
           echo "build-redis"
 
@@ -511,37 +537,37 @@ workflows:
       - build-redis:
           requires:
             - lint
-      - build-redisearch:
-          requires:
-            - lint
-      - build-redisml:
-          requires:
-            - lint
-      - build-redisbloom:
-          requires:
-            - lint
-      - build-rejson:
-          requires:
-            - lint
-      - build-timeseries:
-          requires:
-            - lint
-      - build-redex:
-          requires:
-            - lint
-      - build-redisgraph:
-          requires:
-            - lint
+      # - build-redisearch:
+      #     requires:
+      #       - lint
+      # - build-redisml:
+      #     requires:
+      #       - lint
+      # - build-redisbloom:
+      #     requires:
+      #       - lint
+      # - build-rejson:
+      #     requires:
+      #       - lint
+      # - build-timeseries:
+      #     requires:
+      #       - lint
+      # - build-redex:
+      #     requires:
+      #       - lint
+      # - build-redisgraph:
+      #     requires:
+      #       - lint
       - temptest:
           requires:
             - build-redis
-            - build-redisearch
-            - build-redisml
-            - build-redisbloom
-            - build-rejson
-            - build-timeseries
-            - build-redex
-            - build-redisgraph
+            # - build-redisearch
+            # - build-redisml
+            # - build-redisbloom
+            # - build-rejson
+            # - build-timeseries
+            # - build-redex
+            # - build-redisgraph
 
       # - docker-publish/publish:
       #     requires:
