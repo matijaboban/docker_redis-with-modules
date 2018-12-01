@@ -341,8 +341,9 @@ jobs:
       - run:
           name: Build module
           command: |
-            cd ~/project/r*/src
+            cd ~/project/r*
             make
+            cd src
             cp *.so /tmp/workspace/redis/
 
       - persist_to_workspace:
