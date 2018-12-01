@@ -92,8 +92,13 @@ jobs:
       - run: |
           echo "build-redis"
 
-      - run: mkdir -p workspace
-      - run: echo "build-redis!" > workspace/echo-output
+      # - run: mkdir -p workspace
+      - run: echo "build-redis!" > workspace/echo-output.txt
+
+      - run: |
+          ls
+          cd workspace
+          ls
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
