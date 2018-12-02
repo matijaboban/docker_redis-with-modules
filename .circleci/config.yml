@@ -132,7 +132,7 @@ jobs:
             make test
 
       - run:
-          name: Test redis core functions
+          name: Test redis sentinel
           command: |
             cd ~/project/r*
             sh runtest
@@ -141,6 +141,7 @@ jobs:
       - run:
           name: Move compiled assets to workspace
           command: |
+            cd ~/project/r*
             cp src/redis-benchmark /tmp/workspace/redis/core/
             cp src/redis-check-aof /tmp/workspace/redis/core/
             cp src/redis-check-rdb /tmp/workspace/redis/core/
