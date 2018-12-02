@@ -112,12 +112,12 @@ jobs:
   # sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
   # grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h; \
 
-      # - run:
-      #     name: Pre-build updates
-      #     command: |
-      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
-      #       sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
-      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
+      - run:
+          name: Pre-build updates
+          command: |
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
 
       - run:
           name: Build redis core
@@ -618,4 +618,10 @@ workflows:
       # - docker-publish/check
           # requires:
             # - lint
+
+  pre-1:
+    requires:
+      - pre-build
+    jobs:
+      - lint
 
