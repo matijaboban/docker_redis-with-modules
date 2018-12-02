@@ -2,7 +2,7 @@ version: 2.1
 
 references:
   workspace_root: &workspace_root
-    /tmp/workspace
+    ~/workspace
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
@@ -96,7 +96,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/core
+            mkdir -p ~/workspace/redis/core
 
       - run:
           name: Get module tag from Github
@@ -142,24 +142,24 @@ jobs:
           name: Move compiled assets to workspace
           command: |
             cd ~/project/r*
-            cp src/redis-benchmark /tmp/workspace/redis/core/
-            cp src/redis-check-aof /tmp/workspace/redis/core/
-            cp src/redis-check-rdb /tmp/workspace/redis/core/
-            cp src/redis-cli /tmp/workspace/redis/core/
-            cp src/redis-sentinel /tmp/workspace/redis/core/
-            cp src/redis-server /tmp/workspace/redis/core/
-            cp redis.conf /tmp/workspace/redis/core/
-            cp sentinel.conf /tmp/workspace/redis/core/
+            cp src/redis-benchmark ~/workspace/redis/core/
+            cp src/redis-check-aof ~/workspace/redis/core/
+            cp src/redis-check-rdb ~/workspace/redis/core/
+            cp src/redis-cli ~/workspace/redis/core/
+            cp src/redis-sentinel ~/workspace/redis/core/
+            cp src/redis-server ~/workspace/redis/core/
+            cp redis.conf ~/workspace/redis/core/
+            cp sentinel.conf ~/workspace/redis/core/
 
       # - run: |
       #     echo "build-redis"
 
-      # - run: mkdir -p /tmp/workspace/redis/core
-      # - run: echo "build-redis!" > /tmp/workspace/redis/core/echo-output.txt
+      # - run: mkdir -p ~/workspace/redis/core
+      # - run: echo "build-redis!" > ~/workspace/redis/core/echo-output.txt
 
       # - run: |
       #     ls
-      #     cd /tmp/workspace
+      #     cd ~/workspace
       #     ls
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
@@ -189,7 +189,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -205,7 +205,7 @@ jobs:
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
             make
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -232,7 +232,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -246,7 +246,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -271,7 +271,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -284,7 +284,7 @@ jobs:
           command: |
             cd ~/project/r*
             make
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -310,7 +310,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -323,7 +323,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -348,7 +348,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -369,7 +369,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -394,7 +394,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -408,7 +408,7 @@ jobs:
             cd ~/project/r*
             make
             cd src
-            cp *.so /tmp/workspace/redis/modules/
+            cp *.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -434,7 +434,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/modules
+            mkdir -p ~/workspace/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -447,7 +447,7 @@ jobs:
           command: |
             cd ~/project/R*
             make
-            cp src/*.so /tmp/workspace/redis/modules/
+            cp src/*.so ~/workspace/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -459,7 +459,7 @@ jobs:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
       - *attach_workspace
@@ -487,7 +487,7 @@ jobs:
     docker:
       - image: python:3.7.1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
       - *attach_workspace
