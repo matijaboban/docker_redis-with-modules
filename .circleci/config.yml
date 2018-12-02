@@ -483,6 +483,44 @@ jobs:
       # - run: cat /project/workspace/echo-output
 
 
+  build-docker:
+    docker:
+      - image: python:3.7.1
+
+    working_directory: /project
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Check Environment Variables
+          command: |
+            if [[ -z "${DOCKER_LOGIN}" ]]; then
+              echo "DOCKER_LOGIN is not set, will not be able to push image."
+              exit 1
+            fi
+
+            if [[ -z "${DOCKER_PASSWORD}" ]]; then
+              echo "DOCKER_PASSWORD is not set, will not be able to push image."
+              exit 1
+            fi
+
+      - run:
+          name: Docker Login
+          command: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+
+      - run: |
+          cd workspace/redis
+          ls
+          cd core
+          ls
+          cd ../modules
+          ls
+
+      # - run: cat /project/workspace/echo-output
+
+
+
   # test:
   #   build:
   #     docker:
@@ -608,12 +646,17 @@ workflows:
             # - build-redex
             # - build-redisgraph
 
-      - docker-publish/publish:
+      - build-docker:
           requires:
-            - lint
-      - test:
-          requires:
-            - docker-publish/publish
+            - temptest
+
+
+      # - docker-publish/publish:
+      #     requires:
+      #       - lint
+      # - test:
+      #     requires:
+      #       - docker-publish/publish
 
       # - build
       # - docker-publish/check
