@@ -130,6 +130,11 @@ jobs:
           command: |
             cd ~/project/r*
             make test
+
+      - run:
+          name: Test redis core functions
+          command: |
+            cd ~/project/r*
             sh runtest
             sh runtest-sentinel
 
