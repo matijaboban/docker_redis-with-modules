@@ -623,5 +623,6 @@ workflows:
     jobs:
       - lint
       - temptest:
-        - lint
+          requires:
+            - lint
 
