@@ -578,9 +578,9 @@ workflows:
       # - build-redisearch:
       #     requires:
       #       - lint
-      # - build-redisml:
-      #     requires:
-      #       - lint
+      - build-redisml:
+          requires:
+            - lint
       # - build-redisbloom:
       #     requires:
       #       - lint
@@ -601,19 +601,19 @@ workflows:
           requires:
             - build-redis
             # - build-redisearch
-            # - build-redisml
+            - build-redisml
             # - build-redisbloom
             # - build-rejson
             # - build-timeseries
             # - build-redex
             # - build-redisgraph
 
-      # - docker-publish/publish:
-      #     requires:
-      #       - lint
-      # - test:
-      #     requires:
-      #       - docker-publish/publish
+      - docker-publish/publish:
+          requires:
+            - lint
+      - test:
+          requires:
+            - docker-publish/publish
 
       # - build
       # - docker-publish/check
