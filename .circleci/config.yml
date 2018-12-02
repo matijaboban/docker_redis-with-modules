@@ -468,12 +468,12 @@ jobs:
           echo "temptest"
           ls
 
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /project/workspace
+      # - attach_workspace:
+      #     # Must be absolute path or relative path from working_directory
+      #     at: /project/workspace
 
       - run: |
-          cd workspace/redis
+          cd ~/workspace/redis
           ls
           cd core
           ls
@@ -510,7 +510,7 @@ jobs:
           command: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
 
       - run: |
-          cd workspace/redis
+          cd ~/workspace/redis
           ls
           cd core
           ls
