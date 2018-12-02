@@ -620,8 +620,8 @@ workflows:
             # - lint
 
   pre-1:
-    requires:
-      - pre-build
     jobs:
       - lint
+      - temptest:
+        - lint
 
