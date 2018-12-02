@@ -3,11 +3,15 @@ FROM alpine:3.8
 # add user and group for consistent id assigned
 RUN addgroup -S redis && adduser -S -G redis redis
 
+WORKDIR /redis
+
+COPY ./build/redis/
+
 # dirs
-RUN mkdir ~/conf && chown redis:redis ~/conf
-RUN mkdir ~/logs && chown redis:redis ~/logs
-RUN mkdir ~/storage && chown redis:redis ~/storage
-RUN mkdir ~/scripts && chown redis:redis ~/scripts
+# RUN mkdir ~/conf && chown redis:redis ~/conf
+# RUN mkdir ~/logs && chown redis:redis ~/logs
+# RUN mkdir ~/storage && chown redis:redis ~/storage
+# RUN mkdir ~/scripts && chown redis:redis ~/scripts
 
 # FROM redis:5.0.2 as redis
 
@@ -28,10 +32,10 @@ RUN \
 
 
 # Define mountable directories.
-VOLUME ["/data"]
+# VOLUME ["/data"]
 
 # Define working directory.
-WORKDIR /data
+# WORKDIR /data
 
 # Define default command.
 CMD ["redis-server", "/etc/redis/redis.conf"]
