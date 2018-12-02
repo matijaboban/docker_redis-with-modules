@@ -657,17 +657,17 @@ workflows:
             # - build-redex
             # - build-redisgraph
 
-      - build-docker:
+      # - build-docker:
+      #     requires:
+      #       - temptest
+
+
+      - docker-publish/publish:
           requires:
-            - temptest
-
-
-      # - docker-publish/publish:
-      #     requires:
-      #       - lint
-      # - test:
-      #     requires:
-      #       - docker-publish/publish
+            - lint
+      - test:
+          requires:
+            - docker-publish/publish
 
       # - build
       # - docker-publish/check
