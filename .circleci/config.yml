@@ -125,18 +125,18 @@ jobs:
             cd ~/project/r*
             make
 
-      - run:
-          name: Test redis core
-          command: |
-            cd ~/project/r*
-            make test
+      # - run:
+      #     name: Test redis core
+      #     command: |
+      #       cd ~/project/r*
+      #       make test
 
-      - run:
-          name: Test redis sentinel
-          command: |
-            cd ~/project/r*
-            sh runtest
-            sh runtest-sentinel
+      # - run:
+      #     name: Test redis sentinel
+      #     command: |
+      #       cd ~/project/r*
+      #       sh runtest
+      #       sh runtest-sentinel
 
       - run:
           name: Move compiled assets to workspace
@@ -575,38 +575,38 @@ workflows:
       - build-redis:
           requires:
             - lint
-      - build-redisearch:
-          requires:
-            - lint
-      - build-redisml:
-          requires:
-            - lint
-      - build-redisbloom:
-          requires:
-            - lint
-      - build-rejson:
-          requires:
-            - lint
-      - build-timeseries:
-          requires:
-            - lint
-      - build-redex:
-          requires:
-            - lint
-      - build-redisgraph:
-          requires:
-            - lint
+      # - build-redisearch:
+      #     requires:
+      #       - lint
+      # - build-redisml:
+      #     requires:
+      #       - lint
+      # - build-redisbloom:
+      #     requires:
+      #       - lint
+      # - build-rejson:
+      #     requires:
+      #       - lint
+      # - build-timeseries:
+      #     requires:
+      #       - lint
+      # - build-redex:
+      #     requires:
+      #       - lint
+      # - build-redisgraph:
+      #     requires:
+      #       - lint
 
       - temptest:
           requires:
             - build-redis
-            - build-redisearch
-            - build-redisml
-            - build-redisbloom
-            - build-rejson
-            - build-timeseries
-            - build-redex
-            - build-redisgraph
+            # - build-redisearch
+            # - build-redisml
+            # - build-redisbloom
+            # - build-rejson
+            # - build-timeseries
+            # - build-redex
+            # - build-redisgraph
 
       # - docker-publish/publish:
       #     requires:

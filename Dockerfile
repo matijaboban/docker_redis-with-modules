@@ -1,4 +1,15 @@
-FROM redis:5.0.2 as redis
+FROM alpine:3.8
+
+# add user and group for consistent id assigned
+RUN addgroup -S redis && adduser -S -G redis redis
+
+# dirs
+RUN mkdir ~/conf && chown redis:redis ~/conf
+RUN mkdir ~/logs && chown redis:redis ~/logs
+RUN mkdir ~/storage && chown redis:redis ~/storage
+RUN mkdir ~/scripts && chown redis:redis ~/scripts
+
+# FROM redis:5.0.2 as redis
 
 # FROM redislabs/redisearch:1.4.2 as redisearch
 # FROM redislabs/redisml:latest as redisml
@@ -24,3 +35,6 @@ ENTRYPOINT ["redis-server"]
 #     "--loadmodule", "/usr/lib/redis/modules/rejson.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/rebloom.so"]
+
+EXPOSE 6379
+CMD ["redis-server"]
