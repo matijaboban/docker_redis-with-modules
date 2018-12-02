@@ -17,9 +17,28 @@ RUN mkdir ~/scripts && chown redis:redis ~/scripts
 # FROM redislabs/redisgraph:1.0.2 as redisgraph
 # FROM redislabs/rebloom:latest as rebloom
 
-ENV LIBDIR /usr/lib/redis/modules
+# ENV LIBDIR /usr/lib/redis/modules
 
+RUN \
+    cd build/redis/core && \
+    tar xzf core.tar.gz && \
+    cd r*/ && \
+    REDIS_PORT=6379 REDIS_CONFIG_FILE=/etc/redis/6379.conf REDIS_LOG_FILE=/var/log/redis_6379.log REDIS_DATA_DIR=/var/lib/redis/6379 REDIS_EXECUTABLE=`command -v redis-server` ./utils/install_server.sh \
+# WORKDIR /data
+
+
+# Define mountable directories.
+VOLUME ["/data"]
+
+# Define working directory.
 WORKDIR /data
+
+# Define default command.
+CMD ["redis-server", "/etc/redis/redis.conf"]
+
+# Expose ports.
+EXPOSE 6379
+
 
 # RUN set -ex;\
 #    mkdir -p ${LIBDIR};
@@ -29,7 +48,7 @@ WORKDIR /data
 # COPY --from=redisgraph ${LIBDIR}/redisgraph.so ${LIBDIR}
 # COPY --from=rebloom ${LIBDIR}/rebloom.so ${LIBDIR}
 
-ENTRYPOINT ["redis-server"]
+# ENTRYPOINT ["redis-server"]
 # CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/redis-ml.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/rejson.so", \
