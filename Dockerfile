@@ -5,7 +5,7 @@ RUN addgroup -S redis && adduser -S -G redis redis
 
 WORKDIR /redis
 
-COPY ./build/redis/
+COPY ./build/redis/ .
 
 # dirs
 # RUN mkdir ~/conf && chown redis:redis ~/conf
