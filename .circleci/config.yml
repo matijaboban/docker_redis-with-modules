@@ -664,7 +664,8 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            - lint
+            - build-redis
+            - build-redisml
       - test:
           requires:
             - docker-publish/publish
