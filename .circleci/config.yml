@@ -154,8 +154,6 @@ jobs:
       - run:
           name: Make install and move
           command: |
-            cd ~/project/r*
-            make install
             cd ~/project/
             tar -czvf build/redis/core/core.tar.gz  r*/
 
@@ -668,6 +666,12 @@ workflows:
             - build-redisml
           after_checkout:
             - *attach_workspace
+            - run:
+                name: Do this after checkout.
+                command: |
+                  cd build/redis/core/
+
+
             - run:
                 name: Do this after checkout.
                 command: |

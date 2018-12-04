@@ -3,9 +3,20 @@ FROM alpine:3.8
 # add user and group for consistent id assigned
 RUN addgroup -S redis && adduser -S -G redis redis
 
-WORKDIR /redis
+RUN apk add --no-cache \
+# grab su-exec for easy step-down from root
+        'su-exec>=0.2' \
+# add tzdata for https://github.com/docker-library/redis/issues/138
+        tzdata
 
-COPY build/redis/core/core.tar.gz ./core/
+WORKDIR /build
+
+COPY r* redis/
+
+# COPY build/redis/core/core.tar.gz ./core/
+
+RUN pwd
+RUN ls
 
 # dirs
 # RUN mkdir ~/conf && chown redis:redis ~/conf
@@ -23,10 +34,26 @@ COPY build/redis/core/core.tar.gz ./core/
 
 # ENV LIBDIR /usr/lib/redis/modules
 
+RUN set -ex; \
+    \
+    apk add --no-cache --virtual .build-deps \
+        coreutils \
+        gcc \
+        jemalloc-dev \
+        linux-headers \
+        make \
+        musl-dev
 RUN \
+    pwd && \
     cd core && \
+    pwd && \
+    ls && \
     tar xzf core.tar.gz && \
-    cd r*/ && \
+    ls && \
+    cd redis-5.0.2 && \
+    pwd && \
+    ls && \
+    make install && \
     REDIS_PORT=6379 REDIS_CONFIG_FILE=/etc/redis/6379.conf REDIS_LOG_FILE=/var/log/redis_6379.log REDIS_DATA_DIR=/var/lib/redis/6379 REDIS_EXECUTABLE=`command -v redis-server` ./utils/install_server.sh \
 # WORKDIR /data
 
