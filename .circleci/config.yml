@@ -667,10 +667,10 @@ workflows:
             - build-redis
             - build-redisml
           after_checkout:
+            - *attach_workspace
             - run:
                 name: Do this after checkout.
                 command: |
-                  *attach_workspace
                   ls
                   cd build
                   ls
