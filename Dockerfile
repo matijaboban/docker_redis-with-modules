@@ -5,7 +5,7 @@ RUN addgroup -S redis && adduser -S -G redis redis
 
 WORKDIR /redis
 
-COPY build/redis/* .
+COPY build/redis/core/core.tar.gz ./core/
 
 # dirs
 # RUN mkdir ~/conf && chown redis:redis ~/conf
@@ -24,7 +24,7 @@ COPY build/redis/* .
 # ENV LIBDIR /usr/lib/redis/modules
 
 RUN \
-    cd build/redis/core && \
+    cd core && \
     tar xzf core.tar.gz && \
     cd r*/ && \
     REDIS_PORT=6379 REDIS_CONFIG_FILE=/etc/redis/6379.conf REDIS_LOG_FILE=/var/log/redis_6379.log REDIS_DATA_DIR=/var/lib/redis/6379 REDIS_EXECUTABLE=`command -v redis-server` ./utils/install_server.sh \
