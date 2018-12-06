@@ -697,6 +697,7 @@ workflows:
             - run:
                 name: location
                 command: |
+                  cd /tmp/workspace/
                   pwd
                   ls
 
@@ -710,21 +711,21 @@ workflows:
             #     command: |
             #       mkdir -p ~/project/build/redis/modules
             #
-            - run:
-                name: Create workspace directory
-                command: |
-                  sudo mkdir -p /tmp/cache/build/redis/modules
+            # - run:
+            #     name: Create workspace directory
+            #     command: |
+            #       sudo mkdir -p /tmp/workspace/build/redis/modules
 
-            - restore_cache:
-                keys:
-                  - v1-rejson-4
-                paths:
-                  - /tmp/cache/build/
+            # - restore_cache:
+            #     keys:
+            #       - v1-rejson-4
+            #     paths:
+            #       - /tmp/cache/build/
 
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd /tmp/cache/build/redis/modules/
+                  cd /tmp/workspace/build/redis/modules/
 
             - run:
                 name: Do this after checkout.
