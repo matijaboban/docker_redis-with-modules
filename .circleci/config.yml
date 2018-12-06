@@ -343,7 +343,7 @@ jobs:
       - save_cache:
           key: v1-rejson-1
           paths:
-            - ~/project/build/
+            - build/
 
       # - persist_to_workspace:
       #     root: *workspace_root
@@ -693,16 +693,16 @@ workflows:
             #     command: |
             #       mkdir -p ~/project/build/redis/modules
             #
-            - run:
-                name: Create workspace directory
-                command: |
-                  mkdir -p ~/project/build/redis/modules
+            # - run:
+            #     name: Create workspace directory
+            #     command: |
+            #       mkdir -p ~/project/build/redis/modules
 
             - restore_cache:
                 keys:
                   - v1-rejson-1
                 paths:
-                  - ~/project/build/
+                  - build/
 
             - run:
                 name: Do this after checkout.
