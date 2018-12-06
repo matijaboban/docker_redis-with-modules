@@ -80,7 +80,7 @@ jobs:
 
   build-redis:
     docker:
-      - image: python:3.7.1
+      - image: circleci/redis:5.0.2-alpine3.8
 
     working_directory: ~/project
 
@@ -180,7 +180,7 @@ jobs:
 
   build-redisearch:
     docker:
-      - image: python:3.7.1
+      - image: circleci/redis:5.0.2-alpine3.8
 
     working_directory: ~/project
 
@@ -221,7 +221,7 @@ jobs:
 
   build-redisml:
     docker:
-      - image: python:3.7.1
+      - image: circleci/redis:5.0.2-alpine3.8
 
     working_directory: ~/project
 
@@ -300,7 +300,7 @@ jobs:
 
   build-rejson:
     docker:
-      - image: python:3.7.1
+      - image: circleci/redis:5.0.2-alpine3.8
 
     working_directory: ~/project
 
