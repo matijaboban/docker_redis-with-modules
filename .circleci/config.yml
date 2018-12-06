@@ -2,7 +2,7 @@ version: 2.1
 
 references:
   workspace_root: &workspace_root
-    ~/project/build
+    /workspace
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
@@ -340,8 +340,13 @@ jobs:
             make
             cp *.so /cache/build/redis/modules/
 
+      - run:
+          name: Perm
+          command: |
+            chmod -R 777 /cache/build/redis/modules
+
       - save_cache:
-          key: v1-rejson-2
+          key: v1-rejson-3
           paths:
             - /cache/build/
 
@@ -705,7 +710,7 @@ workflows:
 
             - restore_cache:
                 keys:
-                  - v1-rejson-2
+                  - v1-rejson-3
                 paths:
                   - /cache/build/
 
