@@ -342,7 +342,7 @@ jobs:
             cp *.so /cache/build/redis/modules/
 
       - save_cache:
-          key: v1-rejson-1
+          key: v1-rejson-2
           paths:
             - /cache/build/
 
@@ -707,7 +707,7 @@ workflows:
 
             - restore_cache:
                 keys:
-                  - v1-rejson-1
+                  - v1-rejson-2
                 paths:
                   - /cache/build/
 
