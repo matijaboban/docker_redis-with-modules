@@ -339,12 +339,12 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so cache/build/redis/modules/
+            cp *.so /cache/build/redis/modules/
 
       - save_cache:
           key: v1-rejson-1
           paths:
-            - build/
+            - /cache/build/
 
       # - persist_to_workspace:
       #     root: *workspace_root
