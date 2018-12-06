@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:18.10
 
 # add user and group for consistent id assigned
 RUN addgroup -S redis && adduser -S -G redis redis
