@@ -683,10 +683,10 @@ workflows:
             # - *attach_workspace
 
             - run:
-              name: Create workspace directory
-              command: |
-                pwd
-                ls
+                name: location
+                command: |
+                  pwd
+                  ls
 
             # - run:
             #     name: Create workspace directory
@@ -694,9 +694,9 @@ workflows:
             #       mkdir -p ~/project/build/redis/modules
             #
             - run:
-              name: Create workspace directory
-              command: |
-                mkdir -p ~/project/build/redis/modules
+                name: Create workspace directory
+                command: |
+                  mkdir -p ~/project/build/redis/modules
 
             - restore_cache:
                 keys:
