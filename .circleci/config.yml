@@ -2,7 +2,7 @@ version: 2.1
 
 references:
   workspace_root: &workspace_root
-    /workspace
+    /tmp/workspace
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
@@ -96,7 +96,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /workspace/redis/core
+            mkdir -p /tmp/workspace/redis/core
 
       - run:
           name: Get module tag from Github
@@ -155,7 +155,7 @@ jobs:
           name: Make install and move
           command: |
             cd ~/project/
-            tar -czvf /workspace/redis/core/core.tar.gz  r*/
+            tar -czvf /tmp/workspace/redis/core/core.tar.gz  r*/
 
 
       # - run: |
@@ -325,7 +325,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /cache/build/redis/modules
+            mkdir -p /tmp/cache/build/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -338,17 +338,17 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /cache/build/redis/modules/
+            cp *.so /tmp/cache/build/redis/modules/
 
-      - run:
-          name: Perm
-          command: |
-            chmod -R 777 /cache/build/redis/modules
+      # - run:
+      #     name: Perm
+      #     command: |
+      #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v1-rejson-3
+          key: v1-rejson-4
           paths:
-            - /cache/build/
+            - /tmp/cache/build/
 
       # - persist_to_workspace:
       #     root: *workspace_root
@@ -685,7 +685,7 @@ workflows:
             # - build-redisml
             - build-rejson
           after_checkout:
-            # - *attach_workspace
+            - *attach_workspace
 
             - run:
                 name: location
@@ -706,18 +706,18 @@ workflows:
             - run:
                 name: Create workspace directory
                 command: |
-                  sudo mkdir -p /cache/build/redis/modules
+                  sudo mkdir -p /tmp/cache/build/redis/modules
 
             - restore_cache:
                 keys:
-                  - v1-rejson-3
+                  - v1-rejson-4
                 paths:
-                  - /cache/build/
+                  - /tmp/cache/build/
 
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd /cache/build/redis/modules/
+                  cd /tmp/cache/build/redis/modules/
 
             - run:
                 name: Do this after checkout.
