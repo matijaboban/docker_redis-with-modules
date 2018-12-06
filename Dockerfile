@@ -127,8 +127,8 @@ EXPOSE 6379
 #     "--loadmodule", "/usr/lib/redis/modules/rebloom.so"]
 
 ENTRYPOINT ["redis-server"]
-CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
-    "--loadmodule", "/usr/lib/redis/modules/redis-ml.so"]
+CMD ["--loadmodule", "/usr/src/redis/modules/redisearch.so", \
+    "--loadmodule", "/usr/src/redis/modules/redis-ml.so"]
 
 # EXPOSE 6379
 # CMD ["redis-server"]
