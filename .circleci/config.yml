@@ -226,7 +226,6 @@ jobs:
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
             make
-            cp *.so ~/project/build/redis/modules/
             cp *.so /tmp/workspace/build/redis/modules/
 
       - persist_to_workspace:
