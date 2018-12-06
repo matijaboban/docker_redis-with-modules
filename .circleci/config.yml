@@ -180,23 +180,36 @@ jobs:
 
   build-redisearch:
     docker:
-      - image: python:3.7.1
+      - image: alpine:3.8
 
     working_directory: ~/project
 
     steps:
-      - *attach_workspace
+      - run:
+          name: add user and group for consistent id assigned
+          command: |
+            addgroup -S circleci && adduser -S -G circleci circleci
+
+      # - *attach_workspace
 
       - run:
           name: Install Dependencies
           command: |
-            apt-get update
-            apt-get install -y cmake
+            apk add zip
+            apk add curl
+            apk add coreutils
+            apk add gcc
+            apk add jemalloc-dev
+            apk add linux-headers
+            apk add make
+            apk add cmake
+            apk add musl-dev
 
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p ~/project/build/redis/modules
+            mkdir -p /tmp/cache/build/redis/modules
+            mkdir -p /tmp/workspace/build/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -213,11 +226,12 @@ jobs:
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
             make
             cp *.so ~/project/build/redis/modules/
+            cp *.so /tmp/workspace/build/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - redis
+            - build
 
   build-redisml:
     docker:
@@ -323,8 +337,6 @@ jobs:
             apk add linux-headers
             apk add make
             apk add musl-dev
-
-
 
 
       - run:
@@ -647,9 +659,9 @@ workflows:
       - build-redis:
           requires:
             - lint
-      # - build-redisearch:
-      #     requires:
-      #       - lint
+      - build-redisearch:
+          requires:
+            - lint
       # - build-redisml:
       #     requires:
       #       - lint
@@ -688,7 +700,7 @@ workflows:
       - docker-publish/publish:
           requires:
             - build-redis
-            # - build-redisearch
+            - build-redisearch
             # - build-redisml
             - build-rejson
           after_checkout:
