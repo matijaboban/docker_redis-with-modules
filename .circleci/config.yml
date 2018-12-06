@@ -21,6 +21,13 @@ executors:
 
       working_directory: ~/project
 
+    alpine-executor:
+      docker:
+        - image: alpine:3.8
+          user: root
+
+      working_directory: ~/project
+
 jobs:
   lint:
     executor: node-executor
@@ -179,11 +186,7 @@ jobs:
             - redis
 
   build-redisearch:
-    docker:
-      - image: alpine:3.8
-        user: root
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
       - run:
@@ -191,7 +194,7 @@ jobs:
           command: |
             addgroup -S circleci && adduser -S -G circleci circleci
 
-      - *attach_workspace
+      # - *attach_workspace
 
       - run:
           name: Install Dependencies
@@ -314,11 +317,7 @@ jobs:
             - redis
 
   build-rejson:
-    docker:
-      - image: alpine:3.8
-        user: root
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
       - run:
@@ -326,7 +325,7 @@ jobs:
           command: |
             addgroup -S circleci && adduser -S -G circleci circleci
 
-      - *attach_workspace
+      # - *attach_workspace
 
       - run:
           name: Install Dependencies
