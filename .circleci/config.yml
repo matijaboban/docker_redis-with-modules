@@ -657,13 +657,13 @@ workflows:
       #     requires:
       #       - lint
 
-      - temptest:
-          requires:
-            - build-redis
+      # - temptest:
+          # requires:
+            # - build-redis
             # - build-redisearch
             # - build-redisml
             # - build-redisbloom
-            - build-rejson
+            # - build-rejson
             # - build-timeseries
             # - build-redex
             # - build-redisgraph
@@ -675,7 +675,7 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            # - build-redis
+            - build-redis
             # - build-redisearch
             # - build-redisml
             - build-rejson
