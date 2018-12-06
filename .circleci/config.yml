@@ -326,7 +326,6 @@ jobs:
           name: Create workspace directory
           command: |
             mkdir -p /cache/build/redis/modules
-            chmod -R 777 /cache/build/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -703,7 +702,6 @@ workflows:
                 name: Create workspace directory
                 command: |
                   sudo mkdir -p /cache/build/redis/modules
-                  sudo chmod -R 777 /cache/build/redis/modules
 
             - restore_cache:
                 keys:
