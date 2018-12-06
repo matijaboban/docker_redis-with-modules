@@ -305,7 +305,12 @@ jobs:
     working_directory: ~/project
 
     steps:
-      # - *attach_workspace
+      - run:
+          name: add user and group for consistent id assigned
+          command: |
+            addgroup -S circleci && adduser -S -G circleci circleci
+
+      - *attach_workspace
 
       - run:
           name: Install Dependencies
@@ -339,6 +344,7 @@ jobs:
             cd ~/project/r*/src
             make
             cp *.so /tmp/cache/build/redis/modules/
+            cp *.so /tmp/workspace/build/redis/modules/
 
       # - run:
       #     name: Perm
@@ -350,10 +356,10 @@ jobs:
           paths:
             - /tmp/cache/build/
 
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - redis
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - build
 
   build-timeseries:
     docker:
