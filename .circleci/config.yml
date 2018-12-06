@@ -181,6 +181,7 @@ jobs:
   build-redisearch:
     docker:
       - image: alpine:3.8
+        user: root
 
     working_directory: ~/project
 
@@ -315,6 +316,7 @@ jobs:
   build-rejson:
     docker:
       - image: alpine:3.8
+        user: root
 
     working_directory: ~/project
 
