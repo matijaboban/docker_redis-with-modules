@@ -300,12 +300,12 @@ jobs:
 
   build-rejson:
     docker:
-      - image: python:3.7.1
+      - image: alpine:3.8
 
     working_directory: ~/project
 
     steps:
-      - *attach_workspace
+      # - *attach_workspace
 
       - run:
           name: Install Dependencies
@@ -332,10 +332,15 @@ jobs:
             make
             cp *.so ~/project/build/redis/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
+      - save_cache:
+          key: v1-rejson-1
           paths:
-            - redis
+            - ~/project/build/redis/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - redis
 
   build-timeseries:
     docker:
@@ -622,12 +627,12 @@ workflows:
       - build-redis:
           requires:
             - lint
-      - build-redisearch:
-          requires:
-            - lint
-      - build-redisml:
-          requires:
-            - lint
+      # - build-redisearch:
+      #     requires:
+      #       - lint
+      # - build-redisml:
+      #     requires:
+      #       - lint
       # - build-redisbloom:
       #     requires:
       #       - lint
@@ -647,8 +652,8 @@ workflows:
       - temptest:
           requires:
             - build-redis
-            - build-redisearch
-            - build-redisml
+            # - build-redisearch
+            # - build-redisml
             # - build-redisbloom
             - build-rejson
             # - build-timeseries
@@ -662,27 +667,27 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            - build-redis
-            - build-redisearch
-            - build-redisml
+            # - build-redis
+            # - build-redisearch
+            # - build-redisml
             - build-rejson
           after_checkout:
             - *attach_workspace
+
+            - restore_cache:
+              keys:
+                - v1-{{ .Branch }}
+              paths:
+                - ~/project/build/redis/modules/
+
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd build/redis/core/
-
+                  cd ~/project/build/redis/modules/
 
             - run:
                 name: Do this after checkout.
                 command: |
-                  ls
-                  cd build
-                  ls
-                  cd redis
-                  ls
-                  cd modules
                   ls
 
       - test:
