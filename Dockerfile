@@ -14,7 +14,7 @@ RUN mkdir -p /usr/src/redis
 RUN mkdir -p /usr/src/redis/modules
 
 
-COPY build/redis/modules/* /usr/src/redis/modules/
+COPY /cache/build/redis/modules/* /usr/src/redis/modules/
 RUN ls /usr/src/redis/modules/
 
 ## depe build

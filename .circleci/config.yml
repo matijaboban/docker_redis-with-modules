@@ -325,7 +325,8 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p ~/project/build/redis/modules
+            mkdir -p /cache/build/redis/modules
+            chmod -R 777 /cache/build/redis/modules
 
       - run:
           name: Get module tag from Github
@@ -338,7 +339,7 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so ~/project/build/redis/modules/
+            cp *.so cache/build/redis/modules/
 
       - save_cache:
           key: v1-rejson-1
@@ -697,17 +698,23 @@ workflows:
             #     name: Create workspace directory
             #     command: |
             #       mkdir -p ~/project/build/redis/modules
+            #
+            - run:
+                name: Create workspace directory
+                command: |
+                  mkdir -p /cache/build/redis/modules
+                  chmod -R 777 /cache/build/redis/modules
 
             - restore_cache:
                 keys:
                   - v1-rejson-1
                 paths:
-                  - build/
+                  - /cache/build/
 
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd ~/project/build/redis/modules/
+                  cd /cache/build/redis/modules/
 
             - run:
                 name: Do this after checkout.
