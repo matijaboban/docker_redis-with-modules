@@ -731,6 +731,7 @@ workflows:
                 name: Do this after checkout.
                 command: |
                   ls
+                  cp -r /tmp/workspace/build/* build/
 
       - test:
           requires:
