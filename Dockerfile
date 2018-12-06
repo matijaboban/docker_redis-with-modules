@@ -55,6 +55,9 @@ RUN \
     REDIS_EXECUTABLE=`command -v redis-server` \
     /usr/src/redis/utils/install_server.sh
 
+
+## configure server
+
 #WORKDIR /build
 
 #COPY build/redis/core /usr/src/redis

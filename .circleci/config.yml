@@ -190,7 +190,7 @@ jobs:
           command: |
             addgroup -S circleci && adduser -S -G circleci circleci
 
-      # - *attach_workspace
+      - *attach_workspace
 
       - run:
           name: Install Dependencies
@@ -324,7 +324,7 @@ jobs:
           command: |
             addgroup -S circleci && adduser -S -G circleci circleci
 
-      # - *attach_workspace
+      - *attach_workspace
 
       - run:
           name: Install Dependencies
