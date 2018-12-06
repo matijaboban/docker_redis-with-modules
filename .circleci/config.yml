@@ -702,8 +702,8 @@ workflows:
             - run:
                 name: Create workspace directory
                 command: |
-                  mkdir -p /cache/build/redis/modules
-                  chmod -R 777 /cache/build/redis/modules
+                  sudo mkdir -p /cache/build/redis/modules
+                  sudo chmod -R 777 /cache/build/redis/modules
 
             - restore_cache:
                 keys:
