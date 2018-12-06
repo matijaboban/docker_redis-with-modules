@@ -203,6 +203,7 @@ jobs:
             apk add linux-headers
             apk add make
             apk add cmake
+            apk add g++
             apk add musl-dev
 
       - run:
