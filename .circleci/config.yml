@@ -331,6 +331,7 @@ jobs:
           name: Create workspace directory
           command: |
             mkdir -p /tmp/cache/build/redis/modules
+            mkdir -p /tmp/workspace/build/redis/modules
 
       - run:
           name: Get module tag from Github
