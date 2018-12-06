@@ -5,9 +5,9 @@ RUN addgroup -S redis && adduser -S -G redis redis
 
 ## depe base
 RUN apk add --no-cache \
-# grab su-exec for easy step-down from root
+    # grab su-exec for easy step-down from root
     'su-exec>=0.2' \
-# add tzdata for https://github.com/docker-library/redis/issues/138
+    # add tzdata for https://github.com/docker-library/redis/issues/138
     tzdata
 
 RUN mkdir -p /usr/src/redis
@@ -20,7 +20,7 @@ RUN ls /usr/src/redis/modules/
 ## depe build
 RUN set -ex; \
     \
-    apk add --no-cache --virtual \
+    apk add --no-cache --virtual .build-deps \
     coreutils \
     gcc \
     jemalloc-dev \
@@ -53,7 +53,7 @@ RUN \
     REDIS_LOG_FILE=/var/log/redis_6379.log \
     REDIS_DATA_DIR=/var/lib/redis/6379 \
     REDIS_EXECUTABLE=`command -v redis-server` \
-    ./utils/install_server.sh
+    /usr/src/redis/utils/install_server.sh
 
 #WORKDIR /build
 
@@ -108,7 +108,7 @@ RUN \
 CMD ["redis-server", "/etc/redis/redis.conf"]
 
 # Expose ports.
-# EXPOSE 6379
+EXPOSE 6379
 
 
 # RUN set -ex;\
@@ -121,10 +121,14 @@ CMD ["redis-server", "/etc/redis/redis.conf"]
 
 # ENTRYPOINT ["redis-server"]
 # CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
-#     "--loadmodule", "/usr/lib/redis/modules/redis-ml.so", \
+    # "--loadmodule", "/usr/lib/redis/modules/redis-ml.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/rejson.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", \
 #     "--loadmodule", "/usr/lib/redis/modules/rebloom.so"]
 
-EXPOSE 6379
-CMD ["redis-server"]
+ENTRYPOINT ["redis-server"]
+CMD ["--loadmodule", "/usr/lib/redis/modules/redisearch.so", \
+    "--loadmodule", "/usr/lib/redis/modules/redis-ml.so"]
+
+# EXPOSE 6379
+# CMD ["redis-server"]

@@ -647,7 +647,7 @@ workflows:
       - temptest:
           requires:
             - build-redis
-            # - build-redisearch
+            - build-redisearch
             - build-redisml
             # - build-redisbloom
             # - build-rejson
