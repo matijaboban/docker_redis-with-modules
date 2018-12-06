@@ -622,9 +622,9 @@ workflows:
       - build-redis:
           requires:
             - lint
-      # - build-redisearch:
-      #     requires:
-      #       - lint
+      - build-redisearch:
+          requires:
+            - lint
       - build-redisml:
           requires:
             - lint
@@ -663,6 +663,7 @@ workflows:
       - docker-publish/publish:
           requires:
             - build-redis
+            - build-redisearch
             - build-redisml
           after_checkout:
             - *attach_workspace
