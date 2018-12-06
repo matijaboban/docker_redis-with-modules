@@ -682,6 +682,11 @@ workflows:
           after_checkout:
             - *attach_workspace
 
+            - run:
+                name: Create workspace directory
+                command: |
+                  mkdir -p ~/project/build/redis/modules
+
             - restore_cache:
                 keys:
                   - v1-rejson-1
