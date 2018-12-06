@@ -311,6 +311,7 @@ jobs:
           name: Install Dependencies
           command: |
             apk add zip
+            apk add curl
             apk add coreutils
             apk add gcc
             apk add jemalloc-dev
@@ -683,7 +684,7 @@ workflows:
 
             - restore_cache:
                 keys:
-                  - v1-{{ .Branch }}
+                  - v1-rejson-1
                 paths:
                   - ~/project/build/redis/modules/
 
