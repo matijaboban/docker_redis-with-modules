@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM ubuntu:latest
 
 # add user and group for consistent id assigned
 RUN addgroup -S redis && adduser -S -G redis redis
