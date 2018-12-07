@@ -29,8 +29,8 @@ executors:
       working_directory: ~/project
 
 commands:
-  alpine-executor-setup:
-    description: "Alpine image Dependencies install"
+  alpine-executor-setup-dependencies:
+    description: "Alpine image dependencies install"
     steps:
       - run:
           command: |
@@ -104,19 +104,26 @@ jobs:
           command: goss validate
 
   build-redis:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
-      - *attach_workspace
 
       - run:
-          name: Install Dependencies
+          name: add user and group for consistent id assigned
           command: |
-            apt-get update
-            apt-get install -y cmake
+            addgroup -S circleci && adduser -S -G circleci circleci
+
+      # - *attach_workspace
+
+      - alpine-executor-setup-dependencies
+
+    #   - *attach_workspace
+
+      # - run:
+      #     name: Install Dependencies
+      #     command: |
+      #       apt-get update
+      #       apt-get install -y cmake
 
       - run:
           name: Create workspace directory
@@ -214,7 +221,7 @@ jobs:
 
       # - *attach_workspace
 
-      - alpine-executor-setup
+      - alpine-executor-setup-dependencies
 
       - run:
           name: Create workspace directory
@@ -333,17 +340,7 @@ jobs:
 
       # - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apk add zip
-            apk add curl
-            apk add coreutils
-            apk add gcc
-            apk add jemalloc-dev
-            apk add linux-headers
-            apk add make
-            apk add musl-dev
+      - alpine-executor-setup-dependencies
 
 
       - run:
