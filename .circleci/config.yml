@@ -354,7 +354,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - v01-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+            - v02-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+
+      - run:
+          name: Build module
+          command: |
+            pwd
+            ls
 
       - run:
           name: Get module tag from Github
@@ -374,9 +380,9 @@ jobs:
       #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v01-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+          key: v02-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
           paths:
-            - ~/project/r*/src/*.so
+            - r*/src/*.so
 
       - run:
           name: Copy compiled module to workspace
