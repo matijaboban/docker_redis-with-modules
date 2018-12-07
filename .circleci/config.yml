@@ -187,7 +187,7 @@ jobs:
           name: Make install and move
           command: |
             cd ~/project/
-            tar -czvf /tmp/workspace/redis/core/core.tar.gz  r*/
+            tar -czvf /tmp/workspace/build/redis/core/core.tar.gz  r*/
 
 
       # - run: |
