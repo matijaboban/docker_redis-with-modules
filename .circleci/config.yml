@@ -13,7 +13,7 @@ orbs:
 executors:
     node-executor:
       docker:
-        - image: circleci/node:8.11.4
+        - image: circleci/node:10.14.1-browsers
           user: root
 
       environment:
