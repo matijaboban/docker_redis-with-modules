@@ -363,7 +363,6 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/workspace/build/redis/modules/
 
       # - run:
       #     name: Perm
@@ -374,6 +373,11 @@ jobs:
           key: v01-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
           paths:
             - ~/project/r*/src/*.so
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            cp ~/project/r*/src/*.so /tmp/workspace/build/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
