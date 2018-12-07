@@ -352,6 +352,10 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/build/redis/modules
 
+      - restore_cache:
+          keys:
+            - v01-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+
       - run:
           name: Get module tag from Github
           command: |
