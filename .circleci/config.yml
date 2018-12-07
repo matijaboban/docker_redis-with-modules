@@ -371,7 +371,7 @@ jobs:
       #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v01-rejson--{{ checksum "08b10ce3045f9b24cf69ae00d25bee18f8807154" }}
+          key: v01-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
           paths:
             - ~/project/r*/src/*.so
 
