@@ -128,7 +128,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/redis/core
+            mkdir -p /tmp/workspace/build/redis/core
 
       - run:
           name: Get module tag from Github
