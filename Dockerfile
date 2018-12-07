@@ -10,11 +10,13 @@ RUN apk add --no-cache \
     # add tzdata for https://github.com/docker-library/redis/issues/138
     tzdata
 
-RUN mkdir -p /usr/src/redis
+RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
 
 
+COPY build/redis/core/* /usr/src/redis/core/
 COPY build/redis/modules/* /usr/src/redis/modules/
+RUN ls /usr/src/redis/core/
 RUN ls /usr/src/redis/modules/
 
 ## depe build
