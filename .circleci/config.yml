@@ -30,19 +30,20 @@ executors:
 
 commands:
   alpine-executor-setup:
-    description: "TBAs"
+    description: "Alpine image Dependencies install"
     steps:
-      - run: |
-        apk add zip
-        apk add curl
-        apk add coreutils
-        apk add gcc
-        apk add jemalloc-dev
-        apk add linux-headers
-        apk add make
-        apk add cmake
-        apk add g++
-        apk add musl-dev
+      - run:
+          command: |
+            apk add zip
+            apk add curl
+            apk add coreutils
+            apk add gcc
+            apk add jemalloc-dev
+            apk add linux-headers
+            apk add make
+            apk add cmake
+            apk add g++
+            apk add musl-dev
 
 
 jobs:
