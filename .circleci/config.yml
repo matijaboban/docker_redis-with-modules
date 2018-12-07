@@ -208,7 +208,7 @@ jobs:
           root: *workspace_root
           # Must be relative path from root
           paths:
-            - redis
+            - build
 
   build-redisearch:
     executor: alpine-executor
