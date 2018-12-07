@@ -354,7 +354,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v02-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+            - v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
           name: Build module
@@ -367,13 +367,15 @@ jobs:
           command: |
             wget -O rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
             unzip *.zip
+            rm *.zip
+            mv r* rejson
 
       - run:
           name: Build module
           command: |
             pwd
             ls
-            cd ~/project/r*/src
+            cd ~/project/rejson/src
             make
 
       # - run:
@@ -382,9 +384,9 @@ jobs:
       #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v02-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+          key: v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
           paths:
-            - r*/src/*.so
+            - rejson/src/rejson.so
 
       - run:
           name: Copy compiled module to workspace
