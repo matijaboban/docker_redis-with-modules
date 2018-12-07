@@ -32,16 +32,17 @@ commands:
   alpine-executor-setup:
     description: "TBAs"
     steps:
-      - run: apk add zip
-      - run: apk add curl
-      - run: apk add coreutils
-      - run: apk add gcc
-      - run: apk add jemalloc-dev
-      - run: apk add linux-headers
-      - run: apk add make
-      - run: apk add cmake
-      - run: apk add g++
-      - run: apk add musl-dev
+      - run: |
+        apk add zip
+        apk add curl
+        apk add coreutils
+        apk add gcc
+        apk add jemalloc-dev
+        apk add linux-headers
+        apk add make
+        apk add cmake
+        apk add g++
+        apk add musl-dev
 
 
 jobs:
