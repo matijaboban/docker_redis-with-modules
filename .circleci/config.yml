@@ -1,5 +1,9 @@
 version: 2.1
 
+
+CC_TEST_REPORTER_ID:
+
+
 references:
   workspace_root: &workspace_root
     /tmp/workspace
@@ -333,10 +337,10 @@ jobs:
     executor: alpine-executor
 
     steps:
-      - run:
-          name: add user and group for consistent id assigned
-          command: |
-            addgroup -S circleci && adduser -S -G circleci circleci
+      # - run:
+      #     name: add user and group for consistent id assigned
+      #     command: |
+      #       addgroup -S circleci && adduser -S -G circleci circleci
 
       # - *attach_workspace
 
@@ -346,13 +350,12 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/cache/build/redis/modules
             mkdir -p /tmp/workspace/build/redis/modules
 
       - run:
           name: Get module tag from Github
           command: |
-            curl -OL https://github.com/RedisLabsModules/rejson/archive/master.zip
+            wget -O rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
             unzip *.zip
 
       - run:
@@ -360,7 +363,6 @@ jobs:
           command: |
             cd ~/project/r*/src
             make
-            cp *.so /tmp/cache/build/redis/modules/
             cp *.so /tmp/workspace/build/redis/modules/
 
       # - run:
@@ -369,9 +371,9 @@ jobs:
       #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v1-rejson-4
+          key: v01-rejson--{{ checksum "08b10ce3045f9b24cf69ae00d25bee18f8807154" }}
           paths:
-            - /tmp/cache/build/
+            - ~/project/r*/src/*.so
 
       - persist_to_workspace:
           root: *workspace_root
