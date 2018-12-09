@@ -79,13 +79,19 @@ jobs:
           command: npm run lint
 
 
-
+      - restore_cache:
+          keys:
+            - external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
           name: Get module tag from Github
           command: |
             wget -O build/download/rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
 
+      - save_cache:
+          key: - external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
+          paths:
+            - build/download/rejson.zip
 
 
       - run:
