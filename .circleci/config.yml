@@ -52,12 +52,12 @@ commands:
   libs-external-get:
     description: "TBA"
     parameters:
-      lib-name:
-        type: string
-        default: "rejson"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
+      lib-name:
+        type: string
+        default: "rejson"
       lib-release:
         type: string
         default: "08b10ce3045f9b24cf69ae00d25bee18f8807154"
@@ -130,6 +130,10 @@ jobs:
       #       - build/download/rejson.zip
 
       - libs-external-get
+
+      - libs-external-get:
+          lib-name: RediSearch
+          lib-release: v1.4.2
 
       - run:
           name: temp exit
