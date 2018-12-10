@@ -55,6 +55,9 @@ commands:
       lib-name:
         type: string
         default: "rejson"
+      lib-github-org:
+        type: string
+        default: "RedisLabsModules"
       lib-release:
         type: string
         default: "08b10ce3045f9b24cf69ae00d25bee18f8807154"
@@ -63,7 +66,7 @@ commands:
         default: "zip"
     steps:
       - restore_cache:
-          key: external-dependencies-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
 
       - run:
           name: Get module tag from Github
@@ -71,10 +74,10 @@ commands:
             test -e build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            wget -O build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/RedisLabsModules/rejson/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            wget -O build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: external-dependencies-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
           paths:
             - build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>
 
