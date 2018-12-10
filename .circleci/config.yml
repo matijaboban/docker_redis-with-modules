@@ -79,8 +79,8 @@ jobs:
           command: npm run lint
 
 
-      - restore_cache:
-          key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
+      # - restore_cache:
+      #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
           name: Get module tag from Github
@@ -100,6 +100,7 @@ jobs:
           name: temp exit
           command: |
             ls build/download/
+
             exit 2
   test:
     docker:
