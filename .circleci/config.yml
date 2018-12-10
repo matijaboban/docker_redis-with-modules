@@ -49,6 +49,37 @@ commands:
             apk add g++
             apk add musl-dev
 
+  libs-external-get:
+    description: "TBA"
+    parameters:
+      lib-name:
+        type: string
+        default: "rejson"
+      lib-release:
+        type: string
+        default: "08b10ce3045f9b24cf69ae00d25bee18f8807154"
+      lib-release-package-extension:
+        type: string
+        default: "zip"
+    steps:
+      - restore_cache:
+          key: external-dependencies-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+
+      - run:
+          name: Get module tag from Github
+          command: |
+            test -e build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
+            && echo file exists, skipping \
+            || \
+            wget -O build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/RedisLabsModules/rejson/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+
+      - save_cache:
+          key: external-dependencies-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+          paths:
+            - build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>
+
+
+
 
 jobs:
   lint:
@@ -82,19 +113,20 @@ jobs:
       # - restore_cache:
       #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
 
-      - run:
-          name: Get module tag from Github
-          command: |
-            test -e build/download/rejson.zip \
-            && echo file exists, skipping \
-            || \
-            wget -O build/download/rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       test -e build/download/rejson.zip \
+      #       && echo file exists, skipping \
+      #       || \
+      #       wget -O build/download/rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
 
-      - save_cache:
-          key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
-          paths:
-            - build/download/rejson.zip
+      # - save_cache:
+      #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
+      #     paths:
+      #       - build/download/rejson.zip
 
+      - libs-external-get
 
       - run:
           name: temp exit
