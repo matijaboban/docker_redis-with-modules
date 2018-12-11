@@ -103,6 +103,9 @@ jobs:
 
             # echo $TEST1
       - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>/tmp/workspace/new-env-vars
+      - run: echo "$FOO"
+
+      - run: touch /tmp/workspace/new-env-vars
       - run: echo "export BOB=bla_01" >> /tmp/workspace/new-env-vars
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
