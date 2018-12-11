@@ -66,18 +66,18 @@ commands:
         default: "zip"
     steps:
       - restore_cache:
-          key: external-dependencies-package-cache-v01-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
-            test -e build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
+            test -e build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            wget -O build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            wget -O build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: external-dependencies-package-cache-v01-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>
           paths:
             - build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
