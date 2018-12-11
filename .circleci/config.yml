@@ -557,20 +557,19 @@ jobs:
           command: |
             test -e /tmp/workspace/build/redis/modules/rejson/ \
             && ls /tmp/workspace/build/redis/modules/rejson/ \
-            || echo file exists, skipping
+            || echo file doesnt exist, skipping
 
       - run:
           name: Process external lib
           command: |
             source ${BASH_ENV}
-            echo $lib_rejson_release
-            unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/
+            unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/ && \
             mv ~/project/r* ~/project/rejson
 
       - run:
           name: Build module
           command: |
-            cd ~/project/rejson/src
+            cd ~/project/rejson/src && \
             make
 
       - run:
@@ -594,52 +593,52 @@ jobs:
       # - alpine-executor-setup-dependencies
 
 
-      - run:
-          name: Create workspace directory
-          command: |
-            exit 2
-            mkdir -p /tmp/workspace/build/redis/modules
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       exit 2
+      #       mkdir -p /tmp/workspace/build/redis/modules
 
-      - restore_cache:
-          keys:
-            - v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+      # - restore_cache:
+      #     keys:
+      #       - v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
 
-      - run:
-          name: Build module
-          command: |
-            pwd
-            ls
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       pwd
+      #       ls
 
-      - run:
-          name: Get module tag from Github
-          command: |
-            wget -O rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
-            unzip *.zip
-            rm *.zip
-            mv r* rejson
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       wget -O rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
+      #       unzip *.zip
+      #       rm *.zip
+      #       mv r* rejson
 
-      - run:
-          name: Build module
-          command: |
-            pwd
-            ls
-            cd ~/project/rejson/src
-            make
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       pwd
+      #       ls
+      #       cd ~/project/rejson/src
+      #       make
 
       # - run:
       #     name: Perm
       #     command: |
       #       chmod -R 777 /cache/build/redis/modules
 
-      - save_cache:
-          key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-          paths:
-            - rejson/src/rejson.so
+      # - save_cache:
+      #     key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+      #     paths:
+      #       - rejson/src/rejson.so
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            cp ~/project/r*/src/*.so /tmp/workspace/build/redis/modules/
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       cp ~/project/r*/src/*.so /tmp/workspace/build/redis/modules/
 
       - persist_to_workspace:
           root: *workspace_root
