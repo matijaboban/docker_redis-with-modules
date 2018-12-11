@@ -198,7 +198,7 @@ jobs:
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
-          lib-release: lib_redis_release
+          lib-release: ${lib_redis_release}
 
       # - libs-external-get:
       #     lib-name: rejson
