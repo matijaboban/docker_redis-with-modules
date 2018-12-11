@@ -15,9 +15,9 @@ references:
 _run:
   setenv: &setenv
     command: |-
-      echo -e "export CIRCLE_WORKING_DIR=${HOME}/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}" >> $BASH_ENV
-      echo -e "export PATH=${PATH}:${HOME}/.yarn/bin:\${CIRCLE_WORKING_DIR}/node_modules/.bin" >> $BASH_ENV
-      echo -e "export DISPLAY=:1.0" >> $BASH_ENV
+      echo -e "export TEST_Q1=q1" >> $BASH_ENV
+      echo -e "export TEST_Q2=q2" >> $BASH_ENV
+      echo -e "export TEST_Q3=q3" >> $BASH_ENV
 
 orbs:
   docker-publish: circleci/docker-publish@0.1.1
@@ -104,9 +104,9 @@ jobs:
       - run:
           name: EQQQQ
           command: |
-            echo $CIRCLE_WORKING_DIR
-            echo $PATH
-            echo $DISPLAY
+            echo $TEST_Q1
+            echo $TEST_Q2
+            echo $TEST_Q3
       #
       # - *attach_workspace
       # - run: ls *workspace_root
@@ -171,12 +171,11 @@ jobs:
 
 
       - run:
-          name: QQQQ
+          name: EQQQQ
           command: |
-            echo TEST1
-            echo $TEST1
-            echo TEST2
-            echo $TEST2
+            echo $TEST_Q1
+            echo $TEST_Q2
+            echo $TEST_Q3
 
       - run:
           name: temp exit
