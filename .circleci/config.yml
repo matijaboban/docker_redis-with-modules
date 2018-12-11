@@ -575,9 +575,19 @@ jobs:
 
       - executor-env-variables
 
+
+      - run:
+          name: exit 22
+          command: |
+            echo $lib_rejson_release
+            source ${BASH_ENV}
+            echo $lib_rejson_release
+            exit 2
+
+
       - libs-external-get:
           lib-name: rejson
-          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+          lib-release: $lib_rejson_release
 
 
       - run:
