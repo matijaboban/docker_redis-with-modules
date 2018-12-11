@@ -141,9 +141,9 @@ jobs:
       - run:
           name: E222222QQQQ
           command: |
-            echo $CIRCLE_WORKING_DIR
-            echo $PATH
-            echo $DISPLAY
+            echo $TEST_Q1
+            echo $TEST_Q2
+            echo $TEST_Q3
 
 
 
