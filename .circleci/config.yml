@@ -206,10 +206,10 @@ jobs:
       #       - build/download/rejson.zip
 
 
-      - libs-external-get:
-          lib-github-org: antirez
-          lib-name: redis
-          lib-release: 5.0.2
+      # - libs-external-get:
+      #     lib-github-org: antirez
+      #     lib-name: redis
+      #     lib-release: 5.0.2
 
       # - libs-external-get:
       #     lib-name: rejson
@@ -534,6 +534,36 @@ jobs:
     executor: alpine-executor
 
     steps:
+
+      - alpine-executor-setup-dependencies
+
+      - *attach_workspace
+
+      - run:
+          name: QQQQ
+          command: |
+            cat /tmp/workspace/new-env-vars >> $BASH_ENV
+
+      - libs-external-get:
+          lib-name: rejson
+          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+
+      - run:
+          name: Process external lib
+          command: |
+            source ${BASH_ENV}
+            echo $lib_rejson_release
+            cp /tmp/workspace/download/rejson-${lib_rejson_release}.zip ~/project/
+            unzip -q rejson-${lib_rejson_release}.zip -d cd ~/project/
+
+      - run:
+          name: Build module
+          command: |
+            cd ~/project
+            exit 2
+            cd ~/project/rejson/src
+            make
+
       # - run:
       #     name: add user and group for consistent id assigned
       #     command: |
