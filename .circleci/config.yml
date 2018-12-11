@@ -266,10 +266,10 @@ jobs:
 
     steps:
 
-      # - run:
-      #     name: add user and group for consistent id assigned
-      #     command: |
-      #       addgroup -S circleci && adduser -S -G circleci circleci
+      - run:
+          name: add user and group for consistent id assigned
+          command: |
+            addgroup -S circleci && adduser -S -G circleci circleci
 
       - *attach_workspace
 
