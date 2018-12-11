@@ -94,19 +94,22 @@ jobs:
 
       - *attach_workspace
 
-
-# lib-name: rejson
-#           lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
-
-
+      - run: echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
       - run: echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_redex_release=f2d35edf438f1ac2279c312056589ddf83af6efc" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_redisearch_release=v1.4.2" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_redisgraph_release=v1.0.4" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_redisml_release=9bc5814ab3fcc8ea33edd0c060c0f84eead05c28" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
+
+
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-      - run: cat /tmp/workspace/new-env-vars
+      # - run: cat /tmp/workspace/new-env-vars
 
       - run:
           name: QQQQ
           command: |
-            echo $lib.rejson.release
+            echo $lib_rejson_release
 
       - persist_to_workspace:
           root: *workspace_root
@@ -150,20 +153,20 @@ jobs:
           command: npm run lint
 
 
-      - run:
-          name: QQQQ
-          command: |
-            echo TEST1
-            echo $TEST1
-            echo TEST2
-            echo $TEST2
+      # - run:
+      #     name: QQQQ
+      #     command: |
+      #       echo TEST1
+      #       echo $TEST1
+      #       echo TEST2
+      #       echo $TEST2
 
-      - run:
-          name: temp exit
-          command: |
-            ls build/download/
+      # - run:
+      #     name: temp exit
+      #     command: |
+      #       ls build/download/
 
-            exit 2
+      #       exit 2
 
       # - restore_cache:
       #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
@@ -181,34 +184,35 @@ jobs:
       #     paths:
       #       - build/download/rejson.zip
 
+
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
-          lib-release: 5.0.2
+          lib-release: $lib_redis_release
 
       - libs-external-get:
           lib-name: rejson
-          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+          lib-release: $lib_rejson_release
 
       - libs-external-get:
           lib-name: redex
-          lib-release: f2d35edf438f1ac2279c312056589ddf83af6efc
+          lib-release: $lib_redex_release
 
       - libs-external-get:
           lib-name: RediSearch
-          lib-release: v1.4.2
+          lib-release: $lib_redisearch_release
 
       - libs-external-get:
           lib-name: RedisGraph
-          lib-release: v1.0.4
+          lib-release: $lib_redisgraph_release
 
       - libs-external-get:
           lib-name: redis-ml
-          lib-release: 9bc5814ab3fcc8ea33edd0c060c0f84eead05c28
+          lib-release: $lib_redisml_release
 
       - libs-external-get:
           lib-name: rebloom
-          lib-release: 955989f38778916f1bde0dc6998626333233d283
+          lib-release: $lib_rebloom_release
 
       - run:
           name: temp exit
