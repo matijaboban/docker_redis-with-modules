@@ -137,6 +137,16 @@ jobs:
 
       - *attach_workspace
 
+
+      - run:
+          name: E222222QQQQ
+          command: |
+            echo $CIRCLE_WORKING_DIR
+            echo $PATH
+            echo $DISPLAY
+
+
+
       - run: ls *workspace_root
       - run: cat *workspace_root/new-env-vars >> $BASH_ENV
 
