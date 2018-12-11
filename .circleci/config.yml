@@ -137,6 +137,10 @@ jobs:
       - libs-external-get
 
       - libs-external-get:
+          lib-name: redex
+          lib-release: f2d35edf438f1ac2279c312056589ddf83af6efc
+
+      - libs-external-get:
           lib-name: RediSearch
           lib-release: v1.4.2
 
