@@ -553,14 +553,12 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo $lib_rejson_release
-            cp /tmp/workspace/download/rejson-${lib_rejson_release}.zip ~/project/
-            unzip -q rejson-${lib_rejson_release}.zip -d cd ~/project/
+            unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/
+            mv ~/project/r* ~/project/rejson
 
       - run:
           name: Build module
           command: |
-            cd ~/project
-            exit 2
             cd ~/project/rejson/src
             make
 
@@ -571,12 +569,13 @@ jobs:
 
       # - *attach_workspace
 
-      - alpine-executor-setup-dependencies
+      # - alpine-executor-setup-dependencies
 
 
       - run:
           name: Create workspace directory
           command: |
+            exit 2
             mkdir -p /tmp/workspace/build/redis/modules
 
       - restore_cache:
