@@ -75,7 +75,7 @@ commands:
     steps:
       - restore_cache:
           key: external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>
-      - run: echo << parameters.lib-name >> | << parameters.lib-release >>
+      - run: echo << parameters.lib-name >> && echo << parameters.lib-release >>
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
@@ -195,7 +195,7 @@ jobs:
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
-          lib-release: "$lib_redis_release"
+          lib-release: $lib_redis_release
 
       # - libs-external-get:
       #     lib-name: rejson
