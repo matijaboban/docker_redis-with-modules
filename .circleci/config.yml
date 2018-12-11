@@ -127,7 +127,7 @@ commands:
             wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum libs-external-get.parameters }}
+          key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum libs-external-get.parameters }}"
           paths:
             - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
