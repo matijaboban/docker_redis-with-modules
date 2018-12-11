@@ -60,6 +60,9 @@ commands:
   libs-external-get:
     description: "TBA"
     parameters:
+      base-cache-prefix:
+        type: string
+        default: "v021"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -67,14 +70,14 @@ commands:
         type: string
         default: "rejson"
       lib-release:
-        type: string
+        type: environment variable name
         default: "08b10ce3045f9b24cf69ae00d25bee18f8807154"
       lib-release-package-extension:
         type: string
         default: "zip"
     steps:
       - restore_cache:
-          key: external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-<< base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>
       - run: echo "build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>"
       - run: ls build/download/
       - run:
@@ -86,7 +89,7 @@ commands:
             wget -O build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: "external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>"
+          key: "external-dependencies-package-cache-<< base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>"
           paths:
             - build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
