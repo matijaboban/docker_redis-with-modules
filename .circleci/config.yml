@@ -76,7 +76,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v029"
+        default: "v030"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -95,11 +95,13 @@ commands:
       # - run: echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
 
 
-      - run: echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
-      - run: echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
-      - run: echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
-      - run: echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
-      - run: echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
+      - run: |
+          echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
+          echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
+          echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
+          echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
+          echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
+
       - run: pwd
       - run: ls
       - run: cat libs-external-get.parameters
@@ -157,18 +159,27 @@ jobs:
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
       - run: mkdir -p /tmp/workspace/download/
 
-      - run:
-          name: lib_redis_release
-          command: |
-            echo $lib_redis_release
-            echo ${lib_redis_release}
-            echo "${lib_redis_release}"
-            echo "$lib_redis_release"
+      # - run:
+      #     name: lib_redis_release
+      #     command: |
+      #       echo $lib_redis_release
+      #       echo ${lib_redis_release}
+      #       echo "${lib_redis_release}"
+      #       echo "$lib_redis_release"
 
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
           lib-release: $lib_redis_release
+
+
+      - libs-external-get:
+          lib-name: rejson
+          lib-release: $lib_rejson_release
+
+      - libs-external-get:
+          lib-name: redex
+          lib-release: $lib_redex_release
 
       - run:
           name: exit 2
@@ -180,7 +191,6 @@ jobs:
 
       - persist_to_workspace:
           root: *workspace_root
-          # Must be relative path from root
           paths:
             - new-env-vars
             - download
