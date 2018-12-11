@@ -308,11 +308,11 @@ jobs:
       #       curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
       #       tar xzf *.tar.gz
       #
-        - run:
-            name: Get module tag from Github
-            command: |
-              cp /tmp/workspace/build/download/redis.zip ~/project/
-              unzip redis.zip
+      - run:
+          name: Get module tag from Github
+          command: |
+            cp /tmp/workspace/build/download/redis.zip ~/project/
+            unzip redis.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
