@@ -1,7 +1,8 @@
 version: 2.1
 
 
-CC_TEST_REPORTER_ID:
+## base conf
+
 
 
 references:
@@ -85,6 +86,17 @@ commands:
 
 
 jobs:
+
+  base:
+    executor: node-executor
+
+    steps:
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export TEST1="qqqq"' >> $BASH_ENV
+            echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
+
   lint:
     executor: node-executor
 
@@ -112,6 +124,21 @@ jobs:
           name: Run linting
           command: npm run lint
 
+
+      - run:
+          name: QQQQ
+          command: |
+            echo TEST1
+            echo $TEST1
+            echo TEST2
+            echo $TEST2
+
+      - run:
+          name: temp exit
+          command: |
+            ls build/download/
+
+            exit 2
 
       # - restore_cache:
       #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
