@@ -548,6 +548,15 @@ jobs:
           lib-name: rejson
           lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
+      - restore_cache:
+          keys:
+            - v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+
+      - run:
+          name: Build module
+          command: |
+            ls /tmp/workspace/build/redis/modules/rejson/
+
       - run:
           name: Process external lib
           command: |
@@ -561,6 +570,16 @@ jobs:
           command: |
             cd ~/project/rejson/src
             make
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            cp ~/project/rejson/src/*.so /tmp/workspace/build/redis/modules/rejson/
+
+      - save_cache:
+          key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+          paths:
+            - /tmp/workspace/build/redis/modules/rejson/
 
       # - run:
       #     name: add user and group for consistent id assigned
@@ -610,7 +629,7 @@ jobs:
       #       chmod -R 777 /cache/build/redis/modules
 
       - save_cache:
-          key: v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+          key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
           paths:
             - rejson/src/rejson.so
 
