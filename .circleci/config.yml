@@ -555,7 +555,9 @@ jobs:
       - run:
           name: Build module
           command: |
-            ls /tmp/workspace/build/redis/modules/rejson/
+            test -e /tmp/workspace/build/redis/modules/rejson/ \
+            && ls /tmp/workspace/build/redis/modules/rejson/ \
+            || echo file exists, skipping
 
       - run:
           name: Process external lib
