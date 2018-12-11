@@ -76,7 +76,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v028"
+        default: "v029"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -124,12 +124,12 @@ commands:
             test -e /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
           paths:
-            - /tmp/workspace/download/<< parameters.lib-name >>-*
+            - /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
