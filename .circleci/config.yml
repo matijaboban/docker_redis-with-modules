@@ -284,6 +284,7 @@ jobs:
           name: QQQQ
           command: |
             cat /tmp/workspace/new-env-vars >> $BASH_ENV
+            source ${BASH_ENV}
 
 
 
@@ -323,7 +324,7 @@ jobs:
       - run:
           name: Get module tag from Github
           command: |
-            source ${BASH_ENV}
+
             echo $lib_redis_release
             cp build/download/redis-5.0.2.zip ~/project/
             unzip redis-5.0.2.zip
