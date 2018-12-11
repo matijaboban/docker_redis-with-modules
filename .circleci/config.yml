@@ -102,7 +102,7 @@ jobs:
       #       source $BASH_ENV
 
             # echo $TEST1
-      - run: touch /tmp/workspace/new-env-vars
+      # - run: touch /tmp/workspace/new-env-vars
 
       - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>/tmp/workspace/new-env-vars
       - run: echo "$FOO"
