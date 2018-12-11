@@ -66,7 +66,7 @@ commands:
         default: "zip"
     steps:
       - restore_cache:
-          key: external-dependencies-package-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v01-<< parameters.lib-name >>-<< parameters.lib-release >>
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
@@ -77,9 +77,9 @@ commands:
             wget -O build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: external-dependencies-package-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
+          key: external-dependencies-package-cache-v01-<< parameters.lib-name >>-<< parameters.lib-release >>
           paths:
-            - build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>
+            - build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
 
 
