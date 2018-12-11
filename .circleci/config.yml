@@ -266,6 +266,8 @@ jobs:
     executor: alpine-executor
 
     steps:
+      - checkout
+
       - alpine-executor-setup-dependencies
 
       # - run:
