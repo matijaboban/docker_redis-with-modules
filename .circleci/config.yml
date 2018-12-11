@@ -99,7 +99,7 @@ jobs:
 #           lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
 
-      - run: echo "export lib.rejson.release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
+      - run: echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
       - run: cat /tmp/workspace/new-env-vars
 
@@ -128,7 +128,7 @@ jobs:
       - run:
           name: QQQQ
           command: |
-            echo $lib.rejson.release
+            echo $lib_rejson_release
 
       - restore_cache:
           keys:
