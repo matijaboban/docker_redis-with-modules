@@ -41,7 +41,7 @@ executors:
       working_directory: ~/project
 
 commands:
-  alpine-executor-setup-dependencies:
+  executor-alpine-setup-dependencies:
     description: "Alpine image dependencies install"
     steps:
       - run:
@@ -289,7 +289,7 @@ jobs:
     steps:
       - checkout
 
-      - alpine-executor-setup-dependencies
+      - executor-alpine-setup-dependencies
 
       # - run:
       #     name: add user and group for consistent id assigned
@@ -430,7 +430,7 @@ jobs:
 
       # - *attach_workspace
 
-      - alpine-executor-setup-dependencies
+      - executor-alpine-setup-dependencies
 
       - run:
           name: Create workspace directory
@@ -543,7 +543,7 @@ jobs:
 
     steps:
 
-      - alpine-executor-setup-dependencies
+      - executor-alpine-setup-dependencies
 
       - *attach_workspace
 
@@ -595,7 +595,7 @@ jobs:
 
       # - *attach_workspace
 
-      # - alpine-executor-setup-dependencies
+      # - executor-alpine-setup-dependencies
 
 
       # - run:
