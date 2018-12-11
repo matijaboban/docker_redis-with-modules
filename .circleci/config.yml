@@ -1011,8 +1011,8 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            - build-redis
-            - build-redisearch
+            # - build-redis
+            # - build-redisearch
             # - build-redisml
             - build-rejson
           after_checkout:
