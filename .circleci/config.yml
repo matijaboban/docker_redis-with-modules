@@ -90,7 +90,7 @@ commands:
         default: "zip"
     steps:
       - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-$lib_redis_release
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ $lib_redis_release }}
 
       - run: echo << parameters.lib-release >>
 
