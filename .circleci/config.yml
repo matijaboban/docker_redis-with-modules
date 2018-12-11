@@ -284,6 +284,8 @@ jobs:
           name: QQQQ
           command: |
             cat /tmp/workspace/new-env-vars >> $BASH_ENV
+            cat /tmp/workspace/new-env-vars
+            source ${BASH_ENV}
             echo $lib_redis_release
 
 
