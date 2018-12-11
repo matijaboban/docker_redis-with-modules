@@ -89,38 +89,21 @@ commands:
         type: string
         default: "zip"
     steps:
+      - run:
+          name: Create << parameters.lib-name >> parameters
+          command: |
+            echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
+            echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
+            echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
+            echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
+            echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
 
-      - run: echo << parameters.lib-release >>
-
-      # - run: echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
-
-
-      - run: |
-          echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
-          echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
-          echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
-          echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
-          echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
-
-      - run: pwd
-      - run: ls
-      - run: cat libs-external-get.parameters
-
-
-      - run: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
-
+      - run:
+          name: Create << parameters.lib-name >> workspace download directory
+          command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
 
       - restore_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
-
-      - run: echo << parameters.lib-release >>
-
-      # - run: echo *workspace_root
-      # - run: exit 2
-      - run: ls /tmp/workspace/download/<< parameters.lib-name >>
-
-
-
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
@@ -147,17 +130,21 @@ jobs:
 
       - *attach_workspace
 
-      - run: echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_redex_release=f2d35edf438f1ac2279c312056589ddf83af6efc" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_redisearch_release=v1.4.2" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_redisgraph_release=v1.0.4" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_redisml_release=9bc5814ab3fcc8ea33edd0c060c0f84eead05c28" >>/tmp/workspace/new-env-vars
-      - run: echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
+      - run:
+        name: Process project env vars
+          command: |
+            echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
+            echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
+            echo "export lib_redex_release=f2d35edf438f1ac2279c312056589ddf83af6efc" >>/tmp/workspace/new-env-vars
+            echo "export lib_redisearch_release=v1.4.2" >>/tmp/workspace/new-env-vars
+            echo "export lib_redisgraph_release=v1.0.4" >>/tmp/workspace/new-env-vars
+            echo "export lib_redisml_release=9bc5814ab3fcc8ea33edd0c060c0f84eead05c28" >>/tmp/workspace/new-env-vars
+            echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
+            cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
 
-      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-      - run: mkdir -p /tmp/workspace/download/
+      # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      # - run: mkdir -p /tmp/workspace/download/
 
       # - run:
       #     name: lib_redis_release
