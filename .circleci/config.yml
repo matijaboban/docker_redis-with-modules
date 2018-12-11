@@ -277,6 +277,14 @@ jobs:
 
       - *attach_workspace
 
+      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
+
+      - run:
+          name: QQQQ
+          command: |
+            echo $lib_redis_release
+
+
 
       - libs-external-get:
           lib-github-org: antirez
@@ -314,8 +322,8 @@ jobs:
       - run:
           name: Get module tag from Github
           command: |
-            cp /tmp/workspace/build/download/redis.zip ~/project/
-            unzip redis.zip
+            cp /tmp/workspace/build/download/redis-5.0.2.zip ~/project/
+            unzip redis-5.0.2.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
