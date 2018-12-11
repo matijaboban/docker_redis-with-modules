@@ -104,7 +104,7 @@ jobs:
             echo $TEST1
       - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
       - run: echo "export BOB=$BAZ" >> workspace/new-env-vars
-      - run: cat workspace/new-env-vars >> $BASH_ENV
+      - run: cat *workspace_root/new-env-vars >> $BASH_ENV
 
 
       - persist_to_workspace:
