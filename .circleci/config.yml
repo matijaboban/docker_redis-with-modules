@@ -278,11 +278,12 @@ jobs:
 
       - *attach_workspace
 
-      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
       - run:
           name: QQQQ
           command: |
+            cat /tmp/workspace/new-env-vars >> $BASH_ENV
             echo $lib_redis_release
 
 
