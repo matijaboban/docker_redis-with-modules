@@ -93,7 +93,6 @@ commands:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>
 
       - run: echo << parameters.lib-release >>
-      - run: echo << parameters >>
 
       # - run: echo *workspace_root
       # - run: exit 2
