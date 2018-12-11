@@ -92,6 +92,7 @@ commands:
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
+            source ${BASH_ENV}
             echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
             echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
             echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
@@ -575,24 +576,9 @@ jobs:
 
       - executor-env-variables
 
-
-      - run:
-          name: exit 22
-          command: |
-            source ${BASH_ENV}
-            echo $lib_rejson_release
-
-      - run:
-          name: exit 22
-          command: |
-            echo $lib_rejson_release
-            exit 2
-
-
       - libs-external-get:
           lib-name: rejson
-          lib-release: $lib_rejson_release
-
+          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
           name: exit 2
