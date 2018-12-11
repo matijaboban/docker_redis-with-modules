@@ -75,7 +75,7 @@ commands:
     steps:
       - restore_cache:
           key: external-dependencies-package-cache-v02-<< parameters.lib-name >>-<< parameters.lib-release >>
-
+      -run: echo << parameters.lib-name >> | << parameters.lib-release >>
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
