@@ -62,7 +62,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v021"
+        default: "v022"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
