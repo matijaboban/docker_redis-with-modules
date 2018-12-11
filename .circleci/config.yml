@@ -92,8 +92,6 @@ commands:
 
       - run: cat << parameters.lib-release >> > parameters.lib-release
 
-       and {{ checksum "parameters.lib-release" }}
-
 
 
       - restore_cache:
