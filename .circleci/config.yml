@@ -64,7 +64,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v023"
+        default: "v024"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -82,9 +82,9 @@ commands:
 
 
 
-      - run: echo *workspace_root
-      - run: exit 2
-      - run: ls build/download/
+      # - run: echo *workspace_root
+      # - run: exit 2
+      # - run: ls build/download/
 
 
 
@@ -92,15 +92,15 @@ commands:
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
-            test -e build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
+            test -e /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            wget -O build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
           key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>"
           paths:
-            - build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
 
 
@@ -333,7 +333,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo $lib_redis_release
-            cp build/download/redis-${lib_redis_release}.zip ~/project/
+            cp /tmp/workspace/download/redis-${lib_redis_release}.zip ~/project/
             unzip -q redis-${lib_redis_release}.zip
 
 
