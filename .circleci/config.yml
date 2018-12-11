@@ -124,7 +124,7 @@ jobs:
 
 
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-      # - run: cat /tmp/workspace/new-env-vars
+      - run: mkdir -p /tmp/workspace/download/
 
       - run:
           name: QQQQ
@@ -136,6 +136,7 @@ jobs:
           # Must be relative path from root
           paths:
             - new-env-vars
+            - download
 
   lint:
     executor: node-executor
