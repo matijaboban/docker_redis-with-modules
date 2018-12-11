@@ -92,27 +92,28 @@ commands:
       - restore_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>
 
-
+      - run: echo << parameters.lib-release >>
+      - run: echo << parameters >>
 
       # - run: echo *workspace_root
-      - run: exit 2
+      # - run: exit 2
       # - run: ls build/download/
 
 
 
 
-      - run:
-          name: Get << parameters.lib-name >> tag from Github
-          command: |
-            test -e /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
-            && echo file exists, skipping \
-            || \
-            wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+      # - run:
+      #     name: Get << parameters.lib-name >> tag from Github
+      #     command: |
+      #       test -e /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
+      #       && echo file exists, skipping \
+      #       || \
+      #       wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
-      - save_cache:
-          key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>"
-          paths:
-            - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+      # - save_cache:
+      #     key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>"
+      #     paths:
+      #       - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
 
 
