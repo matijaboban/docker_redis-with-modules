@@ -18,16 +18,6 @@ _run:
       echo -e "export CIRCLE_WORKING_DIR=${HOME}/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}" >> $BASH_ENV
       echo -e "export PATH=${PATH}:${HOME}/.yarn/bin:\${CIRCLE_WORKING_DIR}/node_modules/.bin" >> $BASH_ENV
       echo -e "export DISPLAY=:1.0" >> $BASH_ENV
-      case $CIRCLE_NODE_INDEX in
-        2|3)  echo -e "export ZOTERO=jurism" >> $BASH_ENV
-              ;;
-        *)    echo -e "export ZOTERO=zotero" >> $BASH_ENV
-              ;;
-      esac
-      git log --format=%B -n 1 $CIRCLE_SHA1 | grep '#trace' &> /dev/null
-      if [ $? == 0 ]; then
-        echo -e "export TRACE=true" >> $BASH_ENV
-      fi
 
 orbs:
   docker-publish: circleci/docker-publish@0.1.1
