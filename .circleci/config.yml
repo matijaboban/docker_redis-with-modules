@@ -792,7 +792,10 @@ workflows:
 
   pre-build:
     jobs:
-      - lint
+      - base
+      - lint:
+          requires:
+            - base
       - build-redis:
           requires:
             - lint
