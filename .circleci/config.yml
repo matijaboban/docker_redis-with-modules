@@ -76,7 +76,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v027"
+        default: "v028"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -129,7 +129,7 @@ commands:
       - save_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
           paths:
-            - "/tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>"
+            - /tmp/workspace/download/<< parameters.lib-name >>-*
 
 
 
