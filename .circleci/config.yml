@@ -69,7 +69,7 @@ commands:
           key: external-dependencies-package-cache-v1-<< parameters.lib-name >>-<< parameters.lib-release >>
 
       - run:
-          name: Get module tag from Github
+          name: Get << parameters.lib-name >> tag from Github
           command: |
             test -e build/download/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
