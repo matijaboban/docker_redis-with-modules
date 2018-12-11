@@ -92,7 +92,7 @@ jobs:
 
     steps:
 
-      # - *attach_workspace
+      - *attach_workspace
       # - run: ls *workspace_root
       # - run:
       #     name: Setup Environment Variables
