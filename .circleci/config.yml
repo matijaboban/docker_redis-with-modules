@@ -56,6 +56,7 @@ commands:
             apk add cmake
             apk add g++
             apk add musl-dev
+            apk add ca-certificates
 
   libs-external-get:
     description: "TBA"
