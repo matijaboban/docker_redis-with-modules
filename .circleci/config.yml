@@ -95,7 +95,7 @@ commands:
 
 
       # - run: echo *workspace_root
-      # - run: exit 2
+      - run: exit 2
       # - run: ls build/download/
 
 
@@ -139,9 +139,24 @@ jobs:
       - run: mkdir -p /tmp/workspace/download/
 
       - run:
-          name: QQQQ
+          name: lib_redis_release
           command: |
-            echo $lib_rejson_release
+            echo $lib_redis_release
+            echo ${lib_redis_release}
+            echo "${lib_redis_release}"
+            echo "$lib_redis_release"
+
+      - libs-external-get:
+          lib-name: redis
+          lib-release: ${lib_redis_release}
+
+      - run:
+          name: exit 2
+          command: |
+            exit 2
+
+
+
 
       - persist_to_workspace:
           root: *workspace_root
