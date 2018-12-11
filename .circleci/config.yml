@@ -195,10 +195,10 @@ jobs:
       #       - build/download/rejson.zip
 
 
-      - libs-external-get:
-          lib-github-org: antirez
-          lib-name: redis
-          lib-release: ${lib_redis_release}
+      # - libs-external-get:
+      #     lib-github-org: antirez
+      #     lib-name: redis
+      #     lib-release: 5.0.2
 
       # - libs-external-get:
       #     lib-name: rejson
@@ -224,12 +224,12 @@ jobs:
       #     lib-name: rebloom
       #     lib-release: ${lib_rebloom_release}
 
-      - run:
-          name: temp exit
-          command: |
-            ls build/download/
+      # - run:
+      #     name: temp exit
+      #     command: |
+      #       ls build/download/
 
-            exit 2
+      #       exit 2
   test:
     docker:
       - image: python:3.7.1
@@ -271,10 +271,24 @@ jobs:
       #     command: |
       #       addgroup -S circleci && adduser -S -G circleci circleci
 
-      # - *attach_workspace
+      - *attach_workspace
 
       - alpine-executor-setup-dependencies
 
+      - libs-external-get:
+          lib-github-org: antirez
+          lib-name: redis
+          lib-release: 5.0.2
+
+
+      - run:
+          name: temp exit
+          command: |
+            ls /tmp/workspace/build/download/
+
+            exit 2
+      #
+      #
     #   - *attach_workspace
 
       # - run:
@@ -288,11 +302,17 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/build/redis/core
 
-      - run:
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
+      #       tar xzf *.tar.gz
+      #
+        - run:
           name: Get module tag from Github
           command: |
-            curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
-            tar xzf *.tar.gz
+            cp /tmp/workspace/build/download/redis.zip ~/project/
+            unzip redis.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
