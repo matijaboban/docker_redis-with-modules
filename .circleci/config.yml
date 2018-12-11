@@ -67,6 +67,7 @@ commands:
         default: "new-env-vars"
     steps:
       - run:
+          name: Integrating env parameters from << parameters.env-file-name >> into BASH_ENV
           command: |
             cat /tmp/workspace/<< parameters.env-file-name >> >> $BASH_ENV
 
