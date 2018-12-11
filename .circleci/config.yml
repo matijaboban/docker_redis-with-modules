@@ -309,10 +309,10 @@ jobs:
       #       tar xzf *.tar.gz
       #
         - run:
-          name: Get module tag from Github
-          command: |
-            cp /tmp/workspace/build/download/redis.zip ~/project/
-            unzip redis.zip
+            name: Get module tag from Github
+            command: |
+              cp /tmp/workspace/build/download/redis.zip ~/project/
+              unzip redis.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
