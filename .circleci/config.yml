@@ -82,7 +82,7 @@ commands:
 
 
 
-      - run: echo "*workspace_root"
+      - run: echo *workspace_root
       - run: exit 2
       - run: ls build/download/
 
