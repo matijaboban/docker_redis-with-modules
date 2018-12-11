@@ -115,7 +115,7 @@ commands:
 
       # - run: echo *workspace_root
       # - run: exit 2
-      - run: ls /tmp/workspace/download/<< parameters.lib-name
+      - run: ls /tmp/workspace/download/<< parameters.lib-name >>
 
 
 
