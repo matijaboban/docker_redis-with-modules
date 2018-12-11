@@ -105,6 +105,8 @@ commands:
       - run: cat libs-external-get.parameters
 
 
+      - run: mkdir -p /tmp/workspace/download/<< parameters.lib-name
+
 
       - restore_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
@@ -113,7 +115,7 @@ commands:
 
       # - run: echo *workspace_root
       # - run: exit 2
-      - run: ls /tmp/workspace/download/
+      - run: ls /tmp/workspace/download/<< parameters.lib-name
 
 
 
@@ -124,7 +126,6 @@ commands:
             test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            mkdir -p /tmp/workspace/download/<< parameters.lib-name >> && \
             wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
