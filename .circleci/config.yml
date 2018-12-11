@@ -154,24 +154,24 @@ jobs:
       #       echo "${lib_redis_release}"
       #       echo "$lib_redis_release"
 
-      - libs-external-get:
-          lib-github-org: antirez
-          lib-name: redis
-          lib-release: $lib_redis_release
+      # - libs-external-get:
+      #     lib-github-org: antirez
+      #     lib-name: redis
+      #     lib-release: $lib_redis_release
 
 
-      - libs-external-get:
-          lib-name: rejson
-          lib-release: $lib_rejson_release
+      # - libs-external-get:
+      #     lib-name: rejson
+      #     lib-release: $lib_rejson_release
 
-      - libs-external-get:
-          lib-name: redex
-          lib-release: $lib_redex_release
+      # - libs-external-get:
+      #     lib-name: redex
+      #     lib-release: $lib_redex_release
 
-      - run:
-          name: exit 2
-          command: |
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
 
 
 
@@ -180,7 +180,7 @@ jobs:
           root: *workspace_root
           paths:
             - new-env-vars
-            - download
+            # - download
 
   lint:
     executor: node-executor
@@ -191,11 +191,6 @@ jobs:
       - *attach_workspace
 
       - executor-env-variables
-
-      - run:
-          name: QQQQ
-          command: |
-            echo $lib_rejson_release
 
       - restore_cache:
           keys:
@@ -574,7 +569,6 @@ jobs:
     executor: alpine-executor
 
     steps:
-
       - executor-alpine-setup-dependencies
 
       - *attach_workspace
@@ -583,7 +577,14 @@ jobs:
 
       - libs-external-get:
           lib-name: rejson
-          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+          lib-release: $lib_rejson_release
+
+
+      - run:
+          name: exit 2
+          command: |
+            ls /tmp/workspace/download/rejson
+            exit 2
 
       - restore_cache:
           keys:
@@ -967,12 +968,12 @@ workflows:
       - lint:
           requires:
             - base
-      - build-redis:
-          requires:
-            - lint
-      - build-redisearch:
-          requires:
-            - lint
+      # - build-redis:
+      #     requires:
+      #       - lint
+      # - build-redisearch:
+      #     requires:
+      #       - lint
       # - build-redisml:
       #     requires:
       #       - lint
