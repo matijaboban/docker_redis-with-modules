@@ -64,7 +64,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v022"
+        default: "v023"
       lib-github-org:
         type: string
         default: "RedisLabsModules"
@@ -79,8 +79,16 @@ commands:
     steps:
       - restore_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-<< parameters.lib-release >>
-      - run: echo "build/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>"
+
+
+
+      - run: echo "*workspace_root"
+      - run: exit 2
       - run: ls build/download/
+
+
+
+
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
@@ -197,10 +205,10 @@ jobs:
       #       - build/download/rejson.zip
 
 
-      # - libs-external-get:
-      #     lib-github-org: antirez
-      #     lib-name: redis
-      #     lib-release: 5.0.2
+      - libs-external-get:
+          lib-github-org: antirez
+          lib-name: redis
+          lib-release: 5.0.2
 
       # - libs-external-get:
       #     lib-name: rejson
@@ -326,7 +334,7 @@ jobs:
             source ${BASH_ENV}
             echo $lib_redis_release
             cp build/download/redis-${lib_redis_release}.zip ~/project/
-            unzip redis-${lib_redis_release}.zip
+            unzip -q redis-${lib_redis_release}.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
