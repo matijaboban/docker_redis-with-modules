@@ -266,15 +266,15 @@ jobs:
     executor: alpine-executor
 
     steps:
+      - alpine-executor-setup-dependencies
 
-      - run:
-          name: add user and group for consistent id assigned
-          command: |
-            addgroup -S circleci && adduser -S -G circleci circleci
+      # - run:
+      #     name: add user and group for consistent id assigned
+      #     command: |
+      #       addgroup -S circleci && adduser -S -G circleci circleci
 
       - *attach_workspace
 
-      - alpine-executor-setup-dependencies
 
       - libs-external-get:
           lib-github-org: antirez
