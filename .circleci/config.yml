@@ -577,7 +577,7 @@ jobs:
 
       - libs-external-get:
           lib-name: rejson
-          lib-release: $lib_rejson_release
+          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
 
       - run:
