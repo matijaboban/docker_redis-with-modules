@@ -70,7 +70,7 @@ commands:
         type: string
         default: "rejson"
       lib-release:
-        type: env_var_name
+        type: string
       lib-release-package-extension:
         type: string
         default: "zip"
