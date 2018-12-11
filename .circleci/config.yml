@@ -579,8 +579,12 @@ jobs:
       - run:
           name: exit 22
           command: |
-            echo $lib_rejson_release
             source ${BASH_ENV}
+            echo $lib_rejson_release
+
+      - run:
+          name: exit 22
+          command: |
             echo $lib_rejson_release
             exit 2
 
