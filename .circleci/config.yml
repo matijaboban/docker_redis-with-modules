@@ -284,12 +284,12 @@ jobs:
           lib-release: 5.0.2
 
 
-      - run:
-          name: temp exit
-          command: |
-            ls /tmp/workspace/build/download/
+      # - run:
+      #     name: temp exit
+      #     command: |
+      #       ls /tmp/workspace/build/download/
 
-            exit 2
+      #       exit 2
       #
       #
     #   - *attach_workspace
