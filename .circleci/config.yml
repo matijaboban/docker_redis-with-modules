@@ -91,14 +91,27 @@ jobs:
     executor: node-executor
 
     steps:
+
+      # - *attach_workspace
+
       - run:
           name: Setup Environment Variables
           command: |
             echo 'export TEST1="qqqq"' >> $BASH_ENV
             echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
             source $BASH_ENV
-            echo TEST1
+
             echo $TEST1
+      - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
+      - run: echo "export BOB=$BAZ" >> workspace/new-env-vars
+      - run: cat workspace/new-env-vars >> $BASH_ENV
+
+
+      - persist_to_workspace:
+          root: *workspace_root
+          # Must be relative path from root
+          paths:
+            - new-env-vars
 
   lint:
     executor: node-executor
@@ -107,6 +120,9 @@ jobs:
       - checkout
 
       - *attach_workspace
+
+      - run: ls *workspace_root
+      - run: cat *workspace_root/new-env-vars >> $BASH_ENV
 
       - restore_cache:
           keys:
