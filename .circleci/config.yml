@@ -576,6 +576,7 @@ jobs:
       - run:
           name: Copy compiled module to workspace
           command: |
+            mkdir -p /tmp/workspace/build/redis/modules/rejson/
             cp ~/project/rejson/src/*.so /tmp/workspace/build/redis/modules/rejson/
 
       - save_cache:
