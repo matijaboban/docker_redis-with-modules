@@ -59,6 +59,17 @@ commands:
             apk add ca-certificates
             apk add bash
 
+  executor-env-variables:
+    description: "Prepare env Variables"
+    parameters:
+      env-file-name:
+        type: string
+        default: "new-env-vars"
+    steps:
+      - run:
+          command: |
+            cat /tmp/workspace/<< parameters.env-file-name >> >> $BASH_ENV
+
   libs-external-get:
     description: "TBA"
     parameters:
@@ -146,8 +157,7 @@ jobs:
 
       - *attach_workspace
 
-      # - run: ls *workspace_root
-      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      - executor-env-variables
 
       - run:
           name: QQQQ
@@ -289,10 +299,7 @@ jobs:
 
       # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
-      - run:
-          name: QQQQ
-          command: |
-            cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      - executor-env-variables
 
 
 
@@ -539,10 +546,7 @@ jobs:
 
       - *attach_workspace
 
-      - run:
-          name: QQQQ
-          command: |
-            cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      - executor-env-variables
 
       - libs-external-get:
           lib-name: rejson
