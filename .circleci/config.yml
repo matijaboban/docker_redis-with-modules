@@ -95,14 +95,19 @@ commands:
       # - run: echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
 
 
-      - run: echo "lib-release=<< parameters.lib-release >>" >>parameters_lib-release
+      - run: echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
+      - run: echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
+      - run: echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
+      - run: echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
+      - run: echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
       - run: pwd
       - run: ls
+      - run: cat libs-external-get.parameters
 
 
 
       - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "parameters_lib-release" }}
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
 
       - run: echo << parameters.lib-release >>
 
@@ -122,7 +127,7 @@ commands:
             wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum parameters_lib-release }}
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum libs-external-get.parameters }}
           paths:
             - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
