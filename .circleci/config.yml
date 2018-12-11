@@ -90,12 +90,12 @@ commands:
         default: "zip"
     steps:
 
-      - run: cat << parameters.lib-release >> > parameters.lib-release
+      - run: cat << parameters.lib-release >> > parameters_lib-release
 
 
 
       - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "parameters.lib-release" }}
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "parameters_lib-release" }}
 
       - run: echo << parameters.lib-release >>
 
@@ -115,9 +115,9 @@ commands:
             wget -O /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
       - save_cache:
-          key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "parameters.lib-release" }}"
+          key: "external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "parameters_lib-release" }}"
           paths:
-            - /tmp/workspace/download/<< parameters.lib-name >>-$lib_redis_release.<< parameters.lib-release-package-extension >>
+            - /tmp/workspace/download/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
 
 
