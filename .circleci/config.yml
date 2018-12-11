@@ -33,6 +33,13 @@ executors:
 
       working_directory: ~/project
 
+    python-executor:
+      docker:
+        - image: python:3.7.1
+          user: root
+
+      working_directory: ~/project
+
 commands:
   alpine-executor-setup-dependencies:
     description: "Alpine image dependencies install"
@@ -88,7 +95,7 @@ commands:
 jobs:
 
   base:
-    executor: node-executor
+    executor: python-executor
 
     steps:
 
@@ -188,31 +195,31 @@ jobs:
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
-          lib-release: $lib_redis_release
+          lib-release: ${lib_redis_release}
 
       - libs-external-get:
           lib-name: rejson
-          lib-release: $lib_rejson_release
+          lib-release: ${lib_rejson_release}
 
       - libs-external-get:
           lib-name: redex
-          lib-release: $lib_redex_release
+          lib-release: ${lib_redex_release}
 
       - libs-external-get:
           lib-name: RediSearch
-          lib-release: $lib_redisearch_release
+          lib-release: ${lib_redisearch_release}
 
       - libs-external-get:
           lib-name: RedisGraph
-          lib-release: $lib_redisgraph_release
+          lib-release: ${lib_redisgraph_release}
 
       - libs-external-get:
           lib-name: redis-ml
-          lib-release: $lib_redisml_release
+          lib-release: ${lib_redisml_release}
 
       - libs-external-get:
           lib-name: rebloom
-          lib-release: $lib_rebloom_release
+          lib-release: ${lib_rebloom_release}
 
       - run:
           name: temp exit
