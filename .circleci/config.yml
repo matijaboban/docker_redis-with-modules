@@ -131,7 +131,7 @@ jobs:
       - *attach_workspace
 
       - run:
-        name: Process project env vars
+          name: Process project env vars
           command: |
             echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
             echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
