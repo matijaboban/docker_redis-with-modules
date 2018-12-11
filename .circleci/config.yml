@@ -986,6 +986,15 @@ workflows:
                   cd /tmp/workspace/
                   pwd
                   ls
+                  cd build
+                  pwd
+                  ls
+                  cd redis
+                  pwd
+                  ls
+                  cd modules
+                  pwd
+                  ls
 
             # - run:
             #     name: Create workspace directory
