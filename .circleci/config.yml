@@ -12,13 +12,6 @@ references:
     attach_workspace:
       at: *workspace_root
 
-_run:
-  setenv: &setenv
-    command: |-
-      echo -e "export TEST_Q1=q1" >> $BASH_ENV
-      echo -e "export TEST_Q2=q2" >> $BASH_ENV
-      echo -e "export TEST_Q3=q3" >> $BASH_ENV
-
 orbs:
   docker-publish: circleci/docker-publish@0.1.1
 
@@ -99,15 +92,6 @@ jobs:
 
     steps:
 
-      - run: *setenv
-
-      - run:
-          name: EQQQQ
-          command: |
-            echo $TEST_Q1
-            echo $TEST_Q2
-            echo $TEST_Q3
-      #
       # - *attach_workspace
       # - run: ls *workspace_root
       # - run:
@@ -117,17 +101,23 @@ jobs:
       #       echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
       #       source $BASH_ENV
 
-      #       echo $TEST1
-      # - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>*workspace_root/new-env-vars
-      # - run: echo "export BOB=$BAZ" >> *workspace_root/new-env-vars
-      # - run: cat *workspace_root/new-env-vars >> $BASH_ENV
+            echo $TEST1
+      - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>/tmp/workspace/new-env-vars
+      - run: echo "export BOB=bla_01" >> /tmp/workspace/new-env-vars
+      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
 
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     # Must be relative path from root
-      #     paths:
-      #       - new-env-vars
+      - run:
+          name: QQQQ
+          command: |
+            echo $FOO
+            echo $BOB
+
+      - persist_to_workspace:
+          root: *workspace_root
+          # Must be relative path from root
+          paths:
+            - new-env-vars
 
   lint:
     executor: node-executor
@@ -137,18 +127,14 @@ jobs:
 
       - *attach_workspace
 
+      # - run: ls *workspace_root
+      - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
       - run:
-          name: E222222QQQQ
+          name: QQQQ
           command: |
-            echo $TEST_Q1
-            echo $TEST_Q2
-            echo $TEST_Q3
-
-
-
-      - run: ls *workspace_root
-      - run: cat *workspace_root/new-env-vars >> $BASH_ENV
+            echo $FOO
+            echo $BOB
 
       - restore_cache:
           keys:
@@ -171,11 +157,12 @@ jobs:
 
 
       - run:
-          name: EQQQQ
+          name: QQQQ
           command: |
-            echo $TEST_Q1
-            echo $TEST_Q2
-            echo $TEST_Q3
+            echo TEST1
+            echo $TEST1
+            echo TEST2
+            echo $TEST2
 
       - run:
           name: temp exit
