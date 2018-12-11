@@ -93,29 +93,20 @@ jobs:
     steps:
 
       - *attach_workspace
-      # - run: ls *workspace_root
-      # - run:
-      #     name: Setup Environment Variables
-      #     command: |
-      #       echo 'export TEST1="qqqq"' >> $BASH_ENV
-      #       echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
-      #       source $BASH_ENV
 
-            # echo $TEST1
-      # - run: touch /tmp/workspace/new-env-vars
 
-      - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>/tmp/workspace/new-env-vars
-      - run: echo "$FOO"
+# lib-name: rejson
+#           lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
-      - run: echo "export BOB=bla_01" >> /tmp/workspace/new-env-vars
+
+      - run: echo "export lib.rejson.release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
       - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-
+      - run: cat /tmp/workspace/new-env-vars
 
       - run:
           name: QQQQ
           command: |
-            echo $FOO
-            echo $BOB
+            echo $lib.rejson.release
 
       - persist_to_workspace:
           root: *workspace_root
@@ -137,8 +128,7 @@ jobs:
       - run:
           name: QQQQ
           command: |
-            echo $FOO
-            echo $BOB
+            echo $lib.rejson.release
 
       - restore_cache:
           keys:
@@ -196,7 +186,9 @@ jobs:
           lib-name: redis
           lib-release: 5.0.2
 
-      - libs-external-get
+      - libs-external-get:
+          lib-name: rejson
+          lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - libs-external-get:
           lib-name: redex
