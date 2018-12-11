@@ -57,6 +57,7 @@ commands:
             apk add g++
             apk add musl-dev
             apk add ca-certificates
+            apk add bash
 
   libs-external-get:
     description: "TBA"
@@ -322,7 +323,7 @@ jobs:
       - run:
           name: Get module tag from Github
           command: |
-            cp /tmp/workspace/build/download/redis-5.0.2.zip ~/project/
+            cp build/download/redis-5.0.2.zip ~/project/
             unzip redis-5.0.2.zip
 
 
