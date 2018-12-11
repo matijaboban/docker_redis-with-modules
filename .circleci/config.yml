@@ -12,6 +12,23 @@ references:
     attach_workspace:
       at: *workspace_root
 
+_run:
+  setenv: &setenv
+    command: |-
+      echo -e "export CIRCLE_WORKING_DIR=${HOME}/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}" >> $BASH_ENV
+      echo -e "export PATH=${PATH}:${HOME}/.yarn/bin:\${CIRCLE_WORKING_DIR}/node_modules/.bin" >> $BASH_ENV
+      echo -e "export DISPLAY=:1.0" >> $BASH_ENV
+      case $CIRCLE_NODE_INDEX in
+        2|3)  echo -e "export ZOTERO=jurism" >> $BASH_ENV
+              ;;
+        *)    echo -e "export ZOTERO=zotero" >> $BASH_ENV
+              ;;
+      esac
+      git log --format=%B -n 1 $CIRCLE_SHA1 | grep '#trace' &> /dev/null
+      if [ $? == 0 ]; then
+        echo -e "export TRACE=true" >> $BASH_ENV
+      fi
+
 orbs:
   docker-publish: circleci/docker-publish@0.1.1
 
@@ -92,26 +109,35 @@ jobs:
 
     steps:
 
-      - *attach_workspace
-      - run: ls *workspace_root
+      - run: *setenv
+
       - run:
-          name: Setup Environment Variables
+          name: EQQQQ
           command: |
-            echo 'export TEST1="qqqq"' >> $BASH_ENV
-            echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
-            source $BASH_ENV
+            echo $CIRCLE_WORKING_DIR
+            echo $PATH
+            echo $DISPLAY
+      #
+      # - *attach_workspace
+      # - run: ls *workspace_root
+      # - run:
+      #     name: Setup Environment Variables
+      #     command: |
+      #       echo 'export TEST1="qqqq"' >> $BASH_ENV
+      #       echo 'export TEST2="$CIRCLE_SHA1"' >> $BASH_ENV
+      #       source $BASH_ENV
 
-            echo $TEST1
-      - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>*workspace_root/new-env-vars
-      - run: echo "export BOB=$BAZ" >> *workspace_root/new-env-vars
-      - run: cat *workspace_root/new-env-vars >> $BASH_ENV
+      #       echo $TEST1
+      # - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>*workspace_root/new-env-vars
+      # - run: echo "export BOB=$BAZ" >> *workspace_root/new-env-vars
+      # - run: cat *workspace_root/new-env-vars >> $BASH_ENV
 
 
-      - persist_to_workspace:
-          root: *workspace_root
-          # Must be relative path from root
-          paths:
-            - new-env-vars
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     # Must be relative path from root
+      #     paths:
+      #       - new-env-vars
 
   lint:
     executor: node-executor
