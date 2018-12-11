@@ -129,6 +129,11 @@ jobs:
       #     paths:
       #       - build/download/rejson.zip
 
+      - libs-external-get:
+          lib-github-org: antirez
+          lib-name: redis
+          lib-release: 5.0.2
+
       - libs-external-get
 
       - libs-external-get:
