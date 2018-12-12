@@ -581,9 +581,17 @@ jobs:
           lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
+          name: Process external lib
+          command: |
+            source ${BASH_ENV}
+            unzip -q /tmp/workspace/download/rejson/rejson*.zip -d ~/project/ && \
+            mv ~/project/r* ~/project/rejson
+
+
+      - run:
           name: exit 2
           command: |
-            ls /tmp/workspace/download/rejson
+            ls ~/project/rejson
             exit 2
 
       - restore_cache:
