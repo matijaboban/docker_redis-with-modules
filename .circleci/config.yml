@@ -590,7 +590,8 @@ jobs:
       - run:
           name: Build module
           command: |
-            ~/project/build/rejson/src make
+            cd ~/project/build/rejson/src
+            make
 
       - run:
           name: Copy compiled module to workspace
