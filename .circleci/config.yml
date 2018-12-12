@@ -109,35 +109,37 @@ commands:
         type: string
         default: "zip"
     steps:
-      - run:
-          name: Create << parameters.lib-name >> parameters
-          command: |
-            source ${BASH_ENV}
-            echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
-            echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
-            echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
-            echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
-            echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
 
-      - run:
-          name: Create << parameters.lib-name >> workspace download directory
-          command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
+      - run: echo << parameters.lib-release >>
+      # - run:
+      #     name: Create << parameters.lib-name >> parameters
+      #     command: |
+      #       source ${BASH_ENV}
+      #       echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
+      #       echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
+      #       echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
+      #       echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
+      #       echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
 
-      - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
+      # - run:
+      #     name: Create << parameters.lib-name >> workspace download directory
+      #     command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
 
-      - run:
-          name: Get << parameters.lib-name >> tag from Github
-          command: |
-            test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
-            && echo file exists, skipping \
-            || \
-            wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+      # - restore_cache:
+      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
 
-      - save_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
-          paths:
-            - /tmp/workspace/download/<< parameters.lib-name >>/
+      # - run:
+      #     name: Get << parameters.lib-name >> tag from Github
+      #     command: |
+      #       test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
+      #       && echo file exists, skipping \
+      #       || \
+      #       wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+
+      # - save_cache:
+      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
+      #     paths:
+      #       - /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
@@ -188,6 +190,11 @@ jobs:
           lib-github-org: antirez
           lib-name: redis
           lib-release: $(yq .libs.redis.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-get:
+          lib-github-org: antirez
+          lib-name: redis
+          lib-release: 'yq .libs.redis.github.release /tmp/workspace/config.yaml'
 
 
       # - libs-external-get:
