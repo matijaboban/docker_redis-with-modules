@@ -585,13 +585,12 @@ jobs:
           command: |
             source ${BASH_ENV}
             unzip -q /tmp/workspace/download/rejson/rejson-$lib_rejson_release.zip -d ~/project/build/ && \
-            mv ~/project/build/r* ~/project/build/rejson
+            mv ~/project/build/rejson-$lib_rejson_release.zip ~/project/build/rejson
 
       - run:
           name: Build module
           command: |
-            cd ~/project/build/rejson/src
-            make
+            make -C ~/project/build/rejson/src -j 8;
 
       - run:
           name: Copy compiled module to workspace
@@ -603,7 +602,7 @@ jobs:
       - run:
           name: exit 2
           command: |
-            ls ~/project/rejson
+            ls ~/project/build/rejson
             ls /tmp/workspace/compiled/rejson/
             exit 2
 
