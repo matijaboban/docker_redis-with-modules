@@ -201,7 +201,7 @@ jobs:
       - run:
           name: exit 2
           command: |
-            yq .libs.redis.github.release touch /tmp/workspace/config.yaml
+            yq .libs.redis.github.release /tmp/workspace/config.yaml
             exit 2
 
 
