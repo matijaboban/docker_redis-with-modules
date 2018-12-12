@@ -187,7 +187,7 @@ jobs:
       - libs-external-get:
           lib-github-org: antirez
           lib-name: redis
-          lib-release: yq .libs.redis.github.release /tmp/workspace/config.yaml
+          lib-release: $(yq .libs.redis.github.release /tmp/workspace/config.yaml)
 
 
       # - libs-external-get:
