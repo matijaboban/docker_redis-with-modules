@@ -1007,10 +1007,10 @@ workflows:
 
   pre-build:
     jobs:
-      - base
-      - lint:
+      - lint
+      - base:
           requires:
-            - base
+            - lint
       # - build-redis:
       #     requires:
       #       - lint
@@ -1025,7 +1025,7 @@ workflows:
       #       - lint
       - build-rejson:
           requires:
-            - lint
+            - base
       # - build-timeseries:
       #     requires:
       #       - lint

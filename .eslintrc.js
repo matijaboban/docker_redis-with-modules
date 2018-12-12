@@ -6,7 +6,8 @@ module.exports = {
         amd: true // defines require() and define() as global variables as per the amd spec.
     },
     plugins: [
-        "docker"
+        "docker",
+        "filenames"
     ],
     root: true,
     extends: [
@@ -57,5 +58,12 @@ module.exports = {
                 'asyncArrow': 'always'
             }
         ],
+        'filenames/match-regex': [
+            2,
+            "^[a-z_]+$",
+            true
+        ],
+        'filenames/match-exported': 2,
+        'filenames/no-index': 2
     },
 };

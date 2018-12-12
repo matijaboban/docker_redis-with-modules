@@ -1,0 +1,17 @@
+references:
+  github-defaults: &github-defaults
+    org: RedisLabsModules
+    extension: zip
+
+libs:
+  redis:
+    github:
+      <<: *github-defaults
+      org: antirez
+      name: redis
+      release: 5.0.2
+  rejson:
+    github:
+      <<: *github-defaults
+      name: rejson
+      release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
