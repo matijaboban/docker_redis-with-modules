@@ -1044,10 +1044,7 @@ workflows:
                   cd /tmp/workspace/
                   pwd
                   ls
-                  cd build
-                  pwd
-                  ls
-                  cd ../compiled
+                  cd compiled
                   pwd
                   ls
 
