@@ -59,6 +59,20 @@ commands:
             apk add ca-certificates
             apk add bash
 
+      - run:
+          name: python / pip install
+          command: |
+            apk add py-pip
+            pip install yq
+
+  executor-python-setup-dependencies:
+    description: "Python image dependencies install"
+    steps:
+      - run:
+          command: |
+            apt install jq -y
+            pip install yq
+
   executor-env-variables:
     description: "Prepare env Variables"
     parameters:
@@ -128,8 +142,11 @@ jobs:
     executor: python-executor
 
     steps:
+      - executor-python-setup-dependencies
 
       - *attach_workspace
+
+      - checkout
 
       - run:
           name: Process project env vars
