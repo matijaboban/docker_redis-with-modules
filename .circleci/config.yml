@@ -585,7 +585,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             unzip -q /tmp/workspace/download/rejson/rejson-$lib_rejson_release.zip -d ~/project/build/ && \
-            mv ~/project/build/rejson-$lib_rejson_release.zip ~/project/build/rejson
+            mv ~/project/build/rejson-$lib_rejson_release ~/project/build/rejson
 
       - run:
           name: Build module
