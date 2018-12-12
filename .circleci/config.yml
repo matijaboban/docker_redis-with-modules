@@ -184,10 +184,10 @@ jobs:
       #       echo "${lib_redis_release}"
       #       echo "$lib_redis_release"
 
-      # - libs-external-get:
-      #     lib-github-org: antirez
-      #     lib-name: redis
-      #     lib-release: $lib_redis_release
+      - libs-external-get:
+          lib-github-org: antirez
+          lib-name: redis
+          lib-release: yq .libs.redis.github.release /tmp/workspace/config.yaml
 
 
       # - libs-external-get:
