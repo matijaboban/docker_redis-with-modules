@@ -214,7 +214,7 @@ jobs:
 
       - *attach_workspace
 
-      - executor-env-variables
+      # - executor-env-variables
 
       - restore_cache:
           keys:
