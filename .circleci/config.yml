@@ -1075,7 +1075,7 @@ workflows:
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd /tmp/workspace/build/compiled/
+                  cd /tmp/workspace/compiled/
                   ls
                   cd rejson
                   ls
