@@ -166,6 +166,12 @@ jobs:
             echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
             cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
+      - run:
+          name: move project config
+          command: |
+            test -e config.yaml && \
+            cp config.yaml /tmp/workspace || \
+            touch /tmp/workspace/config.yaml
 
       # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
       # - run: mkdir -p /tmp/workspace/download/
@@ -192,10 +198,11 @@ jobs:
       #     lib-name: redex
       #     lib-release: $lib_redex_release
 
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       exit 2
+      - run:
+          name: exit 2
+          command: |
+            yq .libs.redis.github.release touch /tmp/workspace/config.yaml
+            exit 2
 
 
 
