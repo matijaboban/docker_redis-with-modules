@@ -604,42 +604,42 @@ jobs:
           command: |
             ls ~/project/build/rejson
             ls /tmp/workspace/compiled/rejson/
-            exit 2
 
-      - restore_cache:
-          keys:
-            - v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
 
-      - run:
-          name: Build module
-          command: |
-            test -e /tmp/workspace/build/redis/modules/rejson/ \
-            && ls /tmp/workspace/build/redis/modules/rejson/ \
-            || echo file doesnt exist, skipping
+      # - restore_cache:
+      #     keys:
+      #       - v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
 
-      - run:
-          name: Process external lib
-          command: |
-            source ${BASH_ENV}
-            unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/ && \
-            mv ~/project/r* ~/project/rejson
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       test -e /tmp/workspace/build/redis/modules/rejson/ \
+      #       && ls /tmp/workspace/build/redis/modules/rejson/ \
+      #       || echo file doesnt exist, skipping
 
-      - run:
-          name: Build module
-          command: |
-            cd ~/project/rejson/src && \
-            make
+      # - run:
+      #     name: Process external lib
+      #     command: |
+      #       source ${BASH_ENV}
+      #       unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/ && \
+      #       mv ~/project/r* ~/project/rejson
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            mkdir -p /tmp/workspace/build/redis/modules/rejson/
-            cp ~/project/rejson/src/*.so /tmp/workspace/build/redis/modules/rejson/
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       cd ~/project/rejson/src && \
+      #       make
 
-      - save_cache:
-          key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-          paths:
-            - /tmp/workspace/build/redis/modules/rejson/
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/build/redis/modules/rejson/
+      #       cp ~/project/rejson/src/*.so /tmp/workspace/build/redis/modules/rejson/
+
+      # - save_cache:
+      #     key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
+      #     paths:
+      #       - /tmp/workspace/build/redis/modules/rejson/
 
       # - run:
       #     name: add user and group for consistent id assigned
@@ -701,7 +701,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - build
+            - compiled
 
   build-timeseries:
     docker:
@@ -1047,10 +1047,7 @@ workflows:
                   cd build
                   pwd
                   ls
-                  cd redis
-                  pwd
-                  ls
-                  cd modules
+                  cd ../compiled
                   pwd
                   ls
 
@@ -1078,7 +1075,11 @@ workflows:
             - run:
                 name: Do this after checkout.
                 command: |
-                  cd /tmp/workspace/build/redis/modules/
+                  cd /tmp/workspace/build/compiled/
+                  ls
+                  cd rejson
+                  ls
+                  exit 2
 
             - run:
                 name: Do this after checkout.
