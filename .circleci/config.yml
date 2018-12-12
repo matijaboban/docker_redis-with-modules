@@ -212,14 +212,10 @@ jobs:
     steps:
       - checkout
 
-      - *attach_workspace
-
-      # - executor-env-variables
-
       - restore_cache:
           keys:
-            - npm-dependencies-cache-v1-{{ checksum "package-lock.json" }}
-            - npm-dependencies-cache-v1-
+            - dependencies-npm-cache-v1-{{ checksum "package-lock.json" }}
+            - dependencies-npm-cache-v1-
 
       - run:
             name: Install NPM
@@ -227,7 +223,7 @@ jobs:
                 npm install
 
       - save_cache:
-          key: npm-dependencies-cache-v1-{{ checksum "package-lock.json" }}
+          key: dependencies-npm-cache-v1-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
 
