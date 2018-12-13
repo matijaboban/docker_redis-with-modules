@@ -1204,10 +1204,10 @@ workflows:
     jobs:
       - base
       - lint
-      # - build-redis:
-      #     requires:
-      #       - base
-      #       - lint
+      - build-redis:
+          requires:
+            - base
+            - lint
       - build-redisearch:
           requires:
             - base
@@ -1216,25 +1216,25 @@ workflows:
       #     requires:
       #       - base
       #       - lint
-      # - build-redisbloom:
-      #     requires:
-      #       - base
-      #       - lint
-      # - build-rejson:
-      #     requires:
-      #       - base
-      #       - lint
+      - build-redisbloom:
+          requires:
+            - base
+            - lint
+      - build-rejson:
+          requires:
+            - base
+            - lint
       # - build-timeseries:
       #     requires:
       #       - lint
-      # - build-redex:
-      #     requires:
-      #       - base
-      #       - lint
-      # - build-redisgraph:
-      #     requires:
-      #       - base
-      #       - lint
+      - build-redex:
+          requires:
+            - base
+            - lint
+      - build-redisgraph:
+          requires:
+            - base
+            - lint
 
       # - temptest:
           # requires:
@@ -1254,13 +1254,13 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            # - build-redis
+            - build-redis
             - build-redisearch
             # - build-redisml
-            # - build-rejson
-            # - build-redisbloom
-            # - build-redisgraph
-            # - build-redex
+            - build-rejson
+            - build-redisbloom
+            - build-redisgraph
+            - build-redex
           after_checkout:
             - *attach_workspace
 
