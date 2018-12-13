@@ -433,7 +433,7 @@ jobs:
       - save_cache:
           key: external-dependencies-compile-cache-v02-redis-q1
           paths:
-            - /tmp/workspace/compiled/core/*
+            - /tmp/workspace/compiled/core
 
       # - run:
       #     name: temp exit
