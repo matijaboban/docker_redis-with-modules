@@ -63,6 +63,7 @@ commands:
             apk add musl-dev
             apk add ca-certificates
             apk add bash
+            apk add tcl
 
       - run:
           name: python / pip install
@@ -372,9 +373,9 @@ jobs:
       - run:
           name: Pre-build updates
           command: |
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
-            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/redis/src/server.h
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/build/redis/src/server.h
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/redis/src/server.h
 
       - run:
           name: Build module
@@ -384,8 +385,7 @@ jobs:
       - run:
           name: Test redis core
           command: |
-            cd ~/project/build/redis
-            make test
+            make test -C ~/project/build/redis/src
 
       # - run:
       #     name: Copy compiled module to workspace
