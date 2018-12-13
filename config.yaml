@@ -30,3 +30,11 @@ libs:
       <<: *github-defaults
       name: RedisGraph
       release: v1.0.4
+  redisearch:
+    github:
+      <<: *github-defaults
+      name: RediSearch
+      release: v1.4.2
+
+
+

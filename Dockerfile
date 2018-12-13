@@ -134,8 +134,8 @@ EXPOSE 6379
 
 ENTRYPOINT ["redis-server"]
 CMD [ \
-    # "--loadmodule", "/usr/src/redis/modules/redisearch.so", \
-    "--loadmodule", "/usr/src/redis/modules/redis-ml.so", \
+    "--loadmodule", "/usr/src/redis/modules/redisearch.so", \
+    # "--loadmodule", "/usr/src/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/src/redis/modules/redisgraph.so", \
     "--loadmodule", "/usr/src/redis/modules/rebloom.so", \
     "--loadmodule", "/usr/src/redis/modules/rejson.so" \

@@ -166,17 +166,17 @@ jobs:
 
       - checkout
 
-      - run:
-          name: Process project env vars
-          command: |
-            echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
-            echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
-            echo "export lib_redex_release=f2d35edf438f1ac2279c312056589ddf83af6efc" >>/tmp/workspace/new-env-vars
-            echo "export lib_redisearch_release=v1.4.2" >>/tmp/workspace/new-env-vars
-            echo "export lib_redisgraph_release=v1.0.4" >>/tmp/workspace/new-env-vars
-            echo "export lib_redisml_release=9bc5814ab3fcc8ea33edd0c060c0f84eead05c28" >>/tmp/workspace/new-env-vars
-            echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
-            cat /tmp/workspace/new-env-vars >> $BASH_ENV
+      # - run:
+      #     name: Process project env vars
+      #     command: |
+      #       echo "export lib_redis_release=5.0.2" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_rejson_release=08b10ce3045f9b24cf69ae00d25bee18f8807154" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_redex_release=f2d35edf438f1ac2279c312056589ddf83af6efc" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_redisearch_release=v1.4.2" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_redisgraph_release=v1.0.4" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_redisml_release=9bc5814ab3fcc8ea33edd0c060c0f84eead05c28" >>/tmp/workspace/new-env-vars
+      #       echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
+      #       cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
       - run:
           name: move project config
@@ -506,45 +506,78 @@ jobs:
     executor: alpine-executor
 
     steps:
-      # - run:
-      #     name: add user and group for consistent id assigned
-      #     command: |
-      #       addgroup -S circleci && adduser -S -G circleci circleci
-
-      # - *attach_workspace
-
       - executor-alpine-setup-dependencies
 
-      - run:
-          name: Create workspace directory
-          command: |
-            mkdir -p /tmp/cache/build/redis/modules
-            mkdir -p /tmp/workspace/build/redis/modules
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: RediSearch
+          lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
 
       - run:
-          name: Get module tag from Github
+          name: Unpack external lib
           command: |
-            curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
-            tar xzf *.tar.gz
+            unzip -q /tmp/workspace/download/RediSearch/r*.zip -d ~/project/build/ && \
+            mv ~/project/build/r*  ~/project/build/RediSearch
 
       - run:
           name: Build module
           command: |
-            cd ~/project/R*
-            mkdir build
-            cd build
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            make
-            cp *.so /tmp/workspace/build/redis/modules/
+            cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            make -C ~/project/build/RediSearch/src -j 8
+
+      - run:
+          name: Test module
+          command: |
+            pip install git+https://github.com/RedisLabsModules/RLTest
+            make test
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/RediSearch/src/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - build
+            - compiled/modules
+
+
+
+
+
+
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       mkdir -p /tmp/cache/build/redis/modules
+      #       mkdir -p /tmp/workspace/build/redis/modules
+
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
+      #       tar xzf *.tar.gz
+
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       cd ~/project/R*
+      #       mkdir build
+      #       cd build
+      #       cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      #       make
+      #       cp *.so /tmp/workspace/build/redis/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - build
 
   build-redisml:
     executor: python-executor
-
+    ## TODO: has to be build on Alpine to avoid: # Module /usr/src/redis/modules/redis-ml.so failed to load: Error relocating /usr/src/redis/modules/redis-ml.so: __strndup: symbol not found
     steps:
       - executor-python-setup-dependencies
 
@@ -685,22 +718,9 @@ jobs:
 
       - *attach_workspace
 
-      # - executor-env-variables
-
       - libs-external-get:
           lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
-
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       yq .libs /tmp/workspace/config.yaml
-      #       exit 2
-
-
-      # - libs-external-get:
-      #     lib-name: rejson
-      #     lib-release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
 
       - run:
           name: Unpack external lib
@@ -1132,25 +1152,28 @@ workflows:
 
   pre-build:
     jobs:
+      - base
       - lint
-      - base:
-          requires:
-            - lint
       - build-redis:
           requires:
             - base
-      # - build-redisearch:
-      #     requires:
-      #       - lint
-      - build-redisml:
+            - lint
+      - build-redisearch:
           requires:
             - base
+            - lint
+      # - build-redisml:
+      #     requires:
+      #       - base
+      #       - lint
       - build-redisbloom:
           requires:
             - base
+            - lint
       - build-rejson:
           requires:
             - base
+            - lint
       # - build-timeseries:
       #     requires:
       #       - lint
@@ -1160,6 +1183,7 @@ workflows:
       - build-redisgraph:
           requires:
             - base
+            - lint
 
       # - temptest:
           # requires:
@@ -1180,8 +1204,8 @@ workflows:
       - docker-publish/publish:
           requires:
             - build-redis
-            # - build-redisearch
-            - build-redisml
+            - build-redisearch
+            # - build-redisml
             - build-rejson
             - build-redisbloom
             - build-redisgraph
