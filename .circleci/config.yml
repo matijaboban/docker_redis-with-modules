@@ -555,15 +555,19 @@ jobs:
             test -e /tmp/workspace/compiled/modules/Qredisearch.so \
             && echo file exists, skipping \
             || \
-            (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && mv ~/project/build/*  ~/project/build/RediSearch)
+            (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
+            mv ~/project/build/*  ~/project/build/RediSearch)
 
       - run:
           name: Build module
           command: |
-            mkdir -p ~/project/build/RediSearch/compile
-            cd ~/project/build/RediSearch/compile
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            make -j 8
+            test -e /tmp/workspace/compiled/modules/redisearch.so \
+            && echo file exists, skipping \
+            || \
+            (mkdir -p ~/project/build/RediSearch/compile && \
+            cd ~/project/build/RediSearch/compile && \
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
+            make -j 8)
 
       # - run:
       #     name: Test module | TODO
@@ -574,8 +578,11 @@ jobs:
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
+            test -e /tmp/workspace/compiled/modules/redisearch.so \
+            && echo file exists, skipping \
+            || \
+            (mkdir -p /tmp/workspace/compiled/modules/ && \
+            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
       - save_cache:
           key: external-dependencies-compile-cache-v01-redis-q1
