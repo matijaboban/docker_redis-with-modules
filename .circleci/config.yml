@@ -552,11 +552,11 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            test -e /tmp/workspace/compiled/modules/Qredisearch.so \
-            && echo file exists, skipping \
-            || \
-            (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
-            mv ~/project/build/*  ~/project/build/RediSearch)
+            test -e /tmp/workspace/compiled/modules/redisearch.so \
+            && (echo file exists, skipping && exit 0) \
+            || echo bla;
+            unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build
+            mv ~/project/build/*  ~/project/build/RediSearch
 
       - run:
           name: Build module
@@ -594,7 +594,7 @@ jobs:
           paths:
             - compiled/modules
 
-      - run: exit 0
+      - run: exit 2
 
 
 
