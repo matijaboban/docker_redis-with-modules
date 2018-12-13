@@ -15,3 +15,8 @@ libs:
       <<: *github-defaults
       name: rejson
       release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+  redisbloom:
+    github:
+      <<: *github-defaults
+      name: rebloom
+      release: 955989f38778916f1bde0dc6998626333233d283

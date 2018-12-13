@@ -580,42 +580,68 @@ jobs:
             - redis
 
   build-redisbloom:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
-
     steps:
+      - executor-alpine-setup-dependencies
+
       - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get update
-            apt-get install -y zip
+      - libs-external-get:
+          lib-name: rebloom
+          lib-release: $(yq -r .libs.redisbloom.github.release /tmp/workspace/config.yaml)
 
       - run:
-          name: Create workspace directory
+          name: Unpack external lib
           command: |
-            mkdir -p ~/project/build/redis/modules
-
-      - run:
-          name: Get module tag from Github
-          command: |
-            curl -OL https://github.com/RedisLabsModules/rebloom/archive/master.zip
-            unzip *.zip
+            unzip -q /tmp/workspace/download/rebloom/r*.zip -d ~/project/build/ && \
+            mv ~/project/build/r*  ~/project/build/rebloom
 
       - run:
           name: Build module
           command: |
-            cd ~/project/r*
-            make
-            cp *.so ~/project/build/redis/modules/
+            make -C ~/project/build/rebloom/src -j 8;
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/rebloom/src/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - redis
+            - compiled/modules
+
+
+
+
+      # - run:
+      #     name: Install Dependencies
+      #     command: |
+      #       apt-get update
+      #       apt-get install -y zip
+
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       mkdir -p ~/project/build/redis/modules
+
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       curl -OL https://github.com/RedisLabsModules/rebloom/archive/master.zip
+      #       unzip *.zip
+
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       cd ~/project/r*
+      #       make
+      #       cp *.so ~/project/build/redis/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - redis
 
   build-rejson:
     executor: alpine-executor
@@ -1058,9 +1084,9 @@ workflows:
       # - build-redisml:
       #     requires:
       #       - lint
-      # - build-redisbloom:
-      #     requires:
-      #       - lint
+      - build-redisbloom:
+          requires:
+            - base
       - build-rejson:
           requires:
             - base
@@ -1096,6 +1122,7 @@ workflows:
             # - build-redisearch
             # - build-redisml
             - build-rejson
+            - build-redisbloom
           after_checkout:
             - *attach_workspace
 
