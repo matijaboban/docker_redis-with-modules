@@ -353,28 +353,9 @@ jobs:
     executor: alpine-executor
 
     steps:
-      # - checkout
-
       - executor-alpine-setup-dependencies
 
-      # - run:
-      #     name: add user and group for consistent id assigned
-      #     command: |
-      #       addgroup -S circleci && adduser -S -G circleci circleci
-
       - *attach_workspace
-
-      # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-
-      # - executor-env-variables
-
-
-
-      # - libs-external-get:
-      #     lib-github-org: antirez
-      #     lib-name: redis
-      #     lib-release: 5.0.2
-
 
       - libs-external-get:
           lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
@@ -385,22 +366,56 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/redis/redis*.zip -d ~/project/build/ && \
-            mv ~/project/build/r* ~/project/build/redis
-            ls ~/project/build/redis
+            unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
+            mv ~/project/build/* ~/project/build/redis
+
+      - run:
+          name: Pre-build updates
+          command: |
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
 
       - run:
           name: Build module
           command: |
             make -C ~/project/build/redis/src -j 8;
 
+      - run:
+          name: Test redis core
+          command: |
+            cd ~/project/build/redis
+            make test
 
       # - run:
-      #     name: temp exit
+      #     name: Copy compiled module to workspace
       #     command: |
-      #       ls ~/project/build/redis/src
+      #       mkdir -p /tmp/workspace/compiled/core/
+      #       cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
 
-      #       exit 2
+          - run:
+          name: Copy compiled assets to workspace
+          command: |
+            cd ~/project/build/redis
+            cp src/redis-benchmark /tmp/workspace/compiled/core/
+            cp src/redis-check-aof /tmp/workspace/compiled/core/
+            cp src/redis-check-rdb /tmp/workspace/compiled/core/
+            cp src/redis-cli /tmp/workspace/compiled/core/
+            cp src/redis-sentinel /tmp/workspace/compiled/core/
+            cp src/redis-server /tmp/workspace/compiled/core/
+            cp redis.conf /tmp/workspace/compiled/core/
+            cp sentinel.conf /tmp/workspace/compiled/core/
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - compiled/core
+
+      - run:
+          name: temp exit
+          command: |
+            ls /tmp/workspace/compiled/core/
+            exit 2
       #
       #
     #   - *attach_workspace
@@ -411,10 +426,10 @@ jobs:
       #       apt-get update
       #       apt-get install -y cmake
 
-      - run:
-          name: Create workspace directory
-          command: |
-            mkdir -p /tmp/workspace/compiled/core
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/core
 
       # - run:
       #     name: Get module tag from Github
@@ -493,14 +508,14 @@ jobs:
       #     cd ~/project/build
       #     ls
 
-      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: *workspace_root
-          # Must be relative path from root
-          paths:
-            - compiled
+      # # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      # - persist_to_workspace:
+      #     # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+      #     # taken to be the root directory of the workspace.
+      #     root: *workspace_root
+      #     # Must be relative path from root
+      #     paths:
+      #       - compiled
 
   build-redisearch:
     executor: alpine-executor
