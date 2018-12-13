@@ -407,10 +407,10 @@ jobs:
       #       apt-get update
       #       apt-get install -y cmake
 
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       mkdir -p /tmp/workspace/build/redis/core
+      - run:
+          name: Create workspace directory
+          command: |
+            mkdir -p /tmp/workspace/compiled
 
       # - run:
       #     name: Get module tag from Github
@@ -496,7 +496,7 @@ jobs:
           root: *workspace_root
           # Must be relative path from root
           paths:
-            - build
+            - compiled
 
   build-redisearch:
     executor: alpine-executor
