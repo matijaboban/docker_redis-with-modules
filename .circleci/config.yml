@@ -410,7 +410,7 @@ jobs:
       - run:
           name: Create workspace directory
           command: |
-            mkdir -p /tmp/workspace/compiled
+            mkdir -p /tmp/workspace/compiled/core
 
       # - run:
       #     name: Get module tag from Github
@@ -656,8 +656,8 @@ jobs:
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p /tmp/workspace/compiled/rejson/
-            cp ~/project/build/rejson/src/*.so /tmp/workspace/compiled/rejson/
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/rejson/src/*.so /tmp/workspace/compiled/modules/
 
 
       # - run:
@@ -1102,7 +1102,7 @@ workflows:
             - run:
                 name: location
                 command: |
-                  cd /tmp/workspace/compiled
+                  cd /tmp/workspace/compiled/modules
                   pwd
 
             # - run:
@@ -1137,8 +1137,8 @@ workflows:
                 name: Do this after checkout.
                 command: |
                   ls
-                  cp -r /tmp/workspace/compiled/* build/compiled/
-                  ls build/compiled/
+                  cp -r /tmp/workspace/compiled/modules/* build/compiled/modules/
+                  ls build/compiled/modules/
 
       - test:
           requires:
