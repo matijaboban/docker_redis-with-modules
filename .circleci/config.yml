@@ -1126,18 +1126,18 @@ workflows:
             #     paths:
             #       - /tmp/cache/build/
 
-            - run:
-                name: Do this after checkout.
-                command: |
-                  cd /tmp/workspace/compiled/
-                  pwd
-                  ls
+            # - run:
+            #     name: Do this after checkout.
+            #     command: |
+            #       cd /tmp/workspace/compiled/
+            #       pwd
+            #       ls
 
             - run:
                 name: Do this after checkout.
                 command: |
                   ls
-                  cp -r /tmp/workspace/compiled/* build/compiled/
+                  cp /tmp/workspace/compiled/* build/compiled/
 
       - test:
           requires:
