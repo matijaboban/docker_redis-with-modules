@@ -15,7 +15,8 @@ RUN mkdir -p /usr/src/redis/modules
 
 
 COPY build/redis/core/* /usr/src/redis/core/
-COPY build/redis/modules/* /usr/src/redis/modules/
+COPY build/redis/compiled/rejson/* /usr/src/redis/modules/
+
 RUN ls /usr/src/redis/core/
 RUN ls /usr/src/redis/modules/
 
@@ -133,7 +134,7 @@ EXPOSE 6379
 
 ENTRYPOINT ["redis-server"]
 CMD [ \
-    "--loadmodule", "/usr/src/redis/modules/redisearch.so", \
+    # "--loadmodule", "/usr/src/redis/modules/redisearch.so", \
     # "--loadmodule", "/usr/src/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/src/redis/modules/rejson.so" \
     ]

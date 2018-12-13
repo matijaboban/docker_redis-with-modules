@@ -391,12 +391,12 @@ jobs:
             make -C ~/project/build/redis/src -j 8;
 
 
-      - run:
-          name: temp exit
-          command: |
-            ls ~/project/build/redis/src
+      # - run:
+      #     name: temp exit
+      #     command: |
+      #       ls ~/project/build/redis/src
 
-            exit 2
+      #       exit 2
       #
       #
     #   - *attach_workspace
@@ -418,11 +418,11 @@ jobs:
       #       curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
       #       tar xzf *.tar.gz
       #
-      - run:
-          name: Get module tag from Github
-          command: |
-            cp /tmp/workspace/download/redis-${lib_redis_release}.zip ~/project/
-            unzip -q redis-${lib_redis_release}.zip
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       cp /tmp/workspace/download/redis-${lib_redis_release}.zip ~/project/
+      #       unzip -q redis-${lib_redis_release}.zip
 
 
     # disable Redis protected mode [1] as it is unnecessary in context of Docker
@@ -432,18 +432,18 @@ jobs:
       # sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
       # grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h; \
 
-      - run:
-          name: Pre-build updates
-          command: |
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
-            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
+      # - run:
+      #     name: Pre-build updates
+      #     command: |
+      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
+      #       sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
+      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
 
-      - run:
-          name: Build redis core
-          command: |
-            cd ~/project/r*
-            make
+      # - run:
+      #     name: Build redis core
+      #     command: |
+      #       cd ~/project/r*
+      #       make
 
       # - run:
       #     name: Test redis core
@@ -471,11 +471,11 @@ jobs:
       #       cp redis.conf ~/project/build/redis/core/
       #       cp sentinel.conf ~/project/build/redis/core/
 
-      - run:
-          name: Make install and move
-          command: |
-            cd ~/project/
-            tar -czvf /tmp/workspace/build/redis/core/core.tar.gz  r*/
+      # - run:
+      #     name: Make install and move
+      #     command: |
+      #       cd ~/project/
+      #       tar -czvf /tmp/workspace/build/redis/core/core.tar.gz  r*/
 
 
       # - run: |
@@ -660,11 +660,11 @@ jobs:
             cp ~/project/build/rejson/src/*.so /tmp/workspace/compiled/rejson/
 
 
-      - run:
-          name: exit 2
-          command: |
-            ls ~/project/build/rejson
-            ls /tmp/workspace/compiled/rejson/
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       ls ~/project/build/rejson
+      #       ls /tmp/workspace/compiled/rejson/
 
 
       # - restore_cache:
@@ -1102,12 +1102,8 @@ workflows:
             - run:
                 name: location
                 command: |
-                  cd /tmp/workspace/
+                  cd /tmp/workspace/compiled
                   pwd
-                  ls
-                  cd compiled
-                  pwd
-                  ls
 
             # - run:
             #     name: Create workspace directory
@@ -1134,16 +1130,14 @@ workflows:
                 name: Do this after checkout.
                 command: |
                   cd /tmp/workspace/compiled/
+                  pwd
                   ls
-                  cd rejson
-                  ls
-                  exit 2
 
             - run:
                 name: Do this after checkout.
                 command: |
                   ls
-                  cp -r /tmp/workspace/build/* build/
+                  cp -r /tmp/workspace/build/compiled/* build/
 
       - test:
           requires:
