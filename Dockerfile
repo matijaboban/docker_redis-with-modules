@@ -14,8 +14,8 @@ RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
 
 
-COPY build/redis/core/* /usr/src/redis/core/
-COPY build/redis/compiled/rejson/* /usr/src/redis/modules/
+# COPY build/redis/core/* /usr/src/redis/core/
+COPY build/compiled/rejson/* /usr/src/redis/modules/
 
 RUN ls /usr/src/redis/core/
 RUN ls /usr/src/redis/modules/

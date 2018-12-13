@@ -1137,7 +1137,7 @@ workflows:
                 name: Do this after checkout.
                 command: |
                   ls
-                  cp -r /tmp/workspace/build/compiled/* build/
+                  cp -r /tmp/workspace/compiled/* build/compiled/
 
       - test:
           requires:
