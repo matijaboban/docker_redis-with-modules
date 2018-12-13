@@ -580,6 +580,8 @@ jobs:
             - redis
 
   build-redisbloom:
+    executor: alpine-executor
+
     steps:
       - executor-alpine-setup-dependencies
 
