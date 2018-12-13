@@ -369,19 +369,25 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
-            mv ~/project/build/* ~/project/build/redis
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
+            mv ~/project/build/* ~/project/build/redis)
 
       - run:
           name: Pre-build updates
           command: |
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/redis/src/server.h
-            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/build/redis/src/server.h
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/redis/src/server.h
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/redis/src/server.h && \
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/build/redis/src/server.h && \
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/redis/src/server.h)
 
       - run:
           name: Build module
           command: |
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
             make -C ~/project/build/redis/src -j 8
 
       ## Tests are prepared with brute-force removal of some
@@ -393,16 +399,18 @@ jobs:
       - run:
           name: Test redis core
           command: |
-            cd ~/project/build/redis
-            rm tests/integration/aof.tcl
-            rm tests/integration/logging.tcl
-            rm tests/unit/slowlog.tcl
-            mv tests/test_helper.tcl tests/test_helper.tcl.original
-            egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.original > tests/test_helper.tcl
-            rm tests/test_helper.tcl.original
-            mv tests/test_helper.tcl tests/test_helper.tcl.original
-            egrep -v 'unit/slowlog' tests/test_helper.tcl.original > tests/test_helper.tcl
-            make test -j 2
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (cd ~/project/build/redis && \
+            rm tests/integration/aof.tcl && \
+            rm tests/integration/logging.tcl && \
+            rm tests/unit/slowlog.tcl && \
+            mv tests/test_helper.tcl tests/test_helper.tcl.original && \
+            egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.original > tests/test_helper.tcl && \
+            rm tests/test_helper.tcl.original && \
+            mv tests/test_helper.tcl tests/test_helper.tcl.original && \
+            egrep -v 'unit/slowlog' tests/test_helper.tcl.original > tests/test_helper.tcl && \
+            make test -j 2)
 
       # - run:
       #     name: Copy compiled module to workspace
@@ -413,17 +421,19 @@ jobs:
       - run:
           name: Copy compiled assets to workspace
           command: |
-            mkdir -p /tmp/workspace/compiled/core/
-            cd ~/project/build/redis
-            cp src/redis-benchmark /tmp/workspace/compiled/core/
-            cp src/redis-check-aof /tmp/workspace/compiled/core/
-            cp src/redis-check-rdb /tmp/workspace/compiled/core/
-            cp src/redis-cli /tmp/workspace/compiled/core/
-            cp src/redis-sentinel /tmp/workspace/compiled/core/
-            cp src/redis-server /tmp/workspace/compiled/core/
-            cp utils/install_server.sh /tmp/workspace/compiled/core/
-            cp redis.conf /tmp/workspace/compiled/core/
-            cp redis.conf /tmp/workspace/compiled/core/
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (mkdir -p /tmp/workspace/compiled/core/ && \
+            cd ~/project/build/redis && \
+            cp src/redis-benchmark /tmp/workspace/compiled/core/ && \
+            cp src/redis-check-aof /tmp/workspace/compiled/core/ && \
+            cp src/redis-check-rdb /tmp/workspace/compiled/core/ && \
+            cp src/redis-cli /tmp/workspace/compiled/core/ && \
+            cp src/redis-sentinel /tmp/workspace/compiled/core/ && \
+            cp src/redis-server /tmp/workspace/compiled/core/ && \
+            cp utils/install_server.sh /tmp/workspace/compiled/core/ && \
+            cp redis.conf /tmp/workspace/compiled/core/ && \
+            cp redis.conf /tmp/workspace/compiled/core/)
 
       - persist_to_workspace:
           root: *workspace_root
