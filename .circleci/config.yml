@@ -540,7 +540,7 @@ jobs:
 
   build-redisml:
     executor: alpine-executor
-
+    ## TODO: solve install on alpine due to matrix.c:3:19: fatal error: cblas.h: No such file or directory
     steps:
       - executor-alpine-setup-dependencies
 
@@ -557,9 +557,15 @@ jobs:
             mv ~/project/build/r*  ~/project/build/redis-ml
 
       - run:
+          name: Prepare build | review
+          command: |
+            cd ~/project/build/redis-ml/src
+            wget http://www.netlib.org/blas/cblas.h
+
+      - run:
           name: Build module
           command: |
-            make -C ~/project/build/redis-ml/src -j 8;
+            make -C ~/project/build/redis-ml/src -j 8
 
       - run:
           name: Copy compiled module to workspace
@@ -906,43 +912,70 @@ jobs:
             - redis
 
   build-redisgraph:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
+      - executor-alpine-setup-dependencies
+
       - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get update
-            apt-get install -y build-essential
-            apt-get install -y cmake
+      - libs-external-get:
+          lib-name: RedisGraph
+          lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
 
       - run:
-          name: Create workspace directory
+          name: Unpack external lib
           command: |
-            mkdir -p ~/project/build/redis/modules
-
-      - run:
-          name: Get module tag from Github
-          command: |
-            curl -OL https://github.com/RedisLabsModules/RedisGraph/archive/v1.0.2.tar.gz
-            tar xzf *.tar.gz
+            unzip -q /tmp/workspace/download/RedisGraph/r*.zip -d ~/project/build/ && \
+            mv ~/project/build/r*  ~/project/build/RedisGraph
 
       - run:
           name: Build module
           command: |
-            cd ~/project/R*
-            make
-            cp src/*.so ~/project/build/redis/modules/
+            make -C ~/project/build/RedisGraph -j 8;
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - redis
+            - compiled/modules
+
+
+
+      # - run:
+      #     name: Install Dependencies
+      #     command: |
+      #       apt-get update
+      #       apt-get install -y build-essential
+      #       apt-get install -y cmake
+
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       mkdir -p ~/project/build/redis/modules
+
+      # - run:
+      #     name: Get module tag from Github
+      #     command: |
+      #       curl -OL https://github.com/RedisLabsModules/RedisGraph/archive/v1.0.2.tar.gz
+      #       tar xzf *.tar.gz
+
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       cd ~/project/R*
+      #       make
+      #       cp src/*.so ~/project/build/redis/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - redis
 
 
   temptest:
@@ -1111,9 +1144,9 @@ workflows:
       # - build-redisearch:
       #     requires:
       #       - lint
-      - build-redisml:
-          requires:
-            - base
+      # - build-redisml:
+      #     requires:
+      #       - base
       - build-redisbloom:
           requires:
             - base
@@ -1126,9 +1159,9 @@ workflows:
       # - build-redex:
       #     requires:
       #       - lint
-      # - build-redisgraph:
-      #     requires:
-      #       - lint
+      - build-redisgraph:
+          requires:
+            - base
 
       # - temptest:
           # requires:
@@ -1150,9 +1183,10 @@ workflows:
           requires:
             - build-redis
             # - build-redisearch
-            - build-redisml
+            # - build-redisml
             - build-rejson
             - build-redisbloom
+            - build-redisgraph
           after_checkout:
             - *attach_workspace
 

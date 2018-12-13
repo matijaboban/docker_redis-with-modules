@@ -25,3 +25,8 @@ libs:
       <<: *github-defaults
       name: redis-ml
       release: 9bc5814ab3fcc8ea33edd0c060c0f84eead05c28
+  redisgraph:
+    github:
+      <<: *github-defaults
+      name: RedisGraph
+      release: v1.0.4
