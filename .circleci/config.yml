@@ -114,6 +114,7 @@ commands:
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
+            rm libs-external-get.parameters
             echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
             echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
             echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
