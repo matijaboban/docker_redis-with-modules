@@ -553,7 +553,7 @@ jobs:
           name: Unpack external lib
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo compiled module found, skipping step && exit 0);
+            && (echo file exists, skipping && exit 0);
             unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build
             mv ~/project/build/*  ~/project/build/RediSearch
 
@@ -561,11 +561,11 @@ jobs:
           name: Build module
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo compiled module found, skipping step && exit 0);
-            mkdir -p ~/project/build/RediSearch/compile
-            cd ~/project/build/RediSearch/compile
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            make -j 8
+            && (echo file exists, skipping && exit 0) || echo bla
+            (mkdir -p ~/project/build/RediSearch/compile && \
+            cd ~/project/build/RediSearch/compile && \
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
+            make -j 8)
 
       # - run:
       #     name: Test module | TODO
@@ -577,9 +577,10 @@ jobs:
           name: Copy compiled module to workspace
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo compiled module found, skipping step && exit 0);
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
+            && echo file exists, skipping \
+            || \
+            (mkdir -p /tmp/workspace/compiled/modules/ && \
+            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
       - save_cache:
           key: external-dependencies-compile-cache-v01-redis-q1
@@ -591,7 +592,7 @@ jobs:
           paths:
             - compiled/modules
 
-      # - run: exit 2
+      - run: exit 2
 
 
 
