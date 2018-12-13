@@ -539,45 +539,73 @@ jobs:
             - build
 
   build-redisml:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
+      - executor-alpine-setup-dependencies
+
       - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get update
-            apt-get install -y cmake
-            apt-get install -y zip
-            apt-get install -y libatlas-base-dev
+      - libs-external-get:
+          lib-name: redis-ml
+          lib-release: $(yq -r .libs.redisml.github.release /tmp/workspace/config.yaml)
 
       - run:
-          name: Create workspace directory
+          name: Unpack external lib
           command: |
-            mkdir -p ~/project/build/redis/modules
-
-      - run:
-          name: Get module tag from Github
-          command: |
-            curl -OL https://github.com/RedisLabsModules/redis-ml/archive/master.zip
-            unzip *.zip
-
+            unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
+            mv ~/project/build/r*  ~/project/build/redis-ml
 
       - run:
           name: Build module
           command: |
-            cd ~/project/r*/src
-            make
-            cp *.so ~/project/build/redis/modules/
+            make -C ~/project/build/redis-ml/src -j 8;
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/redis-ml/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - redis
+            - compiled/modules
+
+    # steps:
+    #   - *attach_workspace
+
+    #   - run:
+    #       name: Install Dependencies
+    #       command: |
+    #         apt-get update
+    #         apt-get install -y cmake
+    #         apt-get install -y zip
+    #         apt-get install -y libatlas-base-dev
+
+    #   - run:
+    #       name: Create workspace directory
+    #       command: |
+    #         mkdir -p ~/project/build/redis/modules
+
+    #   - run:
+    #       name: Get module tag from Github
+    #       command: |
+    #         curl -OL https://github.com/RedisLabsModules/redis-ml/archive/master.zip
+    #         unzip *.zip
+
+
+    #   - run:
+    #       name: Build module
+    #       command: |
+    #         cd ~/project/r*/src
+    #         make
+    #         cp *.so ~/project/build/redis/modules/
+
+    #   - persist_to_workspace:
+    #       root: *workspace_root
+    #       paths:
+    #         - redis
 
   build-redisbloom:
     executor: alpine-executor
@@ -1083,9 +1111,9 @@ workflows:
       # - build-redisearch:
       #     requires:
       #       - lint
-      # - build-redisml:
-      #     requires:
-      #       - lint
+      - build-redisml:
+          requires:
+            - base
       - build-redisbloom:
           requires:
             - base
@@ -1122,7 +1150,7 @@ workflows:
           requires:
             - build-redis
             # - build-redisearch
-            # - build-redisml
+            - build-redisml
             - build-rejson
             - build-redisbloom
           after_checkout:

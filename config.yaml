@@ -20,3 +20,8 @@ libs:
       <<: *github-defaults
       name: rebloom
       release: 955989f38778916f1bde0dc6998626333233d283
+  redisml:
+    github:
+      <<: *github-defaults
+      name: redis-ml
+      release: 9bc5814ab3fcc8ea33edd0c060c0f84eead05c28
