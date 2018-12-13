@@ -85,6 +85,7 @@ commands:
             apt install build-essential -y
             apt install cmake -y
             apt install zip -y
+            apt install libatlas-base-dev -y
             pip install yq
 
   executor-env-variables:
@@ -559,12 +560,6 @@ jobs:
             unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
             mv ~/project/build/r*  ~/project/build/redis-ml
 
-      # - run:
-      #     name: Prepare build | review
-      #     command: |
-      #       cd ~/project/build/redis-ml/src
-      #       wget http://www.netlib.org/blas/cblas.h
-
       - run:
           name: Build module
           command: |
@@ -574,7 +569,7 @@ jobs:
           name: Copy compiled module to workspace
           command: |
             mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/redis-ml/*.so /tmp/workspace/compiled/modules/
+            cp ~/project/build/redis-ml/src/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
