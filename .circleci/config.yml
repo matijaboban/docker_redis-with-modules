@@ -45,6 +45,10 @@ commands:
     description: "Alpine image dependencies install"
     steps:
       - run:
+          name: Package manager | update list of available packages
+          command: apk update
+
+      - run:
           name: Package manager | install packages
           command: |
             apk add zip
@@ -63,6 +67,7 @@ commands:
       - run:
           name: python / pip install
           command: |
+            apk add jq
             apk add py-pip
             pip install yq
 
