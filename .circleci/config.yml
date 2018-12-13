@@ -1001,6 +1001,9 @@ jobs:
           lib-name: RedisGraph
           lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
 
+      - restore_cache:
+          key: external-dependencies-compile-cache-v01-redisgraph-q1
+
       - run:
           name: Unpack external lib
           command: |
@@ -1023,6 +1026,11 @@ jobs:
             && (echo file exists, skipping && exit 0) || \
             (mkdir -p /tmp/workspace/compiled/modules/ && \
             cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
+
+      - save_cache:
+          key: external-dependencies-compile-cache-v01-redisgraph-q1
+          paths:
+            - /tmp/workspace/compiled/modules/redisgraph.so
 
       - persist_to_workspace:
           root: *workspace_root
