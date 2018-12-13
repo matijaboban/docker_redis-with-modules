@@ -399,7 +399,7 @@ jobs:
             egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.original > tests/test_helper.tcl
             rm tests/test_helper.tcl.original
             mv tests/test_helper.tcl tests/test_helper.tcl.original
-            egrep -v 'unit/slowlog)' tests/test_helper.tcl.original > tests/test_helper.tcl
+            egrep -v 'unit/slowlog' tests/test_helper.tcl.original > tests/test_helper.tcl
             make test
 
       # - run:
