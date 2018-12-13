@@ -382,14 +382,20 @@ jobs:
           command: |
             make -C ~/project/build/redis/src -j 8
 
+      ## Tests are prepared with brute-force removal of some
+      ## desting due to musl libc instead of glibc on Alpine
+      ## https://github.com/antirez/redis/issues/2814
+      ## Could posible be solved in the future by adding glibc
+      ## or a dedicated glibc capable glibc docker like
+      ## https://github.com/frol/docker-alpine-glibc
       - run:
           name: Test redis core
           command: |
-            cd ~/project/build/redis/src
+            cd ~/project/build/redis
             rm tests/integration/aof.tcl
             rm tests/integration/logging.tcl
-            mv tests/test_helper.tcl tests/test_helper.tcl.ORIG
-            egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.ORIG > tests/test_helper.tcl
+            mv tests/test_helper.tcl tests/test_helper.tcl.original
+            egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.original > tests/test_helper.tcl
             make test
 
       # - run:
