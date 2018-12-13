@@ -925,43 +925,38 @@ jobs:
             - redis
 
   build-redex:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
+    executor: alpine-executor
 
     steps:
+      - executor-alpine-setup-dependencies
+
       - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get update
-            apt-get install -y zip
+      - libs-external-get:
+          lib-name: redex
+          lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
 
       - run:
-          name: Create workspace directory
+          name: Unpack external lib
           command: |
-            mkdir -p ~/project/build/redis/modules
-
-      - run:
-          name: Get module tag from Github
-          command: |
-            curl -OL https://github.com/RedisLabsModules/redex/archive/master.zip
-            unzip *.zip
+            unzip -q /tmp/workspace/download/redex/*.zip -d ~/project/build/ && \
+            mv ~/project/build/*  ~/project/build/redex
 
       - run:
           name: Build module
           command: |
-            cd ~/project/r*
-            make
-            cd src
-            cp *.so ~/project/build/redis/modules/
+            make -C ~/project/build/redex -j 8;
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p /tmp/workspace/compiled/modules/
+            cp ~/project/build/redex/src/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - redis
+            - compiled/modules
 
   build-redisgraph:
     executor: python-executor
@@ -1211,9 +1206,10 @@ workflows:
       # - build-timeseries:
       #     requires:
       #       - lint
-      # - build-redex:
-      #     requires:
-      #       - lint
+      - build-redex:
+          requires:
+            - base
+            - lint
       - build-redisgraph:
           requires:
             - base
@@ -1243,6 +1239,7 @@ workflows:
             - build-rejson
             - build-redisbloom
             - build-redisgraph
+            - build-redex
           after_checkout:
             - *attach_workspace
 

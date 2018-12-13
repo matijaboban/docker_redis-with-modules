@@ -138,8 +138,16 @@ CMD [ \
     # "--loadmodule", "/usr/src/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/src/redis/modules/redisgraph.so", \
     "--loadmodule", "/usr/src/redis/modules/rebloom.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxgeo.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxhashes.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxkeys.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxlists.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxsets.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxstrings.so", \
+    "--loadmodule", "/usr/src/redis/modules/rxzsets.so", \
     "--loadmodule", "/usr/src/redis/modules/rejson.so" \
     ]
+
 
 # EXPOSE 6379
 # CMD ["redis-server"]

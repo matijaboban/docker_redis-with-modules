@@ -35,6 +35,11 @@ libs:
       <<: *github-defaults
       name: RediSearch
       release: v1.4.2
+  redex:
+    github:
+      <<: *github-defaults
+      name: redex
+      release: f2d35edf438f1ac2279c312056589ddf83af6efc
 
 
 
