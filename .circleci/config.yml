@@ -96,18 +96,18 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: "v030"
+        default: v030
       lib-github-org:
         type: string
-        default: "RedisLabsModules"
+        default: RedisLabsModules
       lib-name:
         type: string
-        default: "rejson"
+        default: rejson
       lib-release:
         type: string
       lib-release-package-extension:
         type: string
-        default: "zip"
+        default: zip
     steps:
 
       - run: echo << parameters.lib-release >>
@@ -186,14 +186,14 @@ jobs:
       #       echo "$lib_redis_release"
 
       - libs-external-get:
-          lib-github-org: antirez
-          lib-name: redis
+          lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
+          lib-name: $(yq -r .libs.redis.github.name /tmp/workspace/config.yaml)
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
 
-      # - libs-external-get:
-      #     lib-name: rejson
-      #     lib-release: $lib_rejson_release
+      - libs-external-get:
+          lib-name: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
+          lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
       # - libs-external-get:
       #     lib-name: redex
