@@ -364,7 +364,7 @@ jobs:
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
       - restore_cache:
-          key: external-dependencies-compile-cache-v3-redis-q1
+          key: external-dependencies-compile-cache-v03-redis-q1
 
       - run:
           name: Unpack external lib
