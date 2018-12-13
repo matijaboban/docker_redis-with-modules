@@ -213,7 +213,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - *.yaml
+            - config.yaml
 
   lint:
     executor: node-executor
@@ -612,7 +612,7 @@ jobs:
       - run:
           name: exit 2
           command: |
-            yq .libs.redis.github.release /tmp/workspace/config.yaml
+            yq .libs /tmp/workspace/config.yaml
             exit 2
 
 
