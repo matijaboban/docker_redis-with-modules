@@ -381,7 +381,7 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/rejson/redis*.zip -d ~/project/build/ && \
+            unzip -q /tmp/workspace/download/redis/redis*.zip -d ~/project/build/ && \
             mv ~/project/build/r* ~/project/build/redis
             ls ~/project/build/redis
 
@@ -421,8 +421,6 @@ jobs:
       - run:
           name: Get module tag from Github
           command: |
-            source ${BASH_ENV}
-            echo $lib_redis_release
             cp /tmp/workspace/download/redis-${lib_redis_release}.zip ~/project/
             unzip -q redis-${lib_redis_release}.zip
 
@@ -647,9 +645,8 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            source ${BASH_ENV}
-            unzip -q /tmp/workspace/download/rejson/rejson-$lib_rejson_release.zip -d ~/project/build/ && \
-            mv ~/project/build/rejson-$lib_rejson_release ~/project/build/rejson
+            unzip -q /tmp/workspace/download/rejson/r*.zip -d ~/project/build/ && \
+            mv ~/project/build/r*  ~/project/build/rejson
 
       - run:
           name: Build module
