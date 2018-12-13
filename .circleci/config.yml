@@ -84,6 +84,7 @@ commands:
             apt install jq -y
             apt install build-essential -y
             apt install cmake -y
+            apt install zip -y
             pip install yq
 
   executor-env-variables:
@@ -937,7 +938,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/RedisGraph -j 8;
+            make -C ~/project/build/RedisGraph -j 8
 
       - run:
           name: Copy compiled module to workspace
