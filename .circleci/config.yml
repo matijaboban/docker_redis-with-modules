@@ -600,13 +600,13 @@ jobs:
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/rebloom/src -j 8;
+            make -C ~/project/build/rebloom -j 8;
 
       - run:
           name: Copy compiled module to workspace
           command: |
             mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/rebloom/src/*.so /tmp/workspace/compiled/modules/
+            cp ~/project/build/rebloom/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
