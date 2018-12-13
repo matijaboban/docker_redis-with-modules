@@ -114,7 +114,7 @@ commands:
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
-            rm libs-external-get.parameters
+            > libs-external-get.parameters
             echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
             echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
             echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
@@ -189,12 +189,12 @@ jobs:
 
       - libs-external-get:
           lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
-          lib-name: $(yq -r .libs.redis.github.name /tmp/workspace/config.yaml)
+          lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
 
       - libs-external-get:
-          lib-name: $(yq -r .libs.rejson.github.name /tmp/workspace/config.yaml)
+          lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
       # - libs-external-get:
