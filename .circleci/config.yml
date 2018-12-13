@@ -1004,19 +1004,25 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/RedisGraph/*.zip -d ~/project/build/ && \
-            mv ~/project/build/*  ~/project/build/RedisGraph
+            test -e /tmp/workspace/compiled/modules/redisgraph.so \
+            && (echo file exists, skipping && exit 0) || \
+            (unzip -q /tmp/workspace/download/RedisGraph/*.zip -d ~/project/build/ && \
+            mv ~/project/build/*  ~/project/build/RedisGraph)
 
       - run:
           name: Build module
           command: |
+            test -e /tmp/workspace/compiled/modules/redisgraph.so \
+            && (echo file exists, skipping && exit 0) || \
             make -C ~/project/build/RedisGraph -j 8
 
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/
+            test -e /tmp/workspace/compiled/modules/redisgraph.so \
+            && (echo file exists, skipping && exit 0) || \
+            (mkdir -p /tmp/workspace/compiled/modules/ && \
+            cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
 
       - persist_to_workspace:
           root: *workspace_root
