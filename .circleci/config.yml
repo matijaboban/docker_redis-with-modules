@@ -603,7 +603,7 @@ jobs:
 
       - *attach_workspace
 
-      - executor-env-variables
+      # - executor-env-variables
 
       - libs-external-get:
           lib-name: rejson
