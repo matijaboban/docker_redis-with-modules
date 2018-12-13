@@ -762,7 +762,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - compiled
+            - compiled/modules
 
   build-timeseries:
     docker:
@@ -1137,8 +1137,9 @@ workflows:
                 name: Do this after checkout.
                 command: |
                   ls
-                  cp -r /tmp/workspace/compiled/modules/* build/compiled/modules/
-                  ls build/compiled/modules/
+                  mkdir -p ~/project/build/compiled/modules
+                  cp -r /tmp/workspace/compiled/modules/* ~/project/build/compiled/modules/
+                  ls build/compiled/modules
 
       - test:
           requires:
