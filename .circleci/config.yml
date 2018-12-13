@@ -542,10 +542,10 @@ jobs:
             - build
 
   build-redisml:
-    executor: alpine-executor
-    ## TODO: solve install on alpine due to matrix.c:3:19: fatal error: cblas.h: No such file or directory
+    executor: python-executor
+
     steps:
-      - executor-alpine-setup-dependencies
+      - executor-python-setup-dependencies
 
       - *attach_workspace
 
@@ -559,11 +559,11 @@ jobs:
             unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
             mv ~/project/build/r*  ~/project/build/redis-ml
 
-      - run:
-          name: Prepare build | review
-          command: |
-            cd ~/project/build/redis-ml/src
-            wget http://www.netlib.org/blas/cblas.h
+      # - run:
+      #     name: Prepare build | review
+      #     command: |
+      #       cd ~/project/build/redis-ml/src
+      #       wget http://www.netlib.org/blas/cblas.h
 
       - run:
           name: Build module
@@ -915,10 +915,7 @@ jobs:
             - redis
 
   build-redisgraph:
-    docker:
-      - image: python:3.7.1
-
-    working_directory: ~/project
+    executor: python-executor
 
     steps:
       - executor-python-setup-dependencies
@@ -1150,9 +1147,9 @@ workflows:
       # - build-redisearch:
       #     requires:
       #       - lint
-      # - build-redisml:
-      #     requires:
-      #       - base
+      - build-redisml:
+          requires:
+            - base
       - build-redisbloom:
           requires:
             - base
@@ -1189,7 +1186,7 @@ workflows:
           requires:
             - build-redis
             # - build-redisearch
-            # - build-redisml
+            - build-redisml
             - build-rejson
             - build-redisbloom
             - build-redisgraph
