@@ -379,7 +379,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/redis/src -j 8;
+            make -C ~/project/build/redis/src -j 8
 
       - run:
           name: Test redis core
@@ -393,7 +393,7 @@ jobs:
       #       mkdir -p /tmp/workspace/compiled/core/
       #       cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
 
-          - run:
+      - run:
           name: Copy compiled assets to workspace
           command: |
             cd ~/project/build/redis
