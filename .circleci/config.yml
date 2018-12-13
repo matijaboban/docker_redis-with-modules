@@ -517,26 +517,28 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/RediSearch/r*.zip -d ~/project/build/ && \
-            mv ~/project/build/r*  ~/project/build/RediSearch
+            unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
+            mv ~/project/build/*  ~/project/build/RediSearch
 
       - run:
           name: Build module
           command: |
-            cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            make -C ~/project/build/RediSearch/src -j 8
+            mkdir -p ~/project/build/RediSearch/compile
+            cd ~/project/build/RediSearch/compile
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+            make -j 8
 
-      - run:
-          name: Test module
-          command: |
-            pip install git+https://github.com/RedisLabsModules/RLTest
-            make test
+      # - run:
+      #     name: Test module | TODO
+      #     command: |
+      #       pip install git+https://github.com/RedisLabsModules/RLTest
+      #       make test
 
       - run:
           name: Copy compiled module to workspace
           command: |
             mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/RediSearch/src/*.so /tmp/workspace/compiled/modules/
+            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
