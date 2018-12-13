@@ -546,6 +546,9 @@ jobs:
           lib-name: RediSearch
           lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
 
+      - restore_cache:
+          key: external-dependencies-compile-cache-v01-redis-q1
+
       - run:
           name: Unpack external lib
           command: |
@@ -572,12 +575,17 @@ jobs:
             mkdir -p /tmp/workspace/compiled/modules/
             cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
 
+      - save_cache:
+          key: external-dependencies-compile-cache-v01-redis-q1
+          paths:
+            - /tmp/workspace/compiled/modules/redisearch.so
+
       - persist_to_workspace:
           root: *workspace_root
           paths:
             - compiled/modules
 
-
+      - run: exit 2
 
 
 
@@ -878,51 +886,51 @@ jobs:
           paths:
             - compiled/modules
 
-  build-timeseries:
-    docker:
-      - image: python:3.7.1
+  # build-timeseries:
+  #   docker:
+  #     - image: python:3.7.1
 
-    working_directory: ~/project
+  #   working_directory: ~/project
 
-    steps:
-      - *attach_workspace
+  #   steps:
+  #     - *attach_workspace
 
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get update
-            apt-get install -y zip
+  #     - run:
+  #         name: Install Dependencies
+  #         command: |
+  #           apt-get update
+  #           apt-get install -y zip
 
-      - run:
-          name: Create workspace directory
-          command: |
-            mkdir -p ~/project/build/redis/modules
+  #     - run:
+  #         name: Create workspace directory
+  #         command: |
+  #           mkdir -p ~/project/build/redis/modules
 
-      - run:
-          name: Get module tag from Github
-          command: |
-            curl -OL https://github.com/RedisLabsModules/redis-timeseries/archive/master.zip
-            unzip *.zip
+  #     - run:
+  #         name: Get module tag from Github
+  #         command: |
+  #           curl -OL https://github.com/RedisLabsModules/redis-timeseries/archive/master.zip
+  #           unzip *.zip
 
-      - run:
-          name: Get utility SDK from Github
-          command: |
-            cd r*/RedisModulesSDK/
-            curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip
-            unzip *.zip
-            mv R*/* .
+  #     - run:
+  #         name: Get utility SDK from Github
+  #         command: |
+  #           cd r*/RedisModulesSDK/
+  #           curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip
+  #           unzip *.zip
+  #           mv R*/* .
 
-      - run:
-          name: Build module
-          command: |
-            cd ~/project/r*/src
-            make
-            cp *.so ~/project/build/redis/modules/
+  #     - run:
+  #         name: Build module
+  #         command: |
+  #           cd ~/project/r*/src
+  #           make
+  #           cp *.so ~/project/build/redis/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - redis
+  #     - persist_to_workspace:
+  #         root: *workspace_root
+  #         paths:
+  #           - redis
 
   build-redex:
     executor: python-executor
@@ -1183,10 +1191,10 @@ workflows:
     jobs:
       - base
       - lint
-      - build-redis:
-          requires:
-            - base
-            - lint
+      # - build-redis:
+      #     requires:
+      #       - base
+      #       - lint
       - build-redisearch:
           requires:
             - base
@@ -1195,25 +1203,25 @@ workflows:
       #     requires:
       #       - base
       #       - lint
-      - build-redisbloom:
-          requires:
-            - base
-            - lint
-      - build-rejson:
-          requires:
-            - base
-            - lint
+      # - build-redisbloom:
+      #     requires:
+      #       - base
+      #       - lint
+      # - build-rejson:
+      #     requires:
+      #       - base
+      #       - lint
       # - build-timeseries:
       #     requires:
       #       - lint
-      - build-redex:
-          requires:
-            - base
-            - lint
-      - build-redisgraph:
-          requires:
-            - base
-            - lint
+      # - build-redex:
+      #     requires:
+      #       - base
+      #       - lint
+      # - build-redisgraph:
+      #     requires:
+      #       - base
+      #       - lint
 
       # - temptest:
           # requires:
@@ -1233,13 +1241,13 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            - build-redis
+            # - build-redis
             - build-redisearch
             # - build-redisml
-            - build-rejson
-            - build-redisbloom
-            - build-redisgraph
-            - build-redex
+            # - build-rejson
+            # - build-redisbloom
+            # - build-redisgraph
+            # - build-redex
           after_checkout:
             - *attach_workspace
 
