@@ -925,10 +925,10 @@ jobs:
             - redis
 
   build-redex:
-    executor: alpine-executor
+    executor: python-executor
 
     steps:
-      - executor-alpine-setup-dependencies
+      - executor-python-setup-dependencies
 
       - *attach_workspace
 
