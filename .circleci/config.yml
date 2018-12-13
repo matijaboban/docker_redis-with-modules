@@ -213,9 +213,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - .
-            # - new-env-vars
-            # - download
+            - *.yaml
 
   lint:
     executor: node-executor
