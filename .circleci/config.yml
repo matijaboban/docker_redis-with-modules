@@ -115,7 +115,7 @@ commands:
         default: zip
     steps:
 
-      - run: echo << parameters.lib-release >>
+      # - run: echo << parameters.lib-release >>
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
@@ -349,7 +349,7 @@ jobs:
     executor: alpine-executor
 
     steps:
-      - checkout
+      # - checkout
 
       - executor-alpine-setup-dependencies
 
@@ -362,22 +362,41 @@ jobs:
 
       # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
-      - executor-env-variables
+      # - executor-env-variables
 
+
+
+      # - libs-external-get:
+      #     lib-github-org: antirez
+      #     lib-name: redis
+      #     lib-release: 5.0.2
 
 
       - libs-external-get:
-          lib-github-org: antirez
+          lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
           lib-name: redis
-          lib-release: 5.0.2
+          lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
 
-      # - run:
-      #     name: temp exit
-      #     command: |
-      #       ls /tmp/workspace/build/download/
+      - run:
+          name: Unpack external lib
+          command: |
+            unzip -q /tmp/workspace/download/rejson/redis*.zip -d ~/project/build/ && \
+            mv ~/project/build/r* ~/project/build/redis
+            ls ~/project/build/redis
 
-      #       exit 2
+      - run:
+          name: Build module
+          command: |
+            make -C ~/project/build/redis/src -j 8;
+
+
+      - run:
+          name: temp exit
+          command: |
+            ls ~/project/build/redis/src
+
+            exit 2
       #
       #
     #   - *attach_workspace
@@ -388,10 +407,10 @@ jobs:
       #       apt-get update
       #       apt-get install -y cmake
 
-      - run:
-          name: Create workspace directory
-          command: |
-            mkdir -p /tmp/workspace/build/redis/core
+      # - run:
+      #     name: Create workspace directory
+      #     command: |
+      #       mkdir -p /tmp/workspace/build/redis/core
 
       # - run:
       #     name: Get module tag from Github
@@ -614,11 +633,11 @@ jobs:
           lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
-      - run:
-          name: exit 2
-          command: |
-            yq .libs /tmp/workspace/config.yaml
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       yq .libs /tmp/workspace/config.yaml
+      #       exit 2
 
 
       # - libs-external-get:
@@ -1033,9 +1052,9 @@ workflows:
       - base:
           requires:
             - lint
-      # - build-redis:
-      #     requires:
-      #       - lint
+      - build-redis:
+          requires:
+            - base
       # - build-redisearch:
       #     requires:
       #       - lint
@@ -1076,7 +1095,7 @@ workflows:
 
       - docker-publish/publish:
           requires:
-            # - build-redis
+            - build-redis
             # - build-redisearch
             # - build-redisml
             - build-rejson
