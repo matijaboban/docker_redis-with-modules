@@ -82,6 +82,8 @@ commands:
           name: Package manager | install packages
           command: |
             apt install jq -y
+            apt install build-essential -y
+            apt install cmake -y
             pip install yq
 
   executor-env-variables:
@@ -912,10 +914,13 @@ jobs:
             - redis
 
   build-redisgraph:
-    executor: alpine-executor
+    docker:
+      - image: python:3.7.1
+
+    working_directory: ~/project
 
     steps:
-      - executor-alpine-setup-dependencies
+      - executor-python-setup-dependencies
 
       - *attach_workspace
 
@@ -926,8 +931,8 @@ jobs:
       - run:
           name: Unpack external lib
           command: |
-            unzip -q /tmp/workspace/download/RedisGraph/r*.zip -d ~/project/build/ && \
-            mv ~/project/build/r*  ~/project/build/RedisGraph
+            unzip -q /tmp/workspace/download/RedisGraph/*.zip -d ~/project/build/ && \
+            mv ~/project/build/*  ~/project/build/RedisGraph
 
       - run:
           name: Build module
