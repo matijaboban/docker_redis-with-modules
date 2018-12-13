@@ -400,7 +400,7 @@ jobs:
             rm tests/test_helper.tcl.original
             mv tests/test_helper.tcl tests/test_helper.tcl.original
             egrep -v 'unit/slowlog' tests/test_helper.tcl.original > tests/test_helper.tcl
-            make test
+            make test -j 2
 
       # - run:
       #     name: Copy compiled module to workspace
@@ -945,7 +945,7 @@ jobs:
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/redex -j 8;
+            make -C ~/project/build/redex
 
       - run:
           name: Copy compiled module to workspace
