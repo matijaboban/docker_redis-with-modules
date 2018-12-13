@@ -419,19 +419,20 @@ jobs:
             cp src/redis-cli /tmp/workspace/compiled/core/
             cp src/redis-sentinel /tmp/workspace/compiled/core/
             cp src/redis-server /tmp/workspace/compiled/core/
+            cp utils/install_server.sh /tmp/workspace/compiled/core/
             cp redis.conf /tmp/workspace/compiled/core/
-            cp sentinel.conf /tmp/workspace/compiled/core/
+            cp redis.conf /tmp/workspace/compiled/core/
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
             - compiled/core
 
-      - run:
-          name: temp exit
-          command: |
-            ls /tmp/workspace/compiled/core/
-            exit 2
+      # - run:
+      #     name: temp exit
+      #     command: |
+      #       ls /tmp/workspace/compiled/core/
+      #       exit 2
       #
       #
     #   - *attach_workspace
