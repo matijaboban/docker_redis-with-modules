@@ -561,7 +561,7 @@ jobs:
           name: Build module
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo file exists, skipping && exit 0) || echo bla \
+            && (echo file exists, skipping && exit 0) || \
             (mkdir -p ~/project/build/RediSearch/compile && \
             cd ~/project/build/RediSearch/compile && \
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
