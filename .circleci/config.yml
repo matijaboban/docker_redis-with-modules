@@ -119,27 +119,26 @@ commands:
             echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
             echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
             echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
-            cat libs-external-get.parameters
 
       - run:
           name: Create << parameters.lib-name >> workspace download directory
           command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
 
-      # - restore_cache:
-      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
+      - restore_cache:
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
 
-      # - run:
-      #     name: Get << parameters.lib-name >> tag from Github
-      #     command: |
-      #       test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
-      #       && echo file exists, skipping \
-      #       || \
-      #       wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+      - run:
+          name: Get << parameters.lib-name >> tag from Github
+          command: |
+            test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
+            && echo file exists, skipping \
+            || \
+            wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
 
-      # - save_cache:
-      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
-      #     paths:
-      #       - /tmp/workspace/download/<< parameters.lib-name >>/
+      - save_cache:
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
+          paths:
+            - /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
