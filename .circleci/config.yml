@@ -363,6 +363,8 @@ jobs:
           lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
+      - restore_cache:
+          key: external-dependencies-compile-cache-v01-redis-q1
 
       - run:
           name: Unpack external lib
@@ -427,6 +429,11 @@ jobs:
           root: *workspace_root
           paths:
             - compiled/core
+
+      - save_cache:
+          key: external-dependencies-compile-cache-v01-redis-q1
+          paths:
+            - /tmp/workspace/compiled/core/*
 
       # - run:
       #     name: temp exit
@@ -547,15 +554,15 @@ jobs:
           lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
 
       - restore_cache:
-          key: external-dependencies-compile-cache-v01-redis-q1
+          key: external-dependencies-compile-cache-v01-redisearch-q1
 
       - run:
           name: Unpack external lib
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo file exists, skipping && exit 0);
-            unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build
-            mv ~/project/build/*  ~/project/build/RediSearch
+            && (echo file exists, skipping && exit 0) || \
+            (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
+            mv ~/project/build/*  ~/project/build/RediSearch)
 
       - run:
           name: Build module
@@ -577,13 +584,12 @@ jobs:
           name: Copy compiled module to workspace
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && echo file exists, skipping \
-            || \
+            && echo file exists, skipping || \
             (mkdir -p /tmp/workspace/compiled/modules/ && \
             cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
       - save_cache:
-          key: external-dependencies-compile-cache-v01-redis-q1
+          key: external-dependencies-compile-cache-v01-redisearch-q1
           paths:
             - /tmp/workspace/compiled/modules/redisearch.so
 
@@ -592,7 +598,7 @@ jobs:
           paths:
             - compiled/modules
 
-      - run: exit 2
+      # - run: exit 2
 
 
 
