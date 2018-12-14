@@ -381,6 +381,68 @@ jobs:
           name: Test goss
           command: goss validate
 
+  test-redis-redisearch:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: goss validate
+
+  test-redis-redisbloom:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: goss validate
+
   build-redis:
     executor: alpine-executor
 
@@ -1365,9 +1427,20 @@ workflows:
           requires:
             - docker-publish/publish
 
+      - test-redis-redisearch:
+          requires:
+            - docker-publish/publish
+
+      - test-redis-redisbloom:
+          requires:
+            - docker-publish/publish
+
       - test-redis-rejson:
           requires:
             - docker-publish/publish
+
+
+
 
       # - build
       # - docker-publish/check
