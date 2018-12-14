@@ -319,9 +319,42 @@ jobs:
 
       #       exit 2
 
-  test:
+  test-redis-core:
+    executor: python-executor
+
     docker:
-      - image: python:3.7.1
+      - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: goss validate
+
+  test-redis-rejson:
+    executor: python-executor
+
+    docker:
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
     working_directory: ~/project
@@ -1330,7 +1363,11 @@ workflows:
                   cp -r /tmp/workspace/compiled/modules/* ~/project/build/compiled/modules/
                   ls build/compiled/modules
 
-      - test:
+      - test-redis-core:
+          requires:
+            - docker-publish/publish
+
+      - test-redis-rejson:
           requires:
             - docker-publish/publish
 
