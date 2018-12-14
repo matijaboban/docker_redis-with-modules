@@ -320,9 +320,8 @@ jobs:
       #       exit 2
 
   test-redis-core:
-    executor: python-executor
-
     docker:
+      - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
     working_directory: ~/project
@@ -352,9 +351,8 @@ jobs:
           command: goss validate
 
   test-redis-rejson:
-    executor: python-executor
-
     docker:
+      - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
     working_directory: ~/project
