@@ -324,7 +324,7 @@ jobs:
       - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
 
-    working_directory: /project
+    working_directory: ~/project
 
     steps:
       - *attach_workspace
