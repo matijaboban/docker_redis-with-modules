@@ -90,7 +90,7 @@ command:
     exit-status: 0
     # optional attributes
     stdout:
-    - "(integer) 1"
+    - 1
     timeout: 100 # in milliseconds
   # redis-cli BF.EXISTS keytype-bloom test-key_01:
   #   # required attributes
