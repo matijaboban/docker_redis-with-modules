@@ -457,7 +457,7 @@ jobs:
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
       - restore_cache:
-          key: external-dependencies-compile-cache-v03-redis-q1
+          key: external-dependencies-compile-cache-v04-redis-q1
 
       - run:
           name: Unpack external lib
@@ -516,7 +516,7 @@ jobs:
           command: |
             test -e /tmp/workspace/compiled/core/redis-server \
             && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            (mkdir -p /tmp/workspace/compiled/core/ && \
+            (mkdir -p /tmp/workspace/compiled/core/utils && \
             cd ~/project/build/redis && \
             cp src/redis-benchmark /tmp/workspace/compiled/core/ && \
             cp src/redis-check-aof /tmp/workspace/compiled/core/ && \
@@ -524,7 +524,7 @@ jobs:
             cp src/redis-cli /tmp/workspace/compiled/core/ && \
             cp src/redis-sentinel /tmp/workspace/compiled/core/ && \
             cp src/redis-server /tmp/workspace/compiled/core/ && \
-            cp utils/install_server.sh /tmp/workspace/compiled/core/ && \
+            cp utils/ /tmp/workspace/compiled/core/utils/ && \
             cp redis.conf /tmp/workspace/compiled/core/ && \
             cp redis.conf /tmp/workspace/compiled/core/)
 
@@ -534,7 +534,7 @@ jobs:
             - compiled/core
 
       - save_cache:
-          key: external-dependencies-compile-cache-v03-redis-q1
+          key: external-dependencies-compile-cache-v04-redis-q1
           paths:
             - /tmp/workspace/compiled/core
 

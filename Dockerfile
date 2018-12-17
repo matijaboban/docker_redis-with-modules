@@ -14,40 +14,50 @@ RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
 
 
-# COPY build/redis/core/* /usr/src/redis/core/
+COPY build/redis/core/* /usr/src/redis/core/
 COPY build/compiled/modules/* /usr/src/redis/modules/
 
 RUN ls /usr/src/redis/core/
 RUN ls /usr/src/redis/modules/
 
-## depe build
 RUN set -ex; \
-    \
-    apk add --no-cache --virtual .build-deps \
-    coreutils \
-    gcc \
-    jemalloc-dev \
-    linux-headers \
-    make \
-    musl-dev
+    mkdir -p /usr/local/bin; \
+    cd /usr/src/redis/core/; \
+    sudo install redis-server /usr/local/bin; \
+    sudo install redis-benchmark /usr/local/bin; \
+    sudo install redis-cli /usr/local/bin; \
+    sudo install redis-check-rdb /usr/local/bin; \
+    sudo install redis-check-aof /usr/local/bin; \
+    sudo ln -sf redis-server /usr/local/bin/redis-sentinel;
+
+# ## depe build
+# RUN set -ex; \
+#     \
+#     apk add --no-cache --virtual .build-deps \
+#     coreutils \
+#     gcc \
+#     jemalloc-dev \
+#     linux-headers \
+#     make \
+#     musl-dev
 
 
-## get source
-RUN set -ex; \
-    wget -O redis.tar.gz http://download.redis.io/releases/redis-5.0.2.tar.gz; \
-    tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1; \
-    rm redis.tar.gz
+# ## get source
+# RUN set -ex; \
+#     wget -O redis.tar.gz http://download.redis.io/releases/redis-5.0.2.tar.gz; \
+#     tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1; \
+#     rm redis.tar.gz
 
-#prepare
-RUN set -ex; \
-    grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' /usr/src/redis/src/server.h; \
-    sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
-    grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h;
+# #prepare
+# RUN set -ex; \
+#     grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' /usr/src/redis/src/server.h; \
+#     sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
+#     grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h;
 
-# make
-RUN set -ex; \
-    make -C /usr/src/redis -j 8; \
-    make -C /usr/src/redis install;
+# # make
+# RUN set -ex; \
+#     make -C /usr/src/redis -j 8; \
+#     make -C /usr/src/redis install;
 
 # install
 RUN \
@@ -56,7 +66,7 @@ RUN \
     REDIS_LOG_FILE=/var/log/redis_6379.log \
     REDIS_DATA_DIR=/var/lib/redis/6379 \
     REDIS_EXECUTABLE=`command -v redis-server` \
-    /usr/src/redis/utils/install_server.sh
+    /usr/src/redis/core/utils/install_server.sh
 
 
 ## configure server
