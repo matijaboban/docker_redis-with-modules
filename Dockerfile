@@ -4,17 +4,18 @@ FROM alpine:3.8
 RUN addgroup -S redis && adduser -S -G redis redis
 
 ## depe base
+# .. grab su-exec for easy step-down from root
+# .. add tzdata for https://github.com/docker-library/redis/issues/138
 RUN apk add --no-cache \
-    # grab su-exec for easy step-down from root
     'su-exec>=0.2' \
-    # add tzdata for https://github.com/docker-library/redis/issues/138
+    # apk add chkconfig \
     tzdata
 
 RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
 
 
-COPY build/redis/core/* /usr/src/redis/core/
+COPY build/compiled/core/ /usr/src/redis/core/
 COPY build/compiled/modules/* /usr/src/redis/modules/
 
 RUN ls /usr/src/redis/core/

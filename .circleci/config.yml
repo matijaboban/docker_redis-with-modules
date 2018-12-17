@@ -457,7 +457,7 @@ jobs:
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
       - restore_cache:
-          key: external-dependencies-compile-cache-v04-redis-q1
+          key: external-dependencies-compile-cache-v05-redis-q1
 
       - run:
           name: Unpack external lib
@@ -524,7 +524,7 @@ jobs:
             cp src/redis-cli /tmp/workspace/compiled/core/ && \
             cp src/redis-sentinel /tmp/workspace/compiled/core/ && \
             cp src/redis-server /tmp/workspace/compiled/core/ && \
-            cp -r utils/ /tmp/workspace/compiled/core/utils/ && \
+            cp -r utils/ /tmp/workspace/compiled/core/ && \
             cp redis.conf /tmp/workspace/compiled/core/ && \
             cp redis.conf /tmp/workspace/compiled/core/)
 
@@ -534,7 +534,7 @@ jobs:
             - compiled/core
 
       - save_cache:
-          key: external-dependencies-compile-cache-v04-redis-q1
+          key: external-dependencies-compile-cache-v05-redis-q1
           paths:
             - /tmp/workspace/compiled/core
 
@@ -1420,7 +1420,9 @@ workflows:
                 command: |
                   ls
                   mkdir -p ~/project/build/compiled/modules
+                  mkdir -p ~/project/build/compiled/core
                   cp -r /tmp/workspace/compiled/modules/* ~/project/build/compiled/modules/
+                  cp -r /tmp/workspace/compiled/core/* ~/project/build/compiled/core/
                   ls build/compiled/modules
 
       - test-redis-core:
