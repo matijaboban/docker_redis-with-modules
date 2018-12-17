@@ -23,12 +23,12 @@ RUN ls /usr/src/redis/modules/
 RUN set -ex; \
     mkdir -p /usr/local/bin; \
     cd /usr/src/redis/core/; \
-    sudo install redis-server /usr/local/bin; \
-    sudo install redis-benchmark /usr/local/bin; \
-    sudo install redis-cli /usr/local/bin; \
-    sudo install redis-check-rdb /usr/local/bin; \
-    sudo install redis-check-aof /usr/local/bin; \
-    sudo ln -sf redis-server /usr/local/bin/redis-sentinel;
+    install redis-server /usr/local/bin; \
+    install redis-benchmark /usr/local/bin; \
+    install redis-cli /usr/local/bin; \
+    install redis-check-rdb /usr/local/bin; \
+    install redis-check-aof /usr/local/bin; \
+    ln -sf redis-server /usr/local/bin/redis-sentinel;
 
 # ## depe build
 # RUN set -ex; \
