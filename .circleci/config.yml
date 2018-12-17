@@ -1083,10 +1083,10 @@ jobs:
             - compiled/modules
 
   build-redisgraph:
-    executor: python-executor
+    executor: alpine-executor
 
     steps:
-      - executor-python-setup-dependencies
+      - executor-alpine-setup-dependencies
 
       - *attach_workspace
 
@@ -1094,8 +1094,8 @@ jobs:
           lib-name: RedisGraph
           lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
 
-      - restore_cache:
-          key: external-dependencies-compile-cache-v01-redisgraph-q1
+      # - restore_cache:
+      #     key: external-dependencies-compile-cache-v01-redisgraph-q1
 
       - run:
           name: Unpack external lib
@@ -1120,10 +1120,10 @@ jobs:
             (mkdir -p /tmp/workspace/compiled/modules/ && \
             cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
 
-      - save_cache:
-          key: external-dependencies-compile-cache-v01-redisgraph-q1
-          paths:
-            - /tmp/workspace/compiled/modules/redisgraph.so
+      # - save_cache:
+      #     key: external-dependencies-compile-cache-v01-redisgraph-q1
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redisgraph.so
 
       - persist_to_workspace:
           root: *workspace_root
