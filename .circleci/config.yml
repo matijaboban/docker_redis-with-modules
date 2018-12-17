@@ -524,7 +524,7 @@ jobs:
             cp src/redis-cli /tmp/workspace/compiled/core/ && \
             cp src/redis-sentinel /tmp/workspace/compiled/core/ && \
             cp src/redis-server /tmp/workspace/compiled/core/ && \
-            cp utils/ /tmp/workspace/compiled/core/utils/ && \
+            cp -r utils/ /tmp/workspace/compiled/core/utils/ && \
             cp redis.conf /tmp/workspace/compiled/core/ && \
             cp redis.conf /tmp/workspace/compiled/core/)
 
