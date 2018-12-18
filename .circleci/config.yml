@@ -324,6 +324,7 @@ jobs:
     docker:
       - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
+        command: [--sysctl vm.overcommit_memory = 1]
 
     working_directory: ~/project
 
