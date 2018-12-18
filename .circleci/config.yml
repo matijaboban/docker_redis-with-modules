@@ -1441,11 +1441,11 @@ workflows:
           after_checkout:
             - *attach_workspace
 
-            - run:
-                name: location
-                command: |
-                  cd /tmp/workspace/compiled/modules
-                  pwd
+            # - run:
+            #     name: location
+            #     command: |
+            #       cd /tmp/workspace/compiled/modules
+            #       pwd
 
             # - run:
             #     name: Create workspace directory
@@ -1478,12 +1478,7 @@ workflows:
             - run:
                 name: Do this after checkout.
                 command: |
-                  ls
-                  mkdir -p ~/project/build/compiled/modules
-                  mkdir -p ~/project/build/compiled/core
-                  cp -r /tmp/workspace/compiled/modules/* ~/project/build/compiled/modules/
-                  cp -r /tmp/workspace/compiled/core/* ~/project/build/compiled/core/
-                  ls build/compiled/modules
+                  cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
 
       - test-redis-core:
           requires:
