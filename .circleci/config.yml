@@ -1038,14 +1038,14 @@ jobs:
             cd ~/project/build/redis-timeseries/src && \
             make all)
 
-      - run:
-          name: Test module | TODO
-          command: |
-            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
-            && (echo file exists, skipping && exit 0) || \
-            (cd ~/project/build/redis-timeseries/src && \
-            pip install -r tests/requirements.txt && \
-            make test)
+      # - run:
+      #     name: Test module | TODO
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (cd ~/project/build/redis-timeseries/src && \
+      #       pip install -r tests/requirements.txt && \
+      #       make tests)
 
       - run:
           name: Copy compiled module to workspace
