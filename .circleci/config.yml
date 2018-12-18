@@ -1085,6 +1085,7 @@ jobs:
 
   build-redisgraph:
     executor: python-executor
+    ## TODO: has to be build on Alpine to avoid: # /root/project/build/RedisGraph/src/value.h:56:5: error: unknown type name 'int32_t'
 
     steps:
       - executor-python-setup-dependencies
