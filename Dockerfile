@@ -7,7 +7,7 @@ RUN addgroup -S redis && adduser -S -G redis redis
 # .. grab su-exec for easy step-down from root
 # .. add tzdata for https://github.com/docker-library/redis/issues/138
 RUN set -ex;\
-    apt-get update;\
+    apk update; \
     apk add --no-cache \
     'su-exec>=0.2' \
     # apk add chkconfig \
