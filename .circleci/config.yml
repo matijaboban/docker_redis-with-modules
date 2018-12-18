@@ -1478,6 +1478,7 @@ workflows:
             - run:
                 name: Do this after checkout.
                 command: |
+                  mkdir -p ~/project/build/compiled
                   cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
 
       - test-redis-core:
