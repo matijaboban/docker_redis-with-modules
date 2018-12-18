@@ -48,19 +48,20 @@ commands:
           name: Package manager | update list of available packages
           command: apk update
 
+          # apk add gcc
+          # apk add musl-dev
+          # apk add make
+          # apk add g++
       - run:
           name: Package manager | install packages
           command: |
+            apk add build-base
             apk add zip
             apk add curl
             apk add coreutils
-            apk add gcc
             apk add jemalloc-dev
             apk add linux-headers
-            apk add make
             apk add cmake
-            apk add g++
-            apk add musl-dev
             apk add ca-certificates
             apk add bash
             apk add tcl
@@ -1083,10 +1084,10 @@ jobs:
             - compiled/modules
 
   build-redisgraph:
-    executor: alpine-executor
+    executor: python-executor
 
     steps:
-      - executor-alpine-setup-dependencies
+      - executor-python-setup-dependencies
 
       - *attach_workspace
 
@@ -1094,8 +1095,8 @@ jobs:
           lib-name: RedisGraph
           lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
 
-      # - restore_cache:
-      #     key: external-dependencies-compile-cache-v01-redisgraph-q1
+      - restore_cache:
+          key: external-dependencies-compile-cache-v02-redisgraph-q1
 
       - run:
           name: Unpack external lib
@@ -1120,10 +1121,10 @@ jobs:
             (mkdir -p /tmp/workspace/compiled/modules/ && \
             cp ~/project/build/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
 
-      # - save_cache:
-      #     key: external-dependencies-compile-cache-v01-redisgraph-q1
-      #     paths:
-      #       - /tmp/workspace/compiled/modules/redisgraph.so
+      - save_cache:
+          key: external-dependencies-compile-cache-v02-redisgraph-q1
+          paths:
+            - /tmp/workspace/compiled/modules/redisgraph.so
 
       - persist_to_workspace:
           root: *workspace_root
