@@ -6,6 +6,7 @@ RUN addgroup -S redis && adduser -S -G redis redis
 ## depe base
 # .. grab su-exec for easy step-down from root
 # .. add tzdata for https://github.com/docker-library/redis/issues/138
+# .. libgomp required for redisgraph
 RUN set -ex;\
     apk update; \
     apk add --no-cache \
@@ -159,6 +160,7 @@ CMD [ \
     "--loadmodule", "/usr/src/redis/modules/rxsets.so", \
     "--loadmodule", "/usr/src/redis/modules/rxstrings.so", \
     "--loadmodule", "/usr/src/redis/modules/rxzsets.so", \
+    "--loadmodule", "/usr/src/redis/modules/redis-tsdb-module.so", \
     "--loadmodule", "/usr/src/redis/modules/rejson.so" \
     ]
 

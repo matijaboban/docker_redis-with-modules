@@ -40,6 +40,11 @@ libs:
       <<: *github-defaults
       name: redex
       release: f2d35edf438f1ac2279c312056589ddf83af6efc
+  redistimeseries:
+    github:
+      <<: *github-defaults
+      name: redis-timeseries
+      release: e386e523dde78d2bbaa15f704eb78214ff9d3b9f
 
 
 

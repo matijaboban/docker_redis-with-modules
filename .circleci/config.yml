@@ -1003,14 +1003,70 @@ jobs:
           paths:
             - compiled/modules
 
-  # build-timeseries:
-  #   docker:
-  #     - image: python:3.7.1
+  build-redistimeseries:
+    executor: alpine-executor
 
-  #   working_directory: ~/project
+    steps:
+      - executor-alpine-setup-dependencies
 
-  #   steps:
-  #     - *attach_workspace
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: redis-timeseries
+          lib-release: $(yq -r .libs.redistimeseries.github.release /tmp/workspace/config.yaml)
+
+      # - restore_cache:
+      #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
+
+      - run:
+          name: Unpack external lib
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && (echo file exists, skipping && exit 0) || \
+            (unzip -q /tmp/workspace/download/redis-timeseries/*.zip -d ~/project/build && \
+            mv ~/project/build/*  ~/project/build/redis-timeseries)
+
+      - run:
+          name: Build module
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && (echo file exists, skipping && exit 0) || \
+            (cd ~/project/build/redis-timeseries/RedisModulesSDK/ && \
+            curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip && \
+            unzip *.zip && \
+            mv R*/* . && \
+            cd ~/project/build/redis-timeseries/src && \
+            make all)
+
+      - run:
+          name: Test module | TODO
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && (echo file exists, skipping && exit 0) || \
+            (cd ~/project/build/redis-timeseries/src && \
+            pip install -r tests/requirements.txt && \
+            make test)
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && echo file exists, skipping || \
+            (mkdir -p /tmp/workspace/compiled/modules/ && \
+            cp ~/project/build/redis-timeseries/src/*.so /tmp/workspace/compiled/modules/)
+
+      # - save_cache:
+      #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redis-tsdb-module.so
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - compiled/modules
+
+
+
 
   #     - run:
   #         name: Install Dependencies
@@ -1343,9 +1399,10 @@ workflows:
           requires:
             - base
             - lint
-      # - build-timeseries:
-      #     requires:
-      #       - lint
+      - build-redistimeseries:
+          requires:
+            - base
+            - lint
       - build-redex:
           requires:
             - base
@@ -1380,6 +1437,7 @@ workflows:
             - build-redisbloom
             - build-redisgraph
             - build-redex
+            - build-redistimeseries
           after_checkout:
             - *attach_workspace
 
