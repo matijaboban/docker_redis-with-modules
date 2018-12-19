@@ -359,7 +359,7 @@ jobs:
             mkdir bats
             cd bats
             wget https://github.com/matijaboban/bats/archive/master.zip
-            unzip -q master.zip .
+            unzip -q master.zip
             cd b*
             ./install.sh /usr/local
             bats --version
