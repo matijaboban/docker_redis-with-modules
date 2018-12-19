@@ -324,7 +324,7 @@ jobs:
     docker:
       - image: python:3.7.1
       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
-        command: [--sysctl vm.overcommit_memory=1]
+        # command: [--sysctl vm.overcommit_memory=1]
 
     working_directory: ~/project
 
@@ -351,6 +351,17 @@ jobs:
       - run:
           name: Test goss
           command: goss validate
+
+      - run:
+          name: Install Bats
+          command: |
+            mkdir bats
+            cd bats
+            wget https://github.com/matijaboban/bats/archive/master.zip
+            sudo ./install.sh /usr/local
+            bats --version
+
+
 
   test-redis-rejson:
     docker:
