@@ -355,10 +355,13 @@ jobs:
       - run:
           name: Install Bats
           command: |
+            apt install zip -y
             mkdir bats
             cd bats
             wget https://github.com/matijaboban/bats/archive/master.zip
-            sudo ./install.sh /usr/local
+            unzip -q master.zip .
+            cd b*
+            ./install.sh /usr/local
             bats --version
 
 
