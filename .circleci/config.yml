@@ -209,10 +209,14 @@ commands:
             mv ~/project/build/* ~/project/build/redis
 
       - run:
-          name: exit 2
+          name: exit 1
           command: |
             ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
-            exit 2
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
 
 jobs:
 
@@ -264,16 +268,21 @@ jobs:
       - libs-external-unpack:
           lib-name: redis
 
-
-
       - libs-external-get:
           lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: rejson
 
       - libs-external-get:
           lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
           lib-name: bats
           lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
           lib-category: utils
 
       # - libs-external-get:
