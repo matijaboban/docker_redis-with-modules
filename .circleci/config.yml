@@ -160,8 +160,8 @@ commands:
 
       - run:
             command: |
-            ls /tmp/workspace/download/
-            ls /tmp/workspace/download/<< parameters.lib-name >>/
+              ls /tmp/workspace/download/
+              ls /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
