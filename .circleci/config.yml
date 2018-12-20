@@ -206,7 +206,7 @@ commands:
       - run:
           name: exit 2
           command: |
-            ls << parameters.lib-name/<< parameters.lib-category >>/<< parameters.lib-name >>
+            ls << parameters.lib-name >>/<< parameters.lib-category >>/<< parameters.lib-name >>
             exit 2
 
 jobs:
