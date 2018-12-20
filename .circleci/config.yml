@@ -123,8 +123,6 @@ commands:
         type: string
         default: libs
     steps:
-
-      # - run: echo << parameters.lib-release >>
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
@@ -168,8 +166,48 @@ commands:
       #       ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
       #       cat /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/lib.version
 
+  libs-external-unpack:
+    description: "TBA"
+    parameters:
+      base-workplace-download-dir:
+        type: string
+        default: /tmp/workspace/download
+      base-build-dir:
+        type: string
+        default: ~/project/build
+      base-cache-prefix:
+        type: string
+        default: v01
+      lib-github-org:
+        type: string
+        default: RedisLabsModules
+      lib-name:
+        type: string
+        default: rejson
+      lib-release:
+        type: string
+      lib-release-package-extension:
+        type: string
+        default: zip
+      lib-category:
+        type: string
+        default: libs
+    steps:
+      - run:
+          name: Create << parameters.lib-name >> build directory
+          command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
 
+      - run:
+          name: Unpack << parameters.lib-name >>
+          command: |
+            unzip -q << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.lib-name/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      - run:
+          name: exit 2
+          command: |
+            ls << parameters.lib-name/<< parameters.lib-category >>/<< parameters.lib-name >>
+            exit 2
 
 jobs:
 
@@ -217,6 +255,11 @@ jobs:
           lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
           lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: redis
+
+
 
       - libs-external-get:
           lib-name: rejson
