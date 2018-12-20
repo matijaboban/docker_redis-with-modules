@@ -147,7 +147,7 @@ commands:
       - run:
           name: Get << parameters.lib-name >> tag from Github
           command: |
-            test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
+            test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
             (wget -O /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> && \
