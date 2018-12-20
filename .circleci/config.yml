@@ -174,7 +174,7 @@ commands:
         default: /tmp/workspace/download
       base-build-dir:
         type: string
-        default: ~/project/build
+        default: project/build
       base-cache-prefix:
         type: string
         default: v01
@@ -199,12 +199,12 @@ commands:
       - run:
           name: Unpack << parameters.lib-name >>
           command: |
-            unzip -q << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.lib-name >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+            unzip -q ~/<< parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.lib-name >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
       - run:
           name: exit 2
           command: |
-            ls << parameters.lib-name >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+            ls ~/<< parameters.lib-name >>/<< parameters.lib-category >>/<< parameters.lib-name >>
             exit 2
 
 jobs:
