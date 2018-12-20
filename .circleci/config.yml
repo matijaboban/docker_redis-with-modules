@@ -195,18 +195,17 @@ commands:
           name: Create << parameters.lib-name >> build directory
           command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
-      - run:
-          name: exit 2
-          command: |
-            echo << parameters.base-workplace-download-dir >>
-            echo << parameters.base-build-dir >>
+      # - run:
+      #     name: status
+      #     command: |
+      #       echo << parameters.base-workplace-download-dir >>
+      #       echo << parameters.base-build-dir >>
 
       - run:
           name: Unpack << parameters.lib-name >>
           command: |
             unzip -q << parameters.base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
             mv -f << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/* << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
-            mv ~/project/build/* ~/project/build/redis
 
       - run:
           name: exit 1
