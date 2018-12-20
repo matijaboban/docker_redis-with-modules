@@ -184,8 +184,6 @@ commands:
       lib-name:
         type: string
         default: rejson
-      lib-release:
-        type: string
       lib-release-package-extension:
         type: string
         default: zip
