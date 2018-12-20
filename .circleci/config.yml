@@ -154,17 +154,19 @@ commands:
             cp ~/project/lib.version /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/ && \
             cd /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >> && \
             echo "lib-package=<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>" >>lib.version && \
-            echo "lib-sha256=$(sha256sum << parameters.lib-name >>.<< parameters.lib-release-package-extension >>  | cut -d " " -f 1)" >>lib.version)
+            echo "lib-package-sha256=$(sha256sum << parameters.lib-name >>.<< parameters.lib-release-package-extension >>  | cut -d " " -f 1)" >>lib.version)
 
-      # - save_cache:
-      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
-      #     paths:
-      #       - /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
+      ## TODO test file existance before cache save
 
-      - run:
-          command: |
-            ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
-            cat /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/lib.version
+      - save_cache:
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+          paths:
+            - /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
+
+      # - run:
+      #     command: |
+      #       ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
+      #       cat /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/lib.version
 
 
 
