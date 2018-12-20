@@ -353,7 +353,7 @@ jobs:
           command: goss validate
 
       - libs-external-get:
-          lib-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
           lib-name: bats
           lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
 
