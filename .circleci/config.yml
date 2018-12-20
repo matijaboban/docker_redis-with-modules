@@ -158,9 +158,10 @@ commands:
       #     paths:
       #       - /tmp/workspace/download/<< parameters.lib-name >>/
 
-      - RUN: |
-          ls /tmp/workspace/download/
-          ls /tmp/workspace/download/<< parameters.lib-name >>/
+      - run:
+            command: |
+            ls /tmp/workspace/download/
+            ls /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
