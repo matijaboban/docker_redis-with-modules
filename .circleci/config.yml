@@ -199,7 +199,7 @@ commands:
       - run:
           name: Unpack << parameters.lib-name >>
           command: |
-            unzip -q ~/<< parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+            unzip -q ~/<< parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
       - run:
           name: exit 2
