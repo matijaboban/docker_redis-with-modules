@@ -7,7 +7,9 @@ module.exports = {
     },
     plugins: [
         "docker",
-        "filenames"
+        "json",
+        "filenames",
+        "markdown"
     ],
     root: true,
     extends: [
