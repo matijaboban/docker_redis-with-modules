@@ -107,7 +107,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: v031
+        default: v032
       lib-github-org:
         type: string
         default: RedisLabsModules
