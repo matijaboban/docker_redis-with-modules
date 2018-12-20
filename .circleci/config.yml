@@ -329,6 +329,8 @@ jobs:
     working_directory: ~/project
 
     steps:
+      - executor-python-setup-dependencies
+
       - *attach_workspace
 
       - checkout
