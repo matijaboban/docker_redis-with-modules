@@ -107,7 +107,7 @@ commands:
     parameters:
       base-cache-prefix:
         type: string
-        default: v030
+        default: v031
       lib-github-org:
         type: string
         default: RedisLabsModules
@@ -119,26 +119,30 @@ commands:
       lib-release-package-extension:
         type: string
         default: zip
+      lib-category:
+        type: string
+        default: libs
     steps:
 
       # - run: echo << parameters.lib-release >>
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
-            > libs-external-get.parameters
-            echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>libs-external-get.parameters
-            echo "lib-github-org=<< parameters.lib-github-org >>" >>libs-external-get.parameters
-            echo "lib-name=<< parameters.lib-name >>" >>libs-external-get.parameters
-            echo "lib-release=<< parameters.lib-release >>" >>libs-external-get.parameters
-            echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>libs-external-get.parameters
-            cat libs-external-get.parameters
+            > lib.version
+            echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>lib.version
+            echo "lib-github-org=<< parameters.lib-github-org >>" >>lib.version
+            echo "lib-name=<< parameters.lib-name >>" >>lib.version
+            echo "lib-release=<< parameters.lib-release >>" >>lib.version
+            echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>lib.version
+            echo "lib-category=<< parameters.lib-category >>" >>lib.version
+            cat lib.version
 
       - run:
           name: Create << parameters.lib-name >> workspace download directory
           command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
 
       - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
+          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
@@ -146,12 +150,17 @@ commands:
             test -e /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> \
             && echo file exists, skipping \
             || \
-            wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >>
+            (wget -O /tmp/workspace/download/<< parameters.lib-name >>/<< parameters.lib-name >>-<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> && \
+            cp lib.version /tmp/workspace/download/<< parameters.lib-name >>/)
 
-      - save_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "libs-external-get.parameters" }}
-          paths:
-            - /tmp/workspace/download/<< parameters.lib-name >>/
+      # - save_cache:
+      #     key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+      #     paths:
+      #       - /tmp/workspace/download/<< parameters.lib-name >>/
+
+      - RUN: |
+          ls /tmp/workspace/download/
+          ls /tmp/workspace/download/<< parameters.lib-name >>/
 
 
 
@@ -198,25 +207,29 @@ jobs:
       #       echo "${lib_redis_release}"
       #       echo "$lib_redis_release"
 
-      # - libs-external-get:
-      #     lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
-      #     lib-name: redis
-      #     lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
+      - libs-external-get:
+          lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
+          lib-name: redis
+          lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
+      - libs-external-get:
+          lib-name: rejson
+          lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
-      # - libs-external-get:
-      #     lib-name: rejson
-      #     lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
 
       # - libs-external-get:
       #     lib-name: redex
       #     lib-release: $lib_redex_release
 
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       yq .libs.redis.github.release /tmp/workspace/config.yaml
-      #       exit 2
+      - run:
+          name: exit 2
+          command: |
+            exit 2
 
 
 
@@ -362,7 +375,6 @@ jobs:
       - run:
           name: Install Bats
           command: |
-            apt install zip -y
             mkdir -p util/bats
             unzip -q /tmp/workspace/download/bats/*.zip -d ~/project/util/bats
             cd ~/project/util/bats/b*
