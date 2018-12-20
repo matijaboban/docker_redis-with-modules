@@ -352,15 +352,18 @@ jobs:
           name: Test goss
           command: goss validate
 
+      - libs-external-get:
+          lib-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+
       - run:
           name: Install Bats
           command: |
             apt install zip -y
-            mkdir bats
-            cd bats
-            wget https://github.com/matijaboban/bats/archive/master.zip
-            unzip -q master.zip
-            cd b*
+            mkdir -p util/bats
+            unzip -q /tmp/workspace/download/bats/*.zip -d ~/project/util/bats
+            cd ~/project/util/bats/b*
             ./install.sh /usr/local
             bats --version
 
