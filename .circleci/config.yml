@@ -153,7 +153,7 @@ commands:
             (wget -O /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> && \
             cp lib.version /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/ & \
             cd /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >> && \
-            echo "lib-package=<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> >>lib.version && \
+            echo "lib-package=<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>"" >>lib.version && \
             echo "lib-sha256=$(sha256sum << parameters.lib-name >>.<< parameters.lib-release-package-extension >>  | cut -d " " -f 1)" >>lib.version)
 
       # - save_cache:
