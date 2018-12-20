@@ -139,7 +139,7 @@ commands:
 
       - run:
           name: Create << parameters.lib-name >> workspace download directory
-          command: mkdir -p /tmp/workspace/download/<< parameters.lib-name >>
+          command: mkdir -p /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
 
       - restore_cache:
           key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
