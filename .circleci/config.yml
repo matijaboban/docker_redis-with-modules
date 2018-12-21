@@ -1285,16 +1285,19 @@ jobs:
       - libs-external-unpack:
           lib-name: redex
 
+      - libs-external-make:
+          lib-name: redex
+
       # - run:
       #     name: Unpack external lib
       #     command: |
       #       unzip -q /tmp/workspace/download/redex/*.zip -d ~/project/build/ && \
       #       mv ~/project/build/*  ~/project/build/redex
 
-      - run:
-          name: Build module
-          command: |
-            make -C ~/project/build/libs/redex
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       make -C ~/project/build/libs/redex
 
       - run:
           name: Copy compiled module to workspace
@@ -1323,6 +1326,9 @@ jobs:
       - libs-external-unpack:
           lib-name: RedisGraph
 
+      - libs-external-make:
+          lib-name: RedisGraph
+
 
       # - restore_cache:
       #     key: external-dependencies-compile-cache-v02-redisgraph-q1
@@ -1335,12 +1341,12 @@ jobs:
       #       (unzip -q /tmp/workspace/download/RedisGraph/*.zip -d ~/project/build/ && \
       #       mv ~/project/build/*  ~/project/build/RedisGraph)
 
-      - run:
-          name: Build module
-          command: |
-            test -e /tmp/workspace/compiled/modules/redisgraph.so \
-            && (echo file exists, skipping && exit 0) || \
-            make -C ~/project/build/libs/RedisGraph -j 8
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redisgraph.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       make -C ~/project/build/libs/RedisGraph -j 8
 
       - run:
           name: Copy compiled module to workspace
