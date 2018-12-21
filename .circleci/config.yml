@@ -244,11 +244,14 @@ commands:
       lib-build-dir:
         type: string
         default: ''
+      make-params:
+        type: string
+        default: ''
     steps:
       - run:
           name: Build << parameters.lib-name >>
           command: |
-            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >>
+            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>
 
 
       # - run:
@@ -968,6 +971,7 @@ jobs:
 
       - libs-external-make:
           lib-name: rebloom
+          make-params:  -j 8
 
 
       # - run:
@@ -1042,6 +1046,7 @@ jobs:
       - libs-external-make:
           lib-name: rejson
           lib-build-dir: src
+          make-params:  -j 8
 
       # - run:
       #     name: Unpack external lib
@@ -1328,6 +1333,7 @@ jobs:
 
       - libs-external-make:
           lib-name: RedisGraph
+          make-params:  -j 8
 
 
       # - restore_cache:
