@@ -207,16 +207,75 @@ commands:
             unzip -q << parameters.base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
             mv -f << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/* << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
-      - run:
-          name: exit 1
-          command: |
-            ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+      # - run:
+      #     name: exit 1
+      #     command: |
+      #       ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
 
       # - run:
       #     name: exit 2
       #     command: |
       #       exit 2
 
+  libs-external-make:
+    description: "TBA"
+    parameters:
+      base-workplace-compiled-dir:
+        type: string
+        default: /tmp/workspace/download
+      base-build-dir:
+        type: string
+        default: ~/project/build
+      base-cache-prefix:
+        type: string
+        default: v01
+      lib-github-org:
+        type: string
+        default: RedisLabsModules
+      lib-name:
+        type: string
+        default: rejson
+      lib-release-package-extension:
+        type: string
+        default: zip
+      lib-category:
+        type: string
+        default: libs
+      lib-build-dir:
+        type: string
+        default:
+    steps:
+      - run:
+          name: Build << parameters.lib-name >>
+          command: |
+            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> -j 8;
+
+
+      # - run:
+      #     name: Create << parameters.lib-name >> build directory
+      #     command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: status
+      #     command: |
+      #       echo << parameters.base-workplace-download-dir >>
+      #       echo << parameters.base-build-dir >>
+
+      # - run:
+      #     name: Unpack << parameters.lib-name >>
+      #     command: |
+      #       unzip -q << parameters.base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+      #       mv -f << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/* << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 1
+      #     command: |
+      #       ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
 jobs:
 
   base:
@@ -976,16 +1035,20 @@ jobs:
       - libs-external-unpack:
           lib-name: rejson
 
+      - libs-external-make:
+          lib-name: rejson
+          lib-build-dir: src
+
       # - run:
       #     name: Unpack external lib
       #     command: |
       #       unzip -q /tmp/workspace/download/rejson/r*.zip -d ~/project/build/ && \
       #       mv ~/project/build/r*  ~/project/build/rejson
 
-      - run:
-          name: Build module
-          command: |
-            make -C ~/project/build/libs/rejson/src -j 8;
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       make -C ~/project/build/libs/rejson/src -j 8;
 
       - run:
           name: Copy compiled module to workspace
