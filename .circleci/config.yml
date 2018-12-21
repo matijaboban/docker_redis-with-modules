@@ -751,8 +751,11 @@ jobs:
           lib-name: RediSearch
           lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
 
-      - restore_cache:
-          key: external-dependencies-compile-cache-v01-redisearch-q1
+      - libs-external-unpack:
+          lib-name: RediSearch
+
+      # - restore_cache:
+      #     key: external-dependencies-compile-cache-v01-redisearch-q1
 
       - run:
           name: Unpack external lib
@@ -786,10 +789,10 @@ jobs:
             (mkdir -p /tmp/workspace/compiled/modules/ && \
             cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
-      - save_cache:
-          key: external-dependencies-compile-cache-v01-redisearch-q1
-          paths:
-            - /tmp/workspace/compiled/modules/redisearch.so
+      # - save_cache:
+      #     key: external-dependencies-compile-cache-v01-redisearch-q1
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redisearch.so
 
       - persist_to_workspace:
           root: *workspace_root
