@@ -248,7 +248,7 @@ commands:
       - run:
           name: Build << parameters.lib-name >>
           command: |
-            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> -j 8;
+            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >>
 
 
       # - run:
