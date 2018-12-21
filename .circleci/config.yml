@@ -493,6 +493,7 @@ jobs:
             cd ~/project/build/utils/bats
             ./install.sh /usr/local
             bats --version
+            bats test/core.bats
 
 
 
