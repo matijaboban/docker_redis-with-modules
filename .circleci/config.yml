@@ -419,12 +419,17 @@ jobs:
           lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
           lib-name: bats
           lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
 
       - run:
           name: Install Bats
           command: |
-            mkdir -p util/bats
-            unzip -q /tmp/workspace/download/bats/*.zip -d ~/project/util/bats
+            mkdir -p ~/project/util/bats
+            unzip -q /tmp/workspace/download/utils/bats/*.zip -d ~/project/util/bats
             cd ~/project/util/bats/b*
             ./install.sh /usr/local
             bats --version
