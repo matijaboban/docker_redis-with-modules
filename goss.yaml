@@ -85,7 +85,7 @@ command:
   #   stdout:
   #   - OK
   #   timeout: 100 # in milliseconds
-  redis-cli BF.MADD keytype-bloom foo bar test-key_01 test-key_02 test-key_03:
+  redis-cli BF.MADD keytype-bloom-base foo bar test-key_01 test-key_02 test-key_03:
     # required attributes
     exit-status: 0
     # optional attributes
