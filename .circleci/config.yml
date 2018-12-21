@@ -248,50 +248,36 @@ jobs:
             cp config.yaml /tmp/workspace || \
             touch /tmp/workspace/config.yaml
 
-      # - run: cat /tmp/workspace/new-env-vars >> $BASH_ENV
-      # - run: mkdir -p /tmp/workspace/download/
+      # - libs-external-get:
+      #     lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
+      #     lib-name: redis
+      #     lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
-      # - run:
-      #     name: lib_redis_release
-      #     command: |
-      #       echo $lib_redis_release
-      #       echo ${lib_redis_release}
-      #       echo "${lib_redis_release}"
-      #       echo "$lib_redis_release"
-
-      - libs-external-get:
-          lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
-          lib-name: redis
-          lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
-
-      - libs-external-unpack:
-          lib-name: redis
-
-      - libs-external-get:
-          lib-name: rejson
-          lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
-
-      - libs-external-unpack:
-          lib-name: rejson
-
-      - libs-external-get:
-          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
-          lib-name: bats
-          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
-          lib-category: utils
-
-      - libs-external-unpack:
-          lib-name: bats
-          lib-category: utils
+      # - libs-external-unpack:
+      #     lib-name: redis
 
       # - libs-external-get:
-      #     lib-name: redex
-      #     lib-release: $lib_redex_release
+      #     lib-name: rejson
+      #     lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
-      - run:
-          name: exit 2
-          command: |
-            exit 2
+      # - libs-external-unpack:
+      #     lib-name: rejson
+
+      # - libs-external-get:
+      #     lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+      #     lib-name: bats
+      #     lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+      #     lib-category: utils
+
+      # - libs-external-unpack:
+      #     lib-name: bats
+      #     lib-category: utils
+
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
 
 
 
