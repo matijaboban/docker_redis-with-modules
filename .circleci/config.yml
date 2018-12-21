@@ -537,32 +537,35 @@ jobs:
           lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
+      - libs-external-unpack:
+          lib-name: redis
+
       - restore_cache:
           key: external-dependencies-compile-cache-v05-redis-q1
 
-      - run:
-          name: Unpack external lib
-          command: |
-            test -e /tmp/workspace/compiled/core/redis-server \
-            && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
-            mv ~/project/build/* ~/project/build/redis)
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/core/redis-server \
+      #       && (echo Compiled assets found, skipping, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/* ~/project/build/redis)
 
       - run:
           name: Pre-build updates
           command: |
             test -e /tmp/workspace/compiled/core/redis-server \
             && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            (grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/redis/src/server.h && \
-            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/build/redis/src/server.h && \
-            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/redis/src/server.h)
+            (grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/libs/redis/src/server.h && \
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/libs/build/redis/src/server.h && \
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/libs/redis/src/server.h)
 
       - run:
           name: Build module
           command: |
             test -e /tmp/workspace/compiled/core/redis-server \
             && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            make -C ~/project/build/redis/src -j 8
+            make -C ~/project/build/libs/redis/src -j 8
 
       ## Tests are prepared with brute-force removal of some
       ## desting due to musl libc instead of glibc on Alpine
@@ -575,7 +578,7 @@ jobs:
           command: |
             test -e /tmp/workspace/compiled/core/redis-server \
             && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            (cd ~/project/build/redis && \
+            (cd ~/project/build/libs/redis && \
             rm tests/integration/aof.tcl && \
             rm tests/integration/logging.tcl && \
             rm tests/unit/slowlog.tcl && \
@@ -598,7 +601,7 @@ jobs:
             test -e /tmp/workspace/compiled/core/redis-server \
             && (echo Compiled assets found, skipping, skipping && exit 0) || \
             (mkdir -p /tmp/workspace/compiled/core/utils && \
-            cd ~/project/build/redis && \
+            cd ~/project/build/libs/redis && \
             cp src/redis-benchmark /tmp/workspace/compiled/core/ && \
             cp src/redis-check-aof /tmp/workspace/compiled/core/ && \
             cp src/redis-check-rdb /tmp/workspace/compiled/core/ && \
@@ -743,21 +746,21 @@ jobs:
       # - restore_cache:
       #     key: external-dependencies-compile-cache-v01-redisearch-q1
 
-      - run:
-          name: Unpack external lib
-          command: |
-            test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo file exists, skipping && exit 0) || \
-            (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
-            mv ~/project/build/*  ~/project/build/RediSearch)
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
+      #       mv ~/project/build/*  ~/project/build/RediSearch)
 
       - run:
           name: Build module
           command: |
             test -e /tmp/workspace/compiled/modules/redisearch.so \
             && (echo file exists, skipping && exit 0) || \
-            (mkdir -p ~/project/build/RediSearch/compile && \
-            cd ~/project/build/RediSearch/compile && \
+            (mkdir -p ~/project/build/libs/RediSearch/compile && \
+            cd ~/project/build/libs/RediSearch/compile && \
             cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
             make -j 8)
 
@@ -773,7 +776,7 @@ jobs:
             test -e /tmp/workspace/compiled/modules/redisearch.so \
             && echo file exists, skipping || \
             (mkdir -p /tmp/workspace/compiled/modules/ && \
-            cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
+            cp ~/project/build/libs/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
       # - save_cache:
       #     key: external-dependencies-compile-cache-v01-redisearch-q1
@@ -898,22 +901,25 @@ jobs:
           lib-name: rebloom
           lib-release: $(yq -r .libs.redisbloom.github.release /tmp/workspace/config.yaml)
 
-      - run:
-          name: Unpack external lib
-          command: |
-            unzip -q /tmp/workspace/download/rebloom/r*.zip -d ~/project/build/ && \
-            mv ~/project/build/r*  ~/project/build/rebloom
+      - libs-external-unpack:
+          lib-name: rebloom
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       unzip -q /tmp/workspace/download/rebloom/r*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/r*  ~/project/build/rebloom
 
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/rebloom -j 8;
+            make -C ~/project/build/libs/rebloom -j 8;
 
       - run:
           name: Copy compiled module to workspace
           command: |
             mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/rebloom/*.so /tmp/workspace/compiled/modules/
+            cp ~/project/build/libs/rebloom/*.so /tmp/workspace/compiled/modules/
 
       - persist_to_workspace:
           root: *workspace_root
@@ -964,22 +970,25 @@ jobs:
           lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
-      - run:
-          name: Unpack external lib
-          command: |
-            unzip -q /tmp/workspace/download/rejson/r*.zip -d ~/project/build/ && \
-            mv ~/project/build/r*  ~/project/build/rejson
+      - libs-external-unpack:
+          lib-name: rejson
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       unzip -q /tmp/workspace/download/rejson/r*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/r*  ~/project/build/rejson
 
       - run:
           name: Build module
           command: |
-            make -C ~/project/build/rejson/src -j 8;
+            make -C ~/project/build/libs/rejson/src -j 8;
 
       - run:
           name: Copy compiled module to workspace
           command: |
             mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/rejson/src/*.so /tmp/workspace/compiled/modules/
+            cp ~/project/build/libs/rejson/src/*.so /tmp/workspace/compiled/modules/
 
 
       # - run:
@@ -1098,27 +1107,30 @@ jobs:
           lib-name: redis-timeseries
           lib-release: $(yq -r .libs.redistimeseries.github.release /tmp/workspace/config.yaml)
 
+      - libs-external-unpack:
+          lib-name: redis-timeseries
+
       # - restore_cache:
       #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
 
-      - run:
-          name: Unpack external lib
-          command: |
-            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
-            && (echo file exists, skipping && exit 0) || \
-            (unzip -q /tmp/workspace/download/redis-timeseries/*.zip -d ~/project/build && \
-            mv ~/project/build/*  ~/project/build/redis-timeseries)
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/redis-timeseries/*.zip -d ~/project/build && \
+      #       mv ~/project/build/*  ~/project/build/redis-timeseries)
 
       - run:
           name: Build module
           command: |
             test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
             && (echo file exists, skipping && exit 0) || \
-            (cd ~/project/build/redis-timeseries/RedisModulesSDK/ && \
+            (cd ~/project/build/libs/redis-timeseries/RedisModulesSDK/ && \
             curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip && \
             unzip *.zip && \
             mv R*/* . && \
-            cd ~/project/build/redis-timeseries/src && \
+            cd ~/project/build/libs/redis-timeseries/src && \
             make all)
 
       # - run:
@@ -1136,7 +1148,7 @@ jobs:
             test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
             && echo file exists, skipping || \
             (mkdir -p /tmp/workspace/compiled/modules/ && \
-            cp ~/project/build/redis-timeseries/src/*.so /tmp/workspace/compiled/modules/)
+            cp ~/project/build/libs/redis-timeseries/src/*.so /tmp/workspace/compiled/modules/)
 
       # - save_cache:
       #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
