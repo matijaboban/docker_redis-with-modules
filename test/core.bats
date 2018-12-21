@@ -33,13 +33,20 @@ fi
   [ "${lines[1]}" = "Nodes created: 6" ]
 }
 
+
 @test "gr2" {
+  run redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team) WHERE t.name = 'Yamaha' RETURN r,t"
+  [ "$status" -eq 0 ]
+  [ "${lines[2]}" = "Valentino Rossi" ]
+}
+
+@test "gr3" {
   run redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team {name:'Ducati'}) RETURN count(r)"
   [ "$status" -eq 0 ]
   [ "${lines[1]}" = "1.000000" ]
 }
 
-@test "gr3" {
+@test "gr4" {
   run redis-cli GRAPH.DELETE MotoGP
   [ "$status" -eq 0 ]
   [[ "$output" =~ "Graph removed, internal execution time:" ]]
