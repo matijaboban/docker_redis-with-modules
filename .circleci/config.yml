@@ -428,9 +428,7 @@ jobs:
       - run:
           name: Install Bats
           command: |
-            mkdir -p ~/project/util/bats
-            unzip -q /tmp/workspace/download/utils/bats/*.zip -d ~/project/util/bats
-            cd ~/project/util/bats/b*
+            cd ~/project/build/utils/bats
             ./install.sh /usr/local
             bats --version
 
