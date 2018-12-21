@@ -243,7 +243,7 @@ commands:
         default: libs
       lib-build-dir:
         type: string
-        default:
+        default: ''
     steps:
       - run:
           name: Build << parameters.lib-name >>
