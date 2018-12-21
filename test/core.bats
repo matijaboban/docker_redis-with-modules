@@ -31,9 +31,8 @@ fi
   run redis-cli GRAPH.QUERY MotoGP "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})"
   [ "$status" -eq 0 ]
   echo "$output"
-  [ "${lines[1]}" = "Nodes created: 6" ]
+  [[ "$output" =~  "Nodes created: 6" ]]
 }
-
 
 @test "gr2" {
   run redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team) WHERE t.name = 'Yamaha' RETURN r,t"

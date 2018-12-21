@@ -56,13 +56,13 @@ command:
   #   - "true"
   #   timeout: 100 # in milliseconds
   ## RedisGraph
-  redis-cli GRAPH.QUERY MotoGP "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})":
-    # required attributes
-    exit-status: 0
-    # optional attributes
-    stdout:
-    - "Nodes created: 6"
-    timeout: 100 # in milliseconds
+  # redis-cli GRAPH.QUERY MotoGP "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})":
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - "Nodes created: 6"
+  #   timeout: 100 # in milliseconds
   # redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team {name:'Ducati'}) RETURN count(r)":
   #   # required attributes
   #   exit-status: 0
