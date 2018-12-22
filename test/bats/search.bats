@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
-load fixtures/setup
-
+# load fixtures/setup
+load test_helper
 
 # Check we're not running bash 3.x
 if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
