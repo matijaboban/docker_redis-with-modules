@@ -22,8 +22,9 @@ fi
 @test "js3" {
   run redis-cli FT.SEARCH keytype-search "hello world" LIMIT 0 10 RETURN 1 url
   [ "$status" -eq 0 ]
-  [ "${lines[3]}" = "http://redis.io" ]
   echo "$output"
+  [ "${lines[3]}" = "http://redis.io" ]
+
 }
 
 @test "js4" {
@@ -35,6 +36,6 @@ fi
 @test "js5" {
   run redis-cli FT.ADD keytype-search doc1 1.0 FIELDS title "hello world" body "lorem ipsum" url "http://redis.io"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "Unknown index name" ]]
   echo "$output"
+  [[ "$output" =~ "Unknown index name" ]]
 }
