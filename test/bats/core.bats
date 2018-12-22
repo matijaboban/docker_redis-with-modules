@@ -6,7 +6,20 @@ if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
     exit 1
 fi
 
+## ReJson
+@test "js1" {
+  run redis-cli JSON.SET keytype-json . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'
+  [ "$status" -eq 0 ]
+  [ "$output" = "OK" ]
+}
 
+@test "js2" {
+  run redis-cli JSON.GET keytype-json loggedOut
+  [ "$status" -eq 0 ]
+  [ "$output" = "true" ]
+}
+
+## Bloom
 @test "bf1" {
   run redis-cli BF.MADD keytype-bloom foo bar test-key_01 test-key_02 test-key_03
   [ "$status" -eq 0 ]
@@ -25,31 +38,30 @@ fi
   [ "$output" = "0" ]
 }
 
-
 ## Graph
 @test "gr1" {
-  run redis-cli GRAPH.QUERY MotoGP "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})"
+  run redis-cli GRAPH.QUERY keytype-graph "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})"
   [ "$status" -eq 0 ]
   echo "$output"
   [[ "$output" =~  "Nodes created: 6" ]]
 }
 
 @test "gr2" {
-  run redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team) WHERE t.name = 'Yamaha' RETURN r,t"
+  run redis-cli GRAPH.QUERY keytype-graph "MATCH (r:Rider)-[:rides]->(t:Team) WHERE t.name = 'Yamaha' RETURN r,t"
   [ "$status" -eq 0 ]
   echo "$output"
   [ "${lines[2]}" = "Valentino Rossi" ]
 }
 
 @test "gr3" {
-  run redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team {name:'Ducati'}) RETURN count(r)"
+  run redis-cli GRAPH.QUERY keytype-graph "MATCH (r:Rider)-[:rides]->(t:Team {name:'Ducati'}) RETURN count(r)"
   [ "$status" -eq 0 ]
   echo "$output"
   [ "${lines[1]}" = "1.000000" ]
 }
 
 @test "gr4" {
-  run redis-cli GRAPH.DELETE MotoGP
+  run redis-cli GRAPH.DELETE keytype-graph
   [ "$status" -eq 0 ]
   [[ "$output" =~ "Graph removed, internal execution time:" ]]
 }

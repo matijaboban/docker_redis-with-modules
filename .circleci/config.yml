@@ -475,7 +475,7 @@ jobs:
 
       - run:
           name: Test goss
-          command: goss validate
+          command: goss ~/project/test/goss/goss.yaml validate
 
       - libs-external-get:
           lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
@@ -494,6 +494,7 @@ jobs:
             ./install.sh /usr/local
             bats --version
             bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/search.bats
 
 
 
@@ -526,7 +527,7 @@ jobs:
 
       - run:
           name: Test goss
-          command: goss validate
+          command: goss ~/project/test/goss/goss.yaml validate
 
   test-redis-redisearch:
     docker:
@@ -557,7 +558,7 @@ jobs:
 
       - run:
           name: Test goss
-          command: goss validate
+          command: goss ~/project/test/goss/goss.yaml validate
 
   test-redis-redisbloom:
     docker:
@@ -588,7 +589,7 @@ jobs:
 
       - run:
           name: Test goss
-          command: goss validate
+          command: goss ~/project/test/goss/goss.yaml validate
 
   build-redis:
     executor: alpine-executor

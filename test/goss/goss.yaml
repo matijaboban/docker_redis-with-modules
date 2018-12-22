@@ -41,7 +41,7 @@ command:
     stdout:
     - OK
   ## ReJson
-  redis-cli JSON.SET keytype-json . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}':
+  redis-cli JSON.SET keytype-json-base . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}':
     # required attributes
     exit-status: 0
     # optional attributes
