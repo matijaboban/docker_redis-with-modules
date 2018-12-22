@@ -35,5 +35,6 @@ fi
 @test "js5" {
   run redis-cli FT.ADD keytype-search doc1 1.0 FIELDS title "hello world" body "lorem ipsum" url "http://redis.io"
   [ "$status" -eq 0 ]
-  [ "$output" = "(error) Unknown index name" ]
+  [[ "$output" =~ "Unknown index name" ]]
+  echo "$output"
 }
