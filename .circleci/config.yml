@@ -190,6 +190,9 @@ commands:
       lib-category:
         type: string
         default: libs
+      skip-if-target-found:
+        type: boolean
+        default: true
     steps:
       - run:
           name: Create << parameters.lib-name >> build directory
