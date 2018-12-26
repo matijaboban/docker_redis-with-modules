@@ -257,7 +257,9 @@ commands:
             pwd
             ls
             echo $(yq -r .utils.bats.github /tmp/workspace/config.yaml)
-            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >> ~/project/config.yaml)
+            echo $(yq -r .libs.redis.github /tmp/workspace/config.yaml)
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github ~/project/config.yaml)
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml)
             exit 2
 
 
