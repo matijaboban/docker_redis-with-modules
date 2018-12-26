@@ -258,6 +258,7 @@ commands:
             ls
             echo $(yq -r .utils.bats.github /tmp/workspace/config.yaml)
             echo $(yq -r .libs.redis.github /tmp/workspace/config.yaml)
+            echo $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >>.github ~/project/config.yaml)
             echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github ~/project/config.yaml)
             echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml)
             exit 2
@@ -352,7 +353,7 @@ jobs:
 
 
       - libs-external-make:
-          lib-name: rebloom
+          lib-name: redis
           make-params:  -j 8
 
 
