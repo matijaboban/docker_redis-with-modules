@@ -256,9 +256,7 @@ commands:
           command: |
             pwd
             ls
-            cat config.yaml
-            echo yq -r .utils.bats.github.org /tmp/workspace/config.yaml
-            echo $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+            echo $(yq -r .utils.bats.github /tmp/workspace/config.yaml)
             echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >> ~/project/config.yaml)
             exit 2
 
