@@ -254,7 +254,7 @@ commands:
       - run:
           name: QQQQ
           command: |
-            echo $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >>.github.release /tmp/workspace/config.yaml)
+            echo $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >> /tmp/workspace/config.yaml)
             exit 2
 
 
