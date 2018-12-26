@@ -353,7 +353,7 @@ jobs:
 
 
       - libs-external-make:
-          lib-name: redis
+          lib-name: rebloom
           make-params:  -j 8
 
 
