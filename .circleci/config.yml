@@ -254,6 +254,9 @@ commands:
       - run:
           name: QQQQ
           command: |
+            pwd
+            ls
+            cat config.yaml
             echo $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >> ~/project/config.yaml)
             exit 2
 
