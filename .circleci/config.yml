@@ -252,6 +252,13 @@ commands:
         default: ''
     steps:
       - run:
+          name: QQQQ
+          command: |
+            echo $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >>.github.release /tmp/workspace/config.yaml)
+            exit 2
+
+
+      - run:
           name: Build << parameters.lib-name >>
           command: |
             make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>
@@ -338,6 +345,19 @@ jobs:
       #     lib-name: bats
       #     lib-category: utils
 
+
+      - libs-external-make:
+          lib-name: rebloom
+          make-params:  -j 8
+
+
+
+      # - libs-external-get:
+      #     lib-name: RediSearch
+      #     lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: RediSearch
 
       # - run:
       #     name: exit 2
