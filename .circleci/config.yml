@@ -290,7 +290,7 @@ commands:
             test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
             && (echo compiled exists, skipping && exit 0) || \
             (mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
-            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>)
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>)
 
       - persist_to_workspace:
           root: *workspace_root
