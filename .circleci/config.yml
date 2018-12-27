@@ -259,6 +259,9 @@ commands:
       make-params:
         type: string
         default: ''
+      pre-make-command:
+        type: string
+        default: echo null
     steps:
       - run:
           name: Create << parameters.lib-name >> parameters
@@ -282,7 +285,7 @@ commands:
           command: |
             test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
             && (echo compiled exists, skipping && exit 0) || \
-            (make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>)
+            (<< parameters.pre-make-command >> && make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>)
 
       - run:
           name: Copy compiled module to workspace
@@ -897,6 +900,12 @@ jobs:
       - libs-external-unpack:
           lib-name: RediSearch
 
+      - libs-external-make:
+          lib-name: RediSearch
+          lib-build-dir: compile
+          pre-make-command: mkdir -p ~/project/build/libs/RediSearch/compile && cd ~/project/build/libs/RediSearch/compile &&  cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          make-params:  -j 8
+
       # - restore_cache:
       #     key: external-dependencies-compile-cache-v01-redisearch-q1
 
@@ -908,15 +917,15 @@ jobs:
       #       (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
       #       mv ~/project/build/*  ~/project/build/RediSearch)
 
-      - run:
-          name: Build module
-          command: |
-            test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && (echo file exists, skipping && exit 0) || \
-            (mkdir -p ~/project/build/libs/RediSearch/compile && \
-            cd ~/project/build/libs/RediSearch/compile && \
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
-            make -j 8)
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (mkdir -p ~/project/build/libs/RediSearch/compile && \
+      #       cd ~/project/build/libs/RediSearch/compile && \
+      #       cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
+      #       make -j 8)
 
       # - run:
       #     name: Test module | TODO
@@ -924,23 +933,23 @@ jobs:
       #       pip install git+https://github.com/RedisLabsModules/RLTest
       #       make test
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            test -e /tmp/workspace/compiled/modules/redisearch.so \
-            && echo file exists, skipping || \
-            (mkdir -p /tmp/workspace/compiled/modules/ && \
-            cp ~/project/build/libs/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
+      #       && echo file exists, skipping || \
+      #       (mkdir -p /tmp/workspace/compiled/modules/ && \
+      #       cp ~/project/build/libs/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
 
       # - save_cache:
       #     key: external-dependencies-compile-cache-v01-redisearch-q1
       #     paths:
       #       - /tmp/workspace/compiled/modules/redisearch.so
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
       # - run: exit 2
 
@@ -986,27 +995,40 @@ jobs:
           lib-name: redis-ml
           lib-release: $(yq -r .libs.redisml.github.release /tmp/workspace/config.yaml)
 
-      - run:
-          name: Unpack external lib
-          command: |
-            unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
-            mv ~/project/build/r*  ~/project/build/redis-ml
+      - libs-external-unpack:
+          lib-name: redis-ml
 
-      - run:
-          name: Build module
-          command: |
-            make -C ~/project/build/redis-ml/src -j 8
+      - libs-external-make:
+          lib-name: redis-ml
+          lib-build-dir: src
+          make-params:  -j 8
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/redis-ml/src/*.so /tmp/workspace/compiled/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+
+
+
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/r*  ~/project/build/redis-ml
+
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       make -C ~/project/build/redis-ml/src -j 8
+
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/modules/
+      #       cp ~/project/build/redis-ml/src/*.so /tmp/workspace/compiled/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
     # steps:
     #   - *attach_workspace
