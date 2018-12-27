@@ -273,7 +273,12 @@ commands:
       - run:
           name: status1
           command: |
-            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+            && ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> ||
+            echo file doesnt exist, skipping
+
+
+
 
       - run:
           name: Build << parameters.lib-name >>
