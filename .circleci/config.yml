@@ -255,8 +255,8 @@ commands:
           name: Create << parameters.lib-name >> parameters
           command: |
             > lib.config
-            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >>lib.config
-            cat lib.config
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >><< parameters.lib-category >>-<< parameters.lib-name >>.config
+            cat << parameters.lib-category >>-<< parameters.lib-name >>.config
 
 
       - run:
