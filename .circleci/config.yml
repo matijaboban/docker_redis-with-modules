@@ -303,16 +303,16 @@ commands:
             - << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
 
-      - run:
-          name: status2
-          command: |
-            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+      # - run:
+      #     name: status2
+      #     command: |
+      #       ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
 
-      - run:
-          name: QQQQ
-          command: |
-            exit 2
+      # - run:
+      #     name: QQQQ
+      #     command: |
+      #       exit 2
 
       # - run:
       #     name: Create << parameters.lib-name >> build directory
@@ -395,16 +395,16 @@ jobs:
       #     lib-name: bats
       #     lib-category: utils
 
-      - libs-external-get:
-          lib-name: rebloom
-          lib-release: $(yq -r .libs.rebloom.github.release /tmp/workspace/config.yaml)
+      # - libs-external-get:
+      #     lib-name: rebloom
+      #     lib-release: $(yq -r .libs.rebloom.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: rebloom
+      # - libs-external-unpack:
+      #     lib-name: rebloom
 
-      - libs-external-make:
-          lib-name: rebloom
-          make-params:  -j 8
+      # - libs-external-make:
+      #     lib-name: rebloom
+      #     make-params:  -j 8
 
 
 
@@ -1074,16 +1074,16 @@ jobs:
       #     command: |
       #       make -C ~/project/build/libs/rebloom -j 8;
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/libs/rebloom/*.so /tmp/workspace/compiled/modules/
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/modules/
+      #       cp ~/project/build/libs/rebloom/*.so /tmp/workspace/compiled/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
 
 

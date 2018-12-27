@@ -20,7 +20,7 @@ RUN mkdir -p /usr/src/redis/modules
 
 
 COPY build/compiled/core/ /usr/src/redis/core/
-COPY build/compiled/modules/* /usr/src/redis/modules/
+COPY build/compiled/modules/ /usr/src/redis/modules/
 
 RUN ls /usr/src/redis/core/
 RUN ls /usr/src/redis/modules/
@@ -152,7 +152,7 @@ CMD [ \
     "--loadmodule", "/usr/src/redis/modules/redisearch.so", \
     # "--loadmodule", "/usr/src/redis/modules/redis-ml.so", \
     "--loadmodule", "/usr/src/redis/modules/redisgraph.so", \
-    "--loadmodule", "/usr/src/redis/modules/rebloom.so", \
+    "--loadmodule", "/usr/src/redis/modules/rebloom/rebloom.so", \
     "--loadmodule", "/usr/src/redis/modules/rxgeo.so", \
     "--loadmodule", "/usr/src/redis/modules/rxhashes.so", \
     "--loadmodule", "/usr/src/redis/modules/rxkeys.so", \
