@@ -271,6 +271,11 @@ commands:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
 
       - run:
+          name: status1
+          command: |
+            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+
+      - run:
           name: Build << parameters.lib-name >>
           command: |
             make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>
@@ -286,14 +291,14 @@ commands:
           paths:
             - compiled/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
-      # - save_cache:
-      #     key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
-      #     paths:
-      #       - /tmp/workspace/compiled/modules/redis-tsdb-module.so
+      - save_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
+          paths:
+            - << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
 
       - run:
-          name: status
+          name: status2
           command: |
             ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
