@@ -228,7 +228,10 @@ commands:
     parameters:
       base-workplace-compiled-dir:
         type: string
-        default: /tmp/workspace/compiled/modules
+        default: /tmp/workspace/compiled
+      base-build-type:
+        type: string
+        default: modules
       base-build-dir:
         type: string
         default: ~/project/build
@@ -275,19 +278,19 @@ commands:
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
-            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+            - compiled/<< parameters.lib-name >>
 
 
       - run:
           name: status
           command: |
-            ls << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+            ls compiled/<< parameters.lib-name >>
 
 
       - run:
