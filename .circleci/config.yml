@@ -278,19 +278,19 @@ commands:
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
-            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - compiled/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            - compiled/<< parameters.base-workplace-compiled-type >>
 
 
       - run:
           name: status
           command: |
-            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
 
 
       - run:
