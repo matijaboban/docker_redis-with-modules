@@ -161,7 +161,7 @@ CMD [ \
     "--loadmodule", "/usr/src/redis/modules/rxstrings.so", \
     "--loadmodule", "/usr/src/redis/modules/rxzsets.so", \
     "--loadmodule", "/usr/src/redis/modules/redis-tsdb-module.so", \
-    "--loadmodule", "/usr/src/redis/modules/rejson.so" \
+    "--loadmodule", "/usr/src/redis/modules/rejson/rejson.so" \
     ]
 
 

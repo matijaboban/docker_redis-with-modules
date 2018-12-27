@@ -1148,11 +1148,11 @@ jobs:
       #     command: |
       #       make -C ~/project/build/libs/rejson/src -j 8;
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/libs/rejson/src/*.so /tmp/workspace/compiled/modules/
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/modules/
+      #       cp ~/project/build/libs/rejson/src/*.so /tmp/workspace/compiled/modules/
 
 
       # - run:
@@ -1254,10 +1254,10 @@ jobs:
       #     command: |
       #       cp ~/project/r*/src/*.so /tmp/workspace/build/redis/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
   build-redistimeseries:
     executor: alpine-executor
@@ -1393,16 +1393,16 @@ jobs:
       #     command: |
       #       make -C ~/project/build/libs/redex
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            mkdir -p /tmp/workspace/compiled/modules/
-            cp ~/project/build/libs/redex/src/*.so /tmp/workspace/compiled/modules/
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/modules/
+      #       cp ~/project/build/libs/redex/src/*.so /tmp/workspace/compiled/modules/
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
   build-redisgraph:
     executor: python-executor
