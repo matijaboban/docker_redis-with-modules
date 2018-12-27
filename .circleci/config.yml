@@ -379,6 +379,12 @@ jobs:
       #     lib-name: bats
       #     lib-category: utils
 
+      - libs-external-get:
+          lib-name: rebloom
+          lib-release: $(yq -r .libs.redisbloom.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: rebloom
 
       - libs-external-make:
           lib-name: rebloom
