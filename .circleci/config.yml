@@ -105,6 +105,9 @@ commands:
   libs-external-get:
     description: "TBA"
     parameters:
+      base-cache-key:
+        type: string
+        default: external-dependencies-package-cache
       base-cache-prefix:
         type: string
         default: v032
@@ -140,7 +143,7 @@ commands:
           command: mkdir -p /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
 
       - restore_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
@@ -157,7 +160,7 @@ commands:
       ## TODO test file existance before cache save
 
       - save_cache:
-          key: external-dependencies-package-cache-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
           paths:
             - /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
 
@@ -229,6 +232,9 @@ commands:
       base-build-dir:
         type: string
         default: ~/project/build
+      base-cache-key:
+        type: string
+        default: external-dependencies-compile-cache
       base-cache-prefix:
         type: string
         default: v01
@@ -255,8 +261,11 @@ commands:
           name: Create << parameters.lib-name >> parameters
           command: |
             > lib.config
-            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >><< parameters.lib-category >>-<< parameters.lib-name >>.config
-            cat << parameters.lib-category >>-<< parameters.lib-name >>.config
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >>lib.config
+            cat lib.config
+
+      - restore_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
 
 
       - run:
