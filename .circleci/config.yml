@@ -229,7 +229,7 @@ commands:
       base-workplace-compiled-dir:
         type: string
         default: /tmp/workspace/compiled
-      base-workplace-type:
+      base-workplace-compiled-type:
         type: string
         default: modules
       base-build-dir:
