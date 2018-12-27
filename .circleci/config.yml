@@ -290,7 +290,7 @@ commands:
       - run:
           name: status
           command: |
-            ls compiled/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
 
       - run:
