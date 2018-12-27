@@ -270,26 +270,27 @@ commands:
       - restore_cache:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
 
-      - run:
-          name: status1
-          command: |
-            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
-            && ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> ||
-            echo file doesnt exist, skipping
-
-
-
+      # - run:
+      #     name: status1
+      #     command: |
+      #       test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+      #       && ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> ||
+      #       echo file doesnt exist, skipping
 
       - run:
           name: Build << parameters.lib-name >>
           command: |
-            make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>
+            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+            && (echo compiled exists, skipping && exit 0) || \
+            (make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>)
 
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
-            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+            && (echo compiled exists, skipping && exit 0) || \
+            (mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>)
 
       - persist_to_workspace:
           root: *workspace_root
