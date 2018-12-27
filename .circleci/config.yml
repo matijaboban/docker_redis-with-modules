@@ -102,6 +102,24 @@ commands:
           command: |
             cat /tmp/workspace/<< parameters.env-file-name >> >> $BASH_ENV
 
+  libs-external-create-config:
+    description: "TBA"
+    parameters:
+      base-build-dir:
+        type: string
+        default: ~/project
+      lib-name:
+        type: string
+      lib-category:
+        type: string
+        default: libs
+    steps:
+      - run:
+          name: Create << parameters.lib-name >> parameters file
+          command: |
+            > lib.config
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >>lib.config
+
   libs-external-get:
     description: "TBA"
     parameters:
@@ -263,6 +281,10 @@ commands:
         type: string
         default: echo null
     steps:
+      - libs-external-create-config:
+          lib-name: << parameters.lib-name >>
+          lib-category: << parameters.lib-category >>
+
       - run:
           name: Create << parameters.lib-name >> parameters
           command: |
@@ -696,6 +718,16 @@ jobs:
 
       - libs-external-unpack:
           lib-name: redis
+
+      - libs-external-create-config:
+          lib-name: redis
+
+      - run:
+          name: Pre-build updates
+          command: |
+            pwd
+            ls
+
 
       - restore_cache:
           key: external-dependencies-compile-cache-v05-redis-q1
