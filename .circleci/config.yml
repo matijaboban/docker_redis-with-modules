@@ -228,7 +228,7 @@ commands:
     parameters:
       base-workplace-compiled-dir:
         type: string
-        default: /tmp/workspace/download
+        default: /tmp/workspace/compiled/modules
       base-build-dir:
         type: string
         default: ~/project/build
@@ -267,18 +267,33 @@ commands:
       - restore_cache:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
 
-
-      - run:
-          name: QQQQ
-          command: |
-            exit 2
-
-
       - run:
           name: Build << parameters.lib-name >>
           command: |
             make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>
 
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+
+
+      - run:
+          name: status
+          command: |
+            ls << parameters.base-workplace-compiled-dir >>/<< parameters.lib-name >>
+
+
+      - run:
+          name: QQQQ
+          command: |
+            exit 2
 
       # - run:
       #     name: Create << parameters.lib-name >> build directory
