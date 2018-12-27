@@ -1443,23 +1443,23 @@ jobs:
       #       && (echo file exists, skipping && exit 0) || \
       #       make -C ~/project/build/libs/RedisGraph -j 8
 
-      - run:
-          name: Copy compiled module to workspace
-          command: |
-            test -e /tmp/workspace/compiled/modules/redisgraph.so \
-            && (echo file exists, skipping && exit 0) || \
-            (mkdir -p /tmp/workspace/compiled/modules/ && \
-            cp ~/project/build/libs/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redisgraph.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (mkdir -p /tmp/workspace/compiled/modules/ && \
+      #       cp ~/project/build/libs/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
 
-      - save_cache:
-          key: external-dependencies-compile-cache-v02-redisgraph-q1
-          paths:
-            - /tmp/workspace/compiled/modules/redisgraph.so
+      # - save_cache:
+      #     key: external-dependencies-compile-cache-v02-redisgraph-q1
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redisgraph.so
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - compiled/modules
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
 
 
 
