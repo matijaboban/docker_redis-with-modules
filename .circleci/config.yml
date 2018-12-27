@@ -278,19 +278,24 @@ commands:
       - run:
           name: Copy compiled module to workspace
           command: |
-            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
-            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
+            mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - compiled/<< parameters.base-workplace-compiled-type >>
+            - compiled/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+
+      # - save_cache:
+      #     key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redis-tsdb-module.so
 
 
       - run:
           name: status
           command: |
-            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>
+            ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
 
 
       - run:
