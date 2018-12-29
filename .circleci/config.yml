@@ -395,6 +395,19 @@ jobs:
             cp config.yaml /tmp/workspace || \
             touch /tmp/workspace/config.yaml
 
+
+      - libs-external-get:
+          lib-name: redex
+          lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: redex
+
+      - libs-external-make:
+          lib-name: redex
+
+
+
       # - libs-external-get:
       #     lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
       #     lib-name: redis
@@ -440,10 +453,10 @@ jobs:
       # - libs-external-unpack:
       #     lib-name: RediSearch
 
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       exit 2
+      - run:
+          name: exit 2
+          command: |
+            exit 2
 
 
 
