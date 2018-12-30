@@ -220,10 +220,15 @@ commands:
       lib-category:
         type: string
         default: libs
-      skip-if-target-found:
+      cache-available:
         type: boolean
         default: true
     steps:
+      - run:
+          name: status
+          command: |
+            echo << parameters.base-cache-available >>
+
       - run:
           name: Create << parameters.lib-name >> build directory
           command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
@@ -303,6 +308,10 @@ commands:
 
       - restore_cache:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
+
+      - libs-external-unpack:
+          lib-name: << parameters.lib-name >>
+          cache-available: false
 
       # - run:
       #     name: status1
@@ -419,8 +428,8 @@ jobs:
           lib-name: redex
           lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: redex
+      # - libs-external-unpack:
+      #     lib-name: redex
 
       - libs-external-make:
           lib-name: redex
