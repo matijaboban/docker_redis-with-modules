@@ -225,9 +225,10 @@ commands:
         default: false
     steps:
       - run:
-          name: status
+          name: Cache status check
           command: |
             echo << parameters.cache-available >>
+            test << parameters.cache-available >> = true && echo Cache available, skipping subsequent steps. || echo Cache not available, continuing processing
 
       - run:
           name: Create << parameters.lib-name >> build directory
