@@ -227,7 +227,7 @@ commands:
       - run:
           name: status
           command: |
-            echo << parameters.base-cache-available >>
+            echo << parameters.cache-available >>
 
       - run:
           name: Create << parameters.lib-name >> build directory
