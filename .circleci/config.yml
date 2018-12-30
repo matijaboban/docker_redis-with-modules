@@ -222,7 +222,7 @@ commands:
         default: libs
       cache-available:
         type: boolean
-        default: true
+        default: false
     steps:
       - run:
           name: status
@@ -309,9 +309,16 @@ commands:
       - restore_cache:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
 
+      - run:
+          name: exit 2
+          command: |
+            yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+            cat config.yaml
+
+
       - libs-external-unpack:
           lib-name: << parameters.lib-name >>
-          cache-available: false
+          cache-available: $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload config.yaml)
 
       # - run:
       #     name: status1
