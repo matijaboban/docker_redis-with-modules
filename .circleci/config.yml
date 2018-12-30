@@ -221,7 +221,7 @@ commands:
         type: string
         default: libs
       cache-available:
-        type: boolean
+        type: string
         default: false
     steps:
       - run:
