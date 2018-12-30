@@ -1521,82 +1521,12 @@ jobs:
           lib-name: RedisGraph
           lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: RedisGraph
+      # - libs-external-unpack:
+      #     lib-name: RedisGraph
 
       - libs-external-make:
           lib-name: RedisGraph
           make-params:  -j 8
-
-
-      # - restore_cache:
-      #     key: external-dependencies-compile-cache-v02-redisgraph-q1
-
-      # - run:
-      #     name: Unpack external lib
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisgraph.so \
-      #       && (echo file exists, skipping && exit 0) || \
-      #       (unzip -q /tmp/workspace/download/RedisGraph/*.zip -d ~/project/build/ && \
-      #       mv ~/project/build/*  ~/project/build/RedisGraph)
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisgraph.so \
-      #       && (echo file exists, skipping && exit 0) || \
-      #       make -C ~/project/build/libs/RedisGraph -j 8
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisgraph.so \
-      #       && (echo file exists, skipping && exit 0) || \
-      #       (mkdir -p /tmp/workspace/compiled/modules/ && \
-      #       cp ~/project/build/libs/RedisGraph/src/*.so /tmp/workspace/compiled/modules/)
-
-      # - save_cache:
-      #     key: external-dependencies-compile-cache-v02-redisgraph-q1
-      #     paths:
-      #       - /tmp/workspace/compiled/modules/redisgraph.so
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - compiled/modules
-
-
-
-      # - run:
-      #     name: Install Dependencies
-      #     command: |
-      #       apt-get update
-      #       apt-get install -y build-essential
-      #       apt-get install -y cmake
-
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       mkdir -p ~/project/build/redis/modules
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       curl -OL https://github.com/RedisLabsModules/RedisGraph/archive/v1.0.2.tar.gz
-      #       tar xzf *.tar.gz
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       cd ~/project/R*
-      #       make
-      #       cp src/*.so ~/project/build/redis/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - redis
-
 
   temptest:
     docker:
