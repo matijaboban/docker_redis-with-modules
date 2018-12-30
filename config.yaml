@@ -40,9 +40,9 @@ libs:
       <<: *github-defaults
       name: redex
       release: f2d35edf438f1ac2279c312056589ddf83af6efc
-    cache-status:
-      package-download: false
-      package-compile: false
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   redistimeseries:
     github:
       <<: *github-defaults
