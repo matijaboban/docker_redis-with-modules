@@ -401,8 +401,8 @@ jobs:
           command: |
             echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
             echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
-            yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | config.yaml
-            yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | config.yaml
+            yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+            yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | sponge config.yaml
             echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
             echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
             exit 2
