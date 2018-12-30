@@ -399,12 +399,12 @@ jobs:
       - run:
           name: exit 2
           command: |
-            echo yq -r .libs.redex.cacheStatus.packageDownload /tmp/workspace/config.yaml
-            echo $(yq -r .libs.redex.cacheStatus.packageCompile /tmp/workspace/config.yaml)
-            yq -y '.libs.redex.cacheStatus.packageDownload=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
-            yq -y '.libs.redex.cacheStatus.packageCompile=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
-            echo $(yq -r .libs.redex.cacheStatus.packageDownload /tmp/workspace/config.yaml)
-            echo $(yq -r .libs.redex.cacheStatus.packageCompile /tmp/workspace/config.yaml)
+            echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
+            echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
+            yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | config.yaml
+            yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | config.yaml
+            echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
+            echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
             exit 2
 
       - libs-external-get:
