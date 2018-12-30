@@ -88,6 +88,7 @@ commands:
             apt install cmake -y
             apt install zip -y
             apt install libatlas-base-dev -y
+            apt install moreutils -y
             pip install yq
 
   executor-env-variables:
@@ -395,6 +396,16 @@ jobs:
             cp config.yaml /tmp/workspace || \
             touch /tmp/workspace/config.yaml
 
+      - run:
+          name: exit 2
+          command: |
+            echo $(yq -r .libs.redex.cache-status.package-download /tmp/workspace/config.yaml)
+            echo $(yq -r .libs.redex.cache-status.package-compile /tmp/workspace/config.yaml)
+            yq -y '.libs.redex.cache-status.package-download=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
+            yq -y '.libs.redex.cache-status.package-compile=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
+            echo $(yq -r .libs.redex.cache-status.package-download /tmp/workspace/config.yaml)
+            echo $(yq -r .libs.redex.cache-status.package-compile /tmp/workspace/config.yaml)
+            exit 2
 
       - libs-external-get:
           lib-name: redex
@@ -410,7 +421,7 @@ jobs:
 
       # - libs-external-get:
       #     lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
-      #     lib-name: redis
+      #     lib-name: redislabs
       #     lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
       # - libs-external-unpack:
