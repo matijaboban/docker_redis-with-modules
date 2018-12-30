@@ -10,31 +10,49 @@ libs:
       org: antirez
       name: redis
       release: 5.0.2
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   rejson:
     github:
       <<: *github-defaults
       name: rejson
       release: 08b10ce3045f9b24cf69ae00d25bee18f8807154
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   rebloom:
     github:
       <<: *github-defaults
       name: rebloom
       release: 955989f38778916f1bde0dc6998626333233d283
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   redisml:
     github:
       <<: *github-defaults
       name: redis-ml
       release: 9bc5814ab3fcc8ea33edd0c060c0f84eead05c28
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   redisgraph:
     github:
       <<: *github-defaults
       name: RedisGraph
       release: v1.0.8
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   redisearch:
     github:
       <<: *github-defaults
       name: RediSearch
       release: v1.4.2
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
   redex:
     github:
       <<: *github-defaults
@@ -48,6 +66,9 @@ libs:
       <<: *github-defaults
       name: redis-timeseries
       release: e386e523dde78d2bbaa15f704eb78214ff9d3b9f
+    cacheStatus:
+      packageDownload: false
+      packageCompile: false
 utils:
   bats:
     github:

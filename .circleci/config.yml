@@ -157,12 +157,20 @@ commands:
             echo "lib-category=<< parameters.lib-category >>" >>lib.version
             cat lib.version
 
+      - restore_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+
+      - run:
+          name: exit 2
+          command: |
+            ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
+            yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+            cat config.yaml
+            exit 2
+
       - run:
           name: Create << parameters.lib-name >> workspace download directory
           command: mkdir -p /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
-
-      - restore_cache:
-          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
 
       - run:
           name: Get << parameters.lib-name >> tag from Github
@@ -396,16 +404,16 @@ jobs:
             cp config.yaml /tmp/workspace || \
             touch /tmp/workspace/config.yaml
 
-      - run:
-          name: exit 2
-          command: |
-            echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
-            echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
-            yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
-            yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | sponge config.yaml
-            echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
-            echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
+      #       echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
+      #       yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+      #       yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | sponge config.yaml
+      #       echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
+      #       echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
+      #       exit 2
 
       - libs-external-get:
           lib-name: redex
