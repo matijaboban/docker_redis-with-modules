@@ -399,7 +399,7 @@ jobs:
       - run:
           name: exit 2
           command: |
-            echo $(yq -r .libs.redex.cache-status.package-download /tmp/workspace/config.yaml)
+            echo yq -r .libs.redex.cache-status.package-download /tmp/workspace/config.yaml
             echo $(yq -r .libs.redex.cache-status.package-compile /tmp/workspace/config.yaml)
             yq -y '.libs.redex.cache-status.package-download=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
             yq -y '.libs.redex.cache-status.package-compile=true' /tmp/workspace/config.yaml | /tmp/workspace/config.yaml
