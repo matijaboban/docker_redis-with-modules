@@ -65,6 +65,7 @@ commands:
             apk add ca-certificates
             apk add bash
             apk add tcl
+            apk add moreutils
 
       - run:
           name: python / pip install
@@ -228,19 +229,7 @@ commands:
           name: Cache status check
           command: |
             echo << parameters.cache-available >>
-            test << parameters.cache-available >> = true && echo Cache available, skipping subsequent steps. && exit 0 || echo Cache not available, continuing processing
-
-      - run: echo "preinstall is << parameters.cache-available >>"
-      - when:
-          condition: << parameters.cache-available >>
-          steps:
-            - run: echo "preinstall"
-      - unless:
-          condition: << parameters.cache-available >>
-          steps:
-            - run: echo "don't preinstall"
-
-
+            test << parameters.cache-available >> = true && echo Cache available, skipping subsequent steps. || echo Cache not available, continuing processing
 
       - run:
           name: Create << parameters.lib-name >> build directory
@@ -501,10 +490,10 @@ jobs:
       # - libs-external-unpack:
       #     lib-name: RediSearch
 
-      - run:
-          name: exit 2
-          command: |
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
 
 
 
@@ -777,8 +766,8 @@ jobs:
           lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: redis
+      # - libs-external-unpack:
+      #     lib-name: redis
 
       - libs-external-create-config:
           lib-name: redis
@@ -990,8 +979,8 @@ jobs:
           lib-name: RediSearch
           lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: RediSearch
+      # - libs-external-unpack:
+      #     lib-name: RediSearch
 
       - libs-external-make:
           lib-name: RediSearch
@@ -1088,8 +1077,8 @@ jobs:
           lib-name: redis-ml
           lib-release: $(yq -r .libs.redisml.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: redis-ml
+      # - libs-external-unpack:
+      #     lib-name: redis-ml
 
       - libs-external-make:
           lib-name: redis-ml
@@ -1170,8 +1159,8 @@ jobs:
           lib-name: rebloom
           lib-release: $(yq -r .libs.rebloom.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: rebloom
+      # - libs-external-unpack:
+      #     lib-name: rebloom
 
       - libs-external-make:
           lib-name: rebloom
@@ -1244,8 +1233,8 @@ jobs:
           lib-name: rejson
           lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: rejson
+      # - libs-external-unpack:
+      #     lib-name: rejson
 
       - libs-external-make:
           lib-name: rejson
