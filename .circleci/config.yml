@@ -230,6 +230,18 @@ commands:
             echo << parameters.cache-available >>
             test << parameters.cache-available >> = true && echo Cache available, skipping subsequent steps. && exit 0 || echo Cache not available, continuing processing
 
+      - run: echo "preinstall is << parameters.cache-available >>"
+      - when:
+          condition: << parameters.cache-available >>
+          steps:
+            - run: echo "preinstall"
+      - unless:
+          condition: << parameters.cache-available >>
+          steps:
+            - run: echo "don't preinstall"
+
+
+
       - run:
           name: Create << parameters.lib-name >> build directory
           command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
