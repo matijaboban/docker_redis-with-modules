@@ -160,13 +160,13 @@ commands:
       - restore_cache:
           key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
 
-      - run:
-          name: exit 2
-          command: |
-            ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
-            yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
-            cat config.yaml
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
+      #       yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+      #       cat config.yaml
+      #       exit 2
 
       - run:
           name: Create << parameters.lib-name >> workspace download directory
