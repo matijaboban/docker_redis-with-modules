@@ -65,7 +65,7 @@ commands:
             apk add ca-certificates
             apk add bash
             apk add tcl
-            apk add moreutils
+            apk add moreutils --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
 
       - run:
           name: python / pip install
@@ -1480,8 +1480,8 @@ jobs:
           lib-name: redex
           lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
 
-      - libs-external-unpack:
-          lib-name: redex
+      # - libs-external-unpack:
+      #     lib-name: redex
 
       - libs-external-make:
           lib-name: redex
