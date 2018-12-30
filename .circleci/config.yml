@@ -433,15 +433,15 @@ jobs:
       #       echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
       #       exit 2
 
-      - libs-external-get:
-          lib-name: redex
-          lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
+      # - libs-external-get:
+      #     lib-name: redex
+      #     lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
 
       # - libs-external-unpack:
       #     lib-name: redex
 
-      - libs-external-make:
-          lib-name: redex
+      # - libs-external-make:
+      #     lib-name: redex
 
 
 
