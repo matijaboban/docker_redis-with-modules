@@ -48,17 +48,13 @@ commands:
           name: Package manager | update list of available packages
           command: apk update
 
-          # apk add gcc
-          # apk add musl-dev
-          # apk add make
-          # apk add g++
       - run:
           name: Package manager | install packages
           command: |
             apk add build-base
+            apk add coreutils
             apk add zip
             apk add curl
-            apk add coreutils
             apk add jemalloc-dev
             apk add linux-headers
             apk add cmake
@@ -391,13 +387,14 @@ commands:
       #     name: exit 2
       #     command: |
       #       exit 2
+
 jobs:
 
   base:
     executor: python-executor
 
     steps:
-      - executor-python-setup-dependencies
+      # - executor-python-setup-dependencies
 
       - *attach_workspace
 
@@ -651,8 +648,6 @@ jobs:
             bats --version
             bats ~/project/test/bats/core.bats
             bats ~/project/test/bats/search.bats
-
-
 
   test-redis-rejson:
     docker:
@@ -1427,46 +1422,6 @@ jobs:
           root: *workspace_root
           paths:
             - compiled/modules
-
-
-
-
-  #     - run:
-  #         name: Install Dependencies
-  #         command: |
-  #           apt-get update
-  #           apt-get install -y zip
-
-  #     - run:
-  #         name: Create workspace directory
-  #         command: |
-  #           mkdir -p ~/project/build/redis/modules
-
-  #     - run:
-  #         name: Get module tag from Github
-  #         command: |
-  #           curl -OL https://github.com/RedisLabsModules/redis-timeseries/archive/master.zip
-  #           unzip *.zip
-
-  #     - run:
-  #         name: Get utility SDK from Github
-  #         command: |
-  #           cd r*/RedisModulesSDK/
-  #           curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip
-  #           unzip *.zip
-  #           mv R*/* .
-
-  #     - run:
-  #         name: Build module
-  #         command: |
-  #           cd ~/project/r*/src
-  #           make
-  #           cp *.so ~/project/build/redis/modules/
-
-  #     - persist_to_workspace:
-  #         root: *workspace_root
-  #         paths:
-  #           - redis
 
   build-redex:
     executor: python-executor
