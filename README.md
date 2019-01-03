@@ -1,5 +1,5 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/55f0deb5dc010a8803cc/maintainability)](https://codeclimate.com/github/matijaboban/docker-redismoduls/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/58d6b17e503b3ecfbf1e/maintainability)](https://codeclimate.com/github/matijaboban/docker_redis-with-modules/maintainability)
 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/55f0deb5dc010a8803cc/test_coverage)](https://codeclimate.com/github/matijaboban/docker-redismoduls/test_coverage)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/58d6b17e503b3ecfbf1e/test_coverage)](https://codeclimate.com/github/matijaboban/docker_redis-with-modules/test_coverage)
 
-# docker-redismoduls
+# docker_redis-with-modules
