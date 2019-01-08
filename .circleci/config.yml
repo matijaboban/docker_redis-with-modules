@@ -494,7 +494,7 @@ jobs:
 
 
       - run:
-          name: Check Environment Variables
+          name: Check Docker related Variables
           command: |
             if [[ -z "${DOCKER_LOGIN}" ]]; then
               echo "DOCKER_LOGIN is not set, will not be able to push image."
