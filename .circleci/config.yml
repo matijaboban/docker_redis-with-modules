@@ -493,7 +493,7 @@ jobs:
       #       exit 2
 
 
-       - run:
+      - run:
           name: Check Environment Variables
           command: |
             if [[ -z "${DOCKER_LOGIN}" ]]; then
