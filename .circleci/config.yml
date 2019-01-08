@@ -535,78 +535,12 @@ jobs:
             - ./node_modules
 
       - run:
-          name: Run linting
-          description: Run linting
+          name: Lint project code
+          description: |
+            Run unified linting command.
+            This is a preferred way of running npm based lint commands as any addition or change
+            in the package.json does not require any change here.
           command: npm run lint
-
-
-      # - run:
-      #     name: QQQQ
-      #     command: |
-      #       echo TEST1
-      #       echo $TEST1
-      #       echo TEST2
-      #       echo $TEST2
-
-      - run:
-          name: temp exit
-          command: |
-            ls build/download/
-
-            exit 2
-
-      # - restore_cache:
-      #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       test -e build/download/rejson.zip \
-      #       && echo file exists, skipping \
-      #       || \
-      #       wget -O build/download/rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
-
-      # - save_cache:
-      #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
-      #     paths:
-      #       - build/download/rejson.zip
-
-
-      # - libs-external-get:
-      #     lib-github-org: antirez
-      #     lib-name: redis
-      #     lib-release: 5.0.2
-
-      # - libs-external-get:
-      #     lib-name: rejson
-      #     lib-release: ${lib_rejson_release}
-
-      # - libs-external-get:
-      #     lib-name: redex
-      #     lib-release: ${lib_redex_release}
-
-      # - libs-external-get:
-      #     lib-name: RediSearch
-      #     lib-release: ${lib_redisearch_release}
-
-      # - libs-external-get:
-      #     lib-name: RedisGraph
-      #     lib-release: ${lib_redisgraph_release}
-
-      # - libs-external-get:
-      #     lib-name: redis-ml
-      #     lib-release: ${lib_redisml_release}
-
-      # - libs-external-get:
-      #     lib-name: rebloom
-      #     lib-release: ${lib_rebloom_release}
-
-      # - run:
-      #     name: temp exit
-      #     command: |
-      #       ls build/download/
-
-      #       exit 2
 
   test-redis-core:
     docker:
