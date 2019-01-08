@@ -536,6 +536,7 @@ jobs:
 
       - run:
           name: Run linting
+          description: Run linting
           command: npm run lint
 
 
@@ -547,12 +548,12 @@ jobs:
       #       echo TEST2
       #       echo $TEST2
 
-      # - run:
-      #     name: temp exit
-      #     command: |
-      #       ls build/download/
+      - run:
+          name: temp exit
+          command: |
+            ls build/download/
 
-      #       exit 2
+            exit 2
 
       # - restore_cache:
       #     key: external-dependencies-cache-v1-rejson-08b10ce3045f9b24cf69ae00d25bee18f8807154
