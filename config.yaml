@@ -3,6 +3,9 @@ references:
     org: RedisLabsModules
     extension: zip
 
+docker:
+  registry: docker.io
+  repoName: redis-with-modules
 
 libs:
   redis:

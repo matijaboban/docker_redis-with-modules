@@ -434,6 +434,9 @@ jobs:
               exit 1
             fi
 
+      - run:
+          name: Docker Login
+          command: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
 
       # - run:
       #     name: Process project env vars
@@ -452,6 +455,8 @@ jobs:
       - run:
           name: exit 2
           command: |
+            echo $(yq -r .docker.registry /tmp/workspace/config.yaml)
+            echo $(yq -r .docker.repoName /tmp/workspace/config.yaml)
             exit 2
 
       # - libs-external-get:
