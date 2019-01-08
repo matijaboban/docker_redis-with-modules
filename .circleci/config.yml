@@ -394,11 +394,46 @@ jobs:
     executor: python-executor
 
     steps:
-      # - executor-python-setup-dependencies
+      - executor-python-setup-dependencies
 
       - *attach_workspace
 
       - checkout
+
+      - run:
+          name: Check project configuration file existance
+          description: This step checks if the project configuration file is present and not empty.
+          command: |
+            test -s config.yaml
+            if [ $? -ne 0 ]; then
+                echo "Project configuration file not present or empty."
+                exit 1
+            fi
+
+      - run:
+          name: Move project configuration file into workspace
+          description: |
+            At this point, the project configuration is moved into the base workspace folder
+            for persistence thru the workflow. The workspace directory is outside the base project
+            directory to accommodate different base image structures and user permission differences
+            thru workflow steps.
+          command: |
+            cp config.yaml /tmp/workspace
+
+
+      - run:
+          name: Check Docker related Variables
+          command: |
+            if [[ -z "${DOCKER_LOGIN}" ]]; then
+              echo "DOCKER_LOGIN is not set, will not be able to push image."
+              exit 1
+            fi
+
+            if [[ -z "${DOCKER_PASSWORD}" ]]; then
+              echo "DOCKER_PASSWORD is not set, will not be able to push image."
+              exit 1
+            fi
+
 
       # - run:
       #     name: Process project env vars
@@ -412,23 +447,12 @@ jobs:
       #       echo "export lib_rebloom_release=955989f38778916f1bde0dc6998626333233d283" >>/tmp/workspace/new-env-vars
       #       cat /tmp/workspace/new-env-vars >> $BASH_ENV
 
-      - run:
-          name: move project config
-          command: |
-            test -e config.yaml && \
-            cp config.yaml /tmp/workspace || \
-            touch /tmp/workspace/config.yaml
 
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
-      #       echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
-      #       yq -y '.libs.redex.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
-      #       yq -y '.libs.redex.cacheStatus.packageCompile=true' config.yaml | sponge config.yaml
-      #       echo $(yq -r .libs.redex.cacheStatus.packageDownload config.yaml)
-      #       echo $(yq -r .libs.redex.cacheStatus.packageCompile config.yaml)
-      #       exit 2
+
+      - run:
+          name: exit 2
+          command: |
+            exit 2
 
       # - libs-external-get:
       #     lib-name: redex
@@ -493,18 +517,7 @@ jobs:
       #       exit 2
 
 
-      - run:
-          name: Check Docker related Variables
-          command: |
-            if [[ -z "${DOCKER_LOGIN}" ]]; then
-              echo "DOCKER_LOGIN is not set, will not be able to push image."
-              exit 1
-            fi
 
-            if [[ -z "${DOCKER_PASSWORD}" ]]; then
-              echo "DOCKER_PASSWORD is not set, will not be able to push image."
-              exit 1
-            fi
 
 
 
