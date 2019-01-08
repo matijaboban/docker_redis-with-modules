@@ -20,31 +20,26 @@ executors:
       docker:
         - image: circleci/node:10.14.1-browsers
           user: root
-
-      environment:
-        CC_TEST_REPORTER_ID: 495302278153b95fae5fd910eeec440bf8bf27bec8e14c5afcca43beed03d3c2
-
+      # environment:
+      #   CC_TEST_REPORTER_ID: 495302278153b95fae5fd910eeec440bf8bf27bec8e14c5afcca43beed03d3c2
       working_directory: ~/project
 
     alpine-executor:
       docker:
         - image: alpine:3.8
           user: root
-
       working_directory: ~/project
 
     python-executor:
       docker:
         - image: python:3.7.1
           user: root
-
       working_directory: ~/project
 
     docker-executor:
       docker:
-        - image: docker-publish
+        - image: docker:18.06.1-ce-git
           user: root
-
       working_directory: ~/project
 
 commands:
@@ -401,7 +396,7 @@ jobs:
     executor: docker-executor
 
     steps:
-      - executor-python-setup-dependencies
+      - executor-alpine-setup-dependencies
 
       - *attach_workspace
 
