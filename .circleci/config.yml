@@ -61,7 +61,7 @@ commands:
             apk add ca-certificates
             apk add bash
             apk add tcl
-            apk add moreutils --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
+            apk add moreutils
 
       - run:
           name: python / pip install
