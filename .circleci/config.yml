@@ -40,6 +40,13 @@ executors:
 
       working_directory: ~/project
 
+    docker-executor:
+      docker:
+        - image: docker-publish
+          user: root
+
+      working_directory: ~/project
+
 commands:
   executor-alpine-setup-dependencies:
     description: "Alpine image dependencies install"
@@ -391,7 +398,7 @@ commands:
 jobs:
 
   base:
-    executor: python-executor
+    executor: docker-executor
 
     steps:
       - executor-python-setup-dependencies
