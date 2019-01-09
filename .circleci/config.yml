@@ -422,11 +422,29 @@ jobs:
           command: |
             cp config.yaml /tmp/workspace
 
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - config.yaml
+
       - setup_remote_docker
 
       - run:
           name: Check Docker related Variables
+          description: TODO
           command: |
+            if [[ $(yq -r .docker.registry /tmp/workspace/config.yaml) == null ]]; then
+                echo "Docker registry value is not set in project configuration, docker image would not \
+                be remotely deployable. Please review the configuration"
+                exit 1
+            fi
+
+            if [[ $(yq -r .docker.repoName /tmp/workspace/config.yaml) == null ]]; then
+                echo "Docker repository name value is not set in project configuration, docker image would not \
+                be remotely deployable. Please review the configuration"
+                exit 1
+            fi
+
             if [[ -z "${DOCKER_LOGIN}" ]]; then
               echo "DOCKER_LOGIN is not set, will not be able to push image."
               exit 1
@@ -438,8 +456,18 @@ jobs:
             fi
 
       - run:
-          name: Docker Login
-          command: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+          name: Check remote docker registry login
+          description: TODO
+          command: |
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD $(yq -r .docker.registry /tmp/workspace/config.yaml)
+            if [ $? -ne 0 ]; then
+                echo "Project configuration file not present or empty."
+                exit 1
+            fi
+
+      # - run:
+      #     name: Docker Login
+      #     command: docker login -u matijaboban --password-stdin hiccup-baptism-lowdown-censor-unheard $(yq -r .docker.registry /tmp/workspace/config.yaml)
 
       # - run:
       #     name: Process project env vars
@@ -455,12 +483,12 @@ jobs:
 
 
 
-      - run:
-          name: exit 2
-          command: |
-            echo $(yq -r .docker.registry /tmp/workspace/config.yaml)
-            echo $(yq -r .docker.repoName /tmp/workspace/config.yaml)
-            exit 2
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       echo $(yq -r .docker.registry /tmp/workspace/config.yaml)
+      #       echo $(yq -r .docker.repoName /tmp/workspace/config.yaml)
+      #       exit 2
 
       # - libs-external-get:
       #     lib-name: redex
@@ -529,10 +557,10 @@ jobs:
 
 
 
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - config.yaml
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - config.yaml
 
   lint:
     executor: node-executor
