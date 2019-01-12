@@ -37,7 +37,7 @@ executors:
       working_directory: ~/project
 
     docker-executor:
-      description: TODO
+      # description: TODO
       docker:
         - image: docker:18.06.1-ce-git
           user: root
