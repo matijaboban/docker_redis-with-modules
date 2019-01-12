@@ -1242,6 +1242,8 @@ jobs:
 
       - *attach_workspace
 
+      - setup_remote_docker
+
       - run:
           name: Check project configuration file existance
           description: This step checks if the project configuration file is present and not empty.
