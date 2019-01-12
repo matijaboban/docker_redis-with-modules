@@ -1245,13 +1245,30 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Check project configuration file existance
-          description: This step checks if the project configuration file is present and not empty.
+          name: Restore compiled modules
+          description: TODO
           command: |
             echo start
             mkdir -p ~/project/build/compiled
             cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
-            docker build .
+
+      - run:
+          name: Build docker
+          description: TODO
+          command: |
+            docker build -t redis_with_modules:$CIRCLE_SHA1 .
+
+      - run:
+          name: Save docker build to workspace
+          description: TODO
+          command: |
+            mkdir -p ~/project/build/docker
+            docker save -o build/docker/docker.tar redis_with_modules
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - build/docker/docker.tar
 
   ## Image testing
   test-redis-core:
@@ -1268,6 +1285,11 @@ jobs:
       - *attach_workspace
 
       - checkout
+
+      - run:
+          name: See if docker is persistent in workspace
+          command: |
+            ls -alh /tmp/workspace/build/docker
 
       - run: |
           apt-get update && apt-get install -y curl
