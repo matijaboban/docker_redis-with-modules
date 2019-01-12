@@ -37,6 +37,7 @@ executors:
       working_directory: ~/project
 
     docker-executor:
+      description: TODO
       docker:
         - image: docker:18.06.1-ce-git
           user: root
@@ -591,161 +592,7 @@ jobs:
             in the package.json does not require any change here.
           command: npm run lint
 
-  test-redis-core:
-    docker:
-      - image: python:3.7.1
-      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
-        # command: [--sysctl vm.overcommit_memory=1]
-
-    working_directory: ~/project
-
-    steps:
-      - executor-python-setup-dependencies
-
-      - *attach_workspace
-
-      - checkout
-
-      - run: |
-          apt-get update && apt-get install -y curl
-
-      - run:
-          name: Install goss
-          command: |
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
-
-      - run: |
-          apt-get update && apt-get install -y redis-tools
-          echo "CONFIG SET save ''" | redis-cli -x
-
-      - run: redis-cli info
-
-      - run:
-          name: Test goss
-          command: |
-            cd ~/project/test/goss
-            goss --vars goss.yaml validate
-
-      - libs-external-get:
-          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
-          lib-name: bats
-          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
-          lib-category: utils
-
-      - libs-external-unpack:
-          lib-name: bats
-          lib-category: utils
-
-      - run:
-          name: Install Bats
-          command: |
-            cd ~/project/build/utils/bats
-            ./install.sh /usr/local
-            bats --version
-            bats ~/project/test/bats/core.bats
-            bats ~/project/test/bats/search.bats
-
-  test-redis-rejson:
-    docker:
-      - image: python:3.7.1
-      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
-
-    working_directory: ~/project
-
-    steps:
-      - *attach_workspace
-
-      - checkout
-
-      - run: |
-          apt-get update && apt-get install -y curl
-
-      - run:
-          name: Install goss
-          command: |
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
-
-      - run: |
-          apt-get update && apt-get install -y redis-tools
-          echo "CONFIG SET save ''" | redis-cli -x
-
-      - run: redis-cli info
-
-      - run:
-          name: Test goss
-          command: |
-            cd ~/project/test/goss
-            goss --vars goss.yaml validate
-
-  test-redis-redisearch:
-    docker:
-      - image: python:3.7.1
-      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
-
-    working_directory: ~/project
-
-    steps:
-      - *attach_workspace
-
-      - checkout
-
-      - run: |
-          apt-get update && apt-get install -y curl
-
-      - run:
-          name: Install goss
-          command: |
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
-
-      - run: |
-          apt-get update && apt-get install -y redis-tools
-          echo "CONFIG SET save ''" | redis-cli -x
-
-      - run: redis-cli info
-
-      - run:
-          name: Test goss
-          command: |
-            cd ~/project/test/goss
-            goss --vars goss.yaml validate
-
-  test-redis-redisbloom:
-    docker:
-      - image: python:3.7.1
-      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
-
-    working_directory: ~/project
-
-    steps:
-      - *attach_workspace
-
-      - checkout
-
-      - run: |
-          apt-get update && apt-get install -y curl
-
-      - run:
-          name: Install goss
-          command: |
-            curl -fsSL https://goss.rocks/install | sh
-            goss -version
-
-      - run: |
-          apt-get update && apt-get install -y redis-tools
-          echo "CONFIG SET save ''" | redis-cli -x
-
-      - run: redis-cli info
-
-      - run:
-          name: Test goss
-          command: |
-            cd ~/project/test/goss
-            goss --vars goss.yaml validate
-
-  build-redis:
+    build-redis:
     executor: alpine-executor
 
     steps:
@@ -959,6 +806,7 @@ jobs:
       #     paths:
       #       - compiled
 
+  ## Image component build steps
   build-redisearch:
     executor: alpine-executor
 
@@ -1480,6 +1328,181 @@ jobs:
           lib-name: RedisGraph
           make-params:  -j 8
 
+  ## Build
+  buildtest:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - run:
+          name: Check project configuration file existance
+          description: This step checks if the project configuration file is present and not empty.
+          command: |
+            echo start
+            mkdir -p ~/project/build/compiled
+            cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
+            docker build .
+
+  ## Image testing
+  test-redis-core:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+        # command: [--sysctl vm.overcommit_memory=1]
+
+    working_directory: ~/project
+
+    steps:
+      - executor-python-setup-dependencies
+
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/search.bats
+
+  test-redis-rejson:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+  test-redis-redisearch:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+  test-redis-redisbloom:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
   temptest:
     docker:
       - image: python:3.7.1
@@ -1686,6 +1709,16 @@ workflows:
       #     requires:
       #       - temptest
 
+      - buildtest:
+          requires:
+            - build-redis
+            - build-redisearch
+            # - build-redisml
+            - build-rejson
+            - build-redisbloom
+            - build-redisgraph
+            - build-redex
+            - build-redistimeseries
 
       - docker-publish/publish:
           image: $DOCKER_LOGIN/redis-with-modules
