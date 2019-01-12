@@ -495,7 +495,7 @@ jobs:
             in the package.json does not require any change here.
           command: npm run lint
 
-    build-redis:
+  build-redis:
     executor: alpine-executor
 
     steps:
