@@ -1262,13 +1262,13 @@ jobs:
           name: Save docker build to workspace
           description: TODO
           command: |
-            mkdir -p ~/project/build/docker
+            mkdir -p /tmp/workspace/build/docker
             docker save -o build/docker/docker.tar redis_with_modules
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - build/docker/docker.tar
+            - build/docker
 
   ## Image testing
   test-redis-core:
