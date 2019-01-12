@@ -1262,13 +1262,15 @@ jobs:
           name: Save docker build to workspace
           description: TODO
           command: |
-            mkdir -p /tmp/workspace/build/docker
+            mkdir -p ~/project/build/docker
             docker save -o build/docker/docker.tar redis_with_modules
+            mkdir -p /tmp/workspace/docker
+            cp -r ~/project/build/docker/* /tmp/workspace/docker
 
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - build/docker
+            - docker/docker.tar
 
   ## Image testing
   test-redis-core:
@@ -1289,7 +1291,7 @@ jobs:
       - run:
           name: See if docker is persistent in workspace
           command: |
-            ls -alh /tmp/workspace/build/docker
+            ls -alh /tmp/workspace/docker
 
       - run: |
           apt-get update && apt-get install -y curl
@@ -1704,6 +1706,7 @@ workflows:
       - test-redis-core:
           requires:
             - docker-publish/publish
+            - buildtest
 
       - test-redis-redisearch:
           requires:
