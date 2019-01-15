@@ -3,8 +3,6 @@ version: 2.1
 
 ## base conf
 
-
-
 references:
   workspace_root: &workspace_root
     /tmp/workspace
@@ -392,6 +390,9 @@ commands:
       #       exit 2
 
 jobs:
+  ######################
+  ## Preparation jobs ##
+  ######################
 
   base:
     executor: docker-executor
@@ -709,7 +710,10 @@ jobs:
       #     paths:
       #       - compiled
 
-  ## Image component build steps
+  ################################
+  ## Image component build jobs ##
+  ################################
+
   build-redisearch:
     executor: alpine-executor
 
@@ -1272,7 +1276,10 @@ jobs:
           paths:
             - docker/docker.tar
 
-  ## Image testing
+  ###################
+  ## Image testing ##
+  ###################
+
   test-redis-core:
     docker:
       - image: python:3.7.1
