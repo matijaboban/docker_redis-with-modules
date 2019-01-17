@@ -509,8 +509,8 @@ jobs:
           lib-name: redis
           lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
 
-      # - libs-external-unpack:
-      #     lib-name: redis
+      - libs-external-unpack:
+          lib-name: redis
 
       - libs-external-create-config:
           lib-name: redis
@@ -525,13 +525,13 @@ jobs:
       - restore_cache:
           key: external-dependencies-compile-cache-v05-redis-q1
 
-      - run:
-          name: Unpack external lib
-          command: |
-            test -e /tmp/workspace/compiled/core/redis-server \
-            && (echo Compiled assets found, skipping, skipping && exit 0) || \
-            (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
-            mv ~/project/build/* ~/project/build/redis)
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/core/redis-server \
+      #       && (echo Compiled assets found, skipping, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/* ~/project/build/redis)
 
       - run:
           name: Pre-build updates
