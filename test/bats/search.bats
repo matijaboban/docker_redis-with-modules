@@ -10,46 +10,92 @@ if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
 fi
 
 ## RediSearch
-@test "s1" {
-    run redis-cli FT.CREATE keytype-search SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
+@test "rSerBase_01 - Create simple index" {
+    ## create index
+    run redis-cli FT.CREATE rSerBase_01 SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
     [ "$status" -eq 0 ]
-    [ "$output" = "OK" ]
+    [ "$output" == OK ]
+
+    ## check
+    run redis-cli FT.INFO rSerBase_01
+    [ "$status" -eq 0 ]
+    [ "${lines[1]}" = "rSerBase_01" ]
+
+    ## remove index
+    run redis-cli FT.DROP rSerBase_01
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
 }
 
-@test "js2" {
-    run redis-cli FT.ADD keytype-search doc1 1.0 FIELDS title "hello world" body "lorem ipsum" url "http://redis.io"
+@test "rSerBase_02 - Create simple index and add entry" {
+    ## create index
+    run redis-cli FT.CREATE rSerBase_02 SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
+
+    ## add entry
+    run redis-cli FT.ADD rSerBase_02 doc1 1.0 FIELDS title "hello world" body "lorem ipsum" url "http://matijaboban.com"
     [ "$status" -eq 0 ]
     [ "$output" = "OK" ]
-}
 
-@test "js3" {
-    run redis-cli FT.SEARCH keytype-search "hello world" LIMIT 0 10 RETURN 1 url
+    ## search index returning only a single field
+    run redis-cli FT.SEARCH rSerBase_02 "hello world" LIMIT 0 10 RETURN 1 url
     [ "$status" -eq 0 ]
     echo "$output"
-    [ "${lines[3]}" = "http://redis.io" ]
+    [ "${lines[3]}" = "http://matijaboban.com" ]
 
+    ## remove index
+    run redis-cli FT.DROP rSerBase_02
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
 }
 
-@test "js4" {
-    run redis-cli FT.DROP keytype-search
+@test "rSerBase_06 - Create simple geo index and add entry" {
+    ## create index
+    run redis-cli FT.CREATE rSerBase_06 SCHEMA name TEXT WEIGHT 5.0 location GEO
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
+
+    ## add entry(s)
+    run redis-cli FT.ADD rSerBase_06 1 1 FIELDS name "Monterrey" location -100.4431802,25.6490376
     [ "$status" -eq 0 ]
     [ "$output" = "OK" ]
-}
 
-
-@test "js4" {
-    run redis-cli FT.DROP keytype-search
+    run redis-cli FT.ADD rSerBase_06 2 1 FIELDS name "Vancouver" location -123.1207,49.2827
     [ "$status" -eq 0 ]
     [ "$output" = "OK" ]
-}
 
-@test "last" {
-    run echo "last"
-    echo "last test"
+    run redis-cli FT.ADD rSerBase_06 3 1 FIELDS name "London" location -0.1278,51.5074
+    [ "$status" -eq 0 ]
+    [ "$output" = "OK" ]
+
+    ## get index content without filters
+    run redis-cli FT.SEARCH rSerBase_06 *
+    [ "$status" -eq 0 ]
+    [ "${lines[1]}" = -eq 3 ] ## check number of expected returns
+
+    ## search index by single field
+    run redis-cli FT.SEARCH rSerBase_06 "@name:Lo*"
     [ "$status" -eq 0 ]
     echo "$output"
-    [ "$output" = "last" ]
+    [ "${lines[3]}" = "London" ]
+
+    ## search index by geospatial field returning only a single field
+    run redis-cli FT.SEARCH rSerBase_06 "@location:[0 51.5 50 km]" RETURN 1 name
+    [ "$status" -eq 0 ]
+    [ "${lines[4]}" = "London" ]
+
+    ## search index by geospatial and text field returning only a single field
+    run redis-cli FT.SEARCH rSerBase_06 "@name:Van* @location:[-120 50 500 km]" RETURN 1 name
+    [ "$status" -eq 0 ]
+    [ "${lines[4]}" = "Vancouver" ]
+
+    ## remove index
+    run redis-cli FT.DROP rSerBase_02
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
 }
+
 
 
 ## Autosuggest
