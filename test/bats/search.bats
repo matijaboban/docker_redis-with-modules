@@ -36,10 +36,11 @@ fi
     [ "$output" = "OK" ]
 }
 
-@test "js5" {
-    run redis-cli FT.ADD keytype-search doc1 1.0 FIELDS title "hello world" body "lorem ipsum" url "http://redis.io"
+
+@test "js4" {
+    run redis-cli FT.DROP keytype-search
     [ "$status" -eq 0 ]
-    [[ "$output" =~ "Unknown index name" ]]
+    [ "$output" = "OK" ]
 }
 
 @test "last" {
@@ -48,4 +49,34 @@ fi
     [ "$status" -eq 0 ]
     echo "$output"
     [ "$output" = "last" ]
+}
+
+
+## Autosuggest
+@test "rSerAutoSug_03 - Calling autosuggest on an non-existing index" {
+    run redis-cli FT.SUGGET rSerAutoSug_03 item
+    [ "$status" -eq 0 ]
+    [ "$output" == '' ]
+}
+
+@test "rSerAutoSug_04 - Calling autosuggest with payload on an non-existing index" {
+    run redis-cli FT.SUGGET rSerAutoSug_04 item WITHPAYLOADS
+    [ "$status" -eq 0 ]
+    [ "$output" == '' ]
+}
+
+@test "rSerAutoSug_05 - Calling autosuggest with payload on an empty index" {
+    ## create index
+    run redis-cli FT.CREATE rSerAutoSug_05 SCHEMA name TEXT
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
+
+    run redis-cli FT.SUGGET rSerAutoSug_05 item WITHPAYLOADS
+    [ "$status" -eq 0 ]
+    [ "$output" == '' ]
+
+    ## remove index
+    run redis-cli FT.DROP rSerAutoSug_05
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
 }
