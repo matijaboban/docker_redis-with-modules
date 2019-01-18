@@ -1432,7 +1432,7 @@ jobs:
           command: |
             mkdir -p ~/project/build/docker
             cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
-            docker load -i ~/project/build/docker/docker.tar | true
+            docker load -i ~/project/build/docker/docker.tar
 
       - run:
           name: Run docker in backgroud
