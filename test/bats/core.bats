@@ -3,12 +3,16 @@
 # load fixtures/setup
 load test_helper
 
+## tests setup
+setup()
+{
+    command_base=$(base_cli)
+}
 
 ## ReJson
 @test "rRson_01 - Create json set" {
     # Set test index name
     index_name=$(generate_key rJson_01)
-    command_base=$(base_cli)
 
     ## create key
     run $command_base JSON.SET $index_name . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'

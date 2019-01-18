@@ -3,11 +3,16 @@
 # load fixtures/setup
 load test_helper
 
+## tests setup
+setup()
+{
+    command_base=$(base_cli)
+}
+
 ## RediSearch
 @test "rSerBase_01 - Create simple index" {
     # Set test index name
     index_name=$(generate_key rSerBase_01)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
@@ -28,7 +33,6 @@ load test_helper
 @test "rSerBase_02 - Create simple index and add entry" {
     # Set test index name
     index_name=$(generate_key rSerBase_02)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
@@ -55,7 +59,6 @@ load test_helper
 @test "rSerBase_06 - Create simple geo index and add entry" {
     # Set test index name
     index_name=$(generate_key rSerBase_06)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA name TEXT WEIGHT 5.0 location GEO
@@ -107,7 +110,6 @@ load test_helper
 @test "rSerAutoSug_03 - Calling autosuggest on an non-existing index" {
     # Set test index name
     index_name=$(generate_key rSerAutoSug_03)
-    command_base=$(base_cli)
 
     run $command_base FT.SUGGET $index_name item
     [ "$status" -eq 0 ]
@@ -117,7 +119,6 @@ load test_helper
 @test "rSerAutoSug_04 - Calling autosuggest with payload on an non-existing index" {
     # Set test index name
     index_name=$(generate_key rSerAutoSug_04)
-    command_base=$(base_cli)
 
     run $command_base FT.SUGGET $index_name item WITHPAYLOADS
     [ "$status" -eq 0 ]
@@ -127,7 +128,6 @@ load test_helper
 @test "rSerAutoSug_05 - Calling autosuggest with payload on an empty index" {
     # Set test index name
     index_name=$(generate_key rSerAutoSug_05)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA name TEXT

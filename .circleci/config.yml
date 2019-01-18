@@ -1458,6 +1458,7 @@ jobs:
             bats --version
             export redis_cli_base=1
             echo $redis_cli_base
+            bats ~/project/test/bats/search.bats
             bats ~/project/test/bats/bloom.bats
 
       # - run:

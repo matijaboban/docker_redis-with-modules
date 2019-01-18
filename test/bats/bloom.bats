@@ -4,9 +4,10 @@
 # load fixtures/setup
 load test_helper
 
-setup() {
-  echo 'run setup'
-  command_base=$(base_cli)
+## tests setup
+setup()
+{
+    command_base=$(base_cli)
 }
 
 
@@ -14,7 +15,6 @@ setup() {
 @test "rSerBase_01 - Create simple index" {
     # Set test index name
     index_name=$(generate_key rSerBase_01)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
@@ -35,7 +35,6 @@ setup() {
 @test "rSerBase_02 - Create simple index and add entry" {
     # Set test index name
     index_name=$(generate_key rSerBase_02)
-    command_base=$(base_cli)
 
     ## create index
     run $command_base FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
