@@ -38,14 +38,15 @@ get_docker_id ()
 }
 
 ## set target docker id
-if [ $redis_cli_base -eq 1 ]; then
+if [[ ! -z $redis_cli_base && $redis_cli_base -eq 1 ]]; then
     docker_id=$(get_docker_id)
 fi
+
 
 ## set base of redis interactions commands
 base_cli ()
 {
-    if [ $redis_cli_base -eq 1 ]; then
+    if [[ ! -z $redis_cli_base && $redis_cli_base -eq 1 ]]; then
         echo "docker exec $docker_id redis-cli"
         exit 0
     fi
