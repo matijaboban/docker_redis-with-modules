@@ -1456,9 +1456,7 @@ jobs:
             cd ~/project/build/utils/bats
             ./install.sh /usr/local
             bats --version
-            docker exec -it $(docker ps -q) sh
-            bats ~/project/test/bats/core.bats
-            bats ~/project/test/bats/search.bats
+            bats ~/project/test/bats/bloom.bats
 
       # - run:
       #     name: Docker login
