@@ -8,14 +8,15 @@ load test_helper
 @test "rRson_01 - Create json set" {
     # Set test index name
     index_name=$(generate_key rJson_01)
+    command_base=$(base_cli)
 
     ## create key
-    run redis-cli JSON.SET $index_name . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'
+    run $command_base JSON.SET $index_name . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'
     [ "$status" -eq 0 ]
     [ "$output" == OK ]
 
     ## check
-    run redis-cli JSON.GET $index_name loggedOut
+    run $command_base JSON.GET $index_name loggedOut
     [ "$status" -eq 0 ]
     [ "$output" = "true" ]
 }

@@ -45,5 +45,10 @@ fi
 ## set base of redis interactions commands
 base_cli ()
 {
-    echo "docker exec $docker_id redis-cli"
+    if [ $redis_cli_base -eq 1 ]; then
+        echo "docker exec $docker_id redis-cli"
+        exit 0
+    fi
+
+    echo "redis-cli"
 }
