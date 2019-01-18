@@ -1,6 +1,5 @@
 #!/usr/bin/env bats
 
-docker_id=NULL
 
 # load fixtures/setup
 load test_helper
