@@ -1421,23 +1421,40 @@ jobs:
       - setup_remote_docker
 
       - run:
+          name: Install local redis-cli | TODO
+          command: |
+            cp /tmp/workspace/compiled/core/redis-cli /usr/bin/
+            chmod 755 /usr/bin/redis-cli
+            redis-cli -v
+
+      - run:
           name: Restore local image
           command: |
             mkdir -p ~/project/build/docker
             cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i build/docker/docker.tar | true
+            docker run -d $(docker images -q)
+            docker exec -it e0c87faf341f sh
 
-      - run: |
-          apt-get update && apt-get install -y curl
+      # - run: |
+      #     apt-get update && apt-get install -y curl
+
+      # - run:
+      #     name: Install goss
+      #     command: |
+      #       curl -fsSL https://goss.rocks/install | sh
+      #       goss -version
 
       - run:
           name: Install goss
           command: |
-            curl -fsSL https://goss.rocks/install | sh
+            wget https://goss.rocks/install
+            sh install
             goss -version
 
-      - run: |
-          apt-get update && apt-get install -y redis-tools
-          echo "CONFIG SET save ''" | redis-cli -x
+      # - run: |
+      #     apt-get update && apt-get install -y redis-tools
+      #     echo "CONFIG SET save ''" | redis-cli -x
 
       - run: redis-cli info
 
