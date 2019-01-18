@@ -19,16 +19,9 @@ get_docker_id ()
 ## set target docker id
 docker_id=$(get_docker_id)
 
-
+## set base of redis interactions commands
 base_cli ()
 {
-    if [ -z "$docker_id" ]; then
-         docker_id=$(docker ps -q)
-         echo "docker_id not found"
-    else
-        echo found: $docker_id
-    fi
-
     echo "docker exec $docker_id redis-cli"
 }
 
