@@ -1730,6 +1730,7 @@ workflows:
       - test-redis-redisbloom:
           requires:
             - docker-publish/publish
+            - buildtest
 
       - test-redis-rejson:
           requires:
