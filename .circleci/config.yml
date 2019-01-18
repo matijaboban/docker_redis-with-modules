@@ -1433,7 +1433,11 @@ jobs:
             mkdir -p ~/project/build/docker
             cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
             docker load -i ~/project/build/docker/docker.tar | true
-            docker run -d $(docker images -q)
+
+      - run:
+          name: Run docker in backgroud
+          command: docker run -d $(docker images -q)
+          background: true
 
       - libs-external-get:
           lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
