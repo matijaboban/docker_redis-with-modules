@@ -38,7 +38,9 @@ get_docker_id ()
 }
 
 ## set target docker id
-docker_id=$(get_docker_id)
+if [ $redis_cli_base -eq 1 ]; then
+    docker_id=$(get_docker_id)
+fi
 
 ## set base of redis interactions commands
 base_cli ()
