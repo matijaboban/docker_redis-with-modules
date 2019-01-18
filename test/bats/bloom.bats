@@ -4,6 +4,11 @@
 # load fixtures/setup
 load test_helper
 
+setup() {
+  echo 'run setup'
+  command_base=$(base_cli)
+}
+
 
 ## RediSearch
 @test "rSerBase_01 - Create simple index" {
