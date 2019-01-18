@@ -1,18 +1,12 @@
 #!/usr/bin/env bats
 
-## Generate key
-## TODO: notes
-key_base="keytype-search"
-timestamp=$(date +%s)
-random=$[RANDOM]
-export redis_key=$key_base-$(date +%s)-$(($RANDOM))
+# ## Generate key
+# ## TODO: notes
+# generate_key () {
+#     key_prefix=${1:-index}
+#     timestamp=$(date +%s)
+#     randnum=$[RANDOM]
+#     key=$key_prefix-$(date +%s)-$(($randnum))
 
-# echo "load setup"
-# echo $redis_key
-
-
-echo "${!keytype-search-*}"
-
-unset "${!keytype-search-*}"
-
-echo "${!keytype-search-*}"
+#     echo $key
+# }
