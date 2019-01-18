@@ -1,5 +1,8 @@
 #!/usr/bin/env bats
 
+# load fixtures/setup
+load test_helper
+
 # Check we're not running bash 3.x
 if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
     echo "Bash 4.1 or later is required to run these tests"
@@ -7,16 +10,19 @@ if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
 fi
 
 ## ReJson
-@test "js1" {
-  run redis-cli JSON.SET keytype-json . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'
-  [ "$status" -eq 0 ]
-  [ "$output" = "OK" ]
-}
+@test "rRson_01 - Create json set" {
+    # Set test index name
+    index_name=$(generate_key rJson_01)
 
-@test "js2" {
-  run redis-cli JSON.GET keytype-json loggedOut
-  [ "$status" -eq 0 ]
-  [ "$output" = "true" ]
+    ## create key
+    run redis-cli JSON.SET $index_name . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}'
+    [ "$status" -eq 0 ]
+    [ "$output" == OK ]
+
+    ## check
+    run redis-cli JSON.GET $index_name loggedOut
+    [ "$status" -eq 0 ]
+    [ "$output" = "true" ]
 }
 
 ## Bloom

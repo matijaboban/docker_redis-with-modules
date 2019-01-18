@@ -12,7 +12,7 @@ fi
 ## RediSearch
 @test "rSerBase_01 - Create simple index" {
     # Set test index name
-    index_name=generate_key rSerBase_01
+    index_name=$(generate_key rSerBase_01)
 
     ## create index
     run redis-cli FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
@@ -32,7 +32,7 @@ fi
 
 @test "rSerBase_02 - Create simple index and add entry" {
     # Set test index name
-    index_name=rSerBase_02
+    index_name=$(generate_key rSerBase_02)
 
     ## create index
     run redis-cli FT.CREATE $index_name SCHEMA title TEXT WEIGHT 5.0 body TEXT url TEXT
@@ -58,7 +58,7 @@ fi
 
 @test "rSerBase_06 - Create simple geo index and add entry" {
     # Set test index name
-    index_name=rSerBase_06
+    index_name=$(generate_key rSerBase_06)
 
     ## create index
     run redis-cli FT.CREATE $index_name SCHEMA name TEXT WEIGHT 5.0 location GEO
@@ -106,11 +106,10 @@ fi
 }
 
 
-
 ## Autosuggest
 @test "rSerAutoSug_03 - Calling autosuggest on an non-existing index" {
     # Set test index name
-    index_name=rSerAutoSug_03
+    index_name=$(generate_key rSerAutoSug_03)
 
     run redis-cli FT.SUGGET $index_name item
     [ "$status" -eq 0 ]
@@ -119,7 +118,7 @@ fi
 
 @test "rSerAutoSug_04 - Calling autosuggest with payload on an non-existing index" {
     # Set test index name
-    index_name=rSerAutoSug_04
+    index_name=$(generate_key rSerAutoSug_04)
 
     run redis-cli FT.SUGGET $index_name item WITHPAYLOADS
     [ "$status" -eq 0 ]
@@ -128,7 +127,7 @@ fi
 
 @test "rSerAutoSug_05 - Calling autosuggest with payload on an empty index" {
     # Set test index name
-    index_name=rSerAutoSug_05
+    index_name=$(generate_key rSerAutoSug_05)
 
     ## create index
     run redis-cli FT.CREATE $index_name SCHEMA name TEXT
