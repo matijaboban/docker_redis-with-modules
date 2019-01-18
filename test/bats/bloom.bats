@@ -5,26 +5,6 @@
 load test_helper
 
 
-## get target docker ID
-get_docker_id ()
-{
-    if [ -z $docker_id ]; then
-        echo $(docker ps -q)
-    else
-        echo $docker_id
-    fi
-}
-
-## set target docker id
-docker_id=$(get_docker_id)
-
-## set base of redis interactions commands
-base_cli ()
-{
-    echo "docker exec $docker_id redis-cli"
-}
-
-
 ## RediSearch
 @test "rSerBase_01 - Create simple index" {
     # Set test index name

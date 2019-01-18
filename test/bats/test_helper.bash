@@ -1,11 +1,10 @@
+#!/usr/bin/env bats
 
-
-# echo 'load helper'
-# fixtures() {
-#   TEST_FIXTURE_ROOT="${BATS_TEST_DIRNAME}/fixtures/$1"
-#   TEST_RELATIVE_FIXTURE_ROOT="$(bats_trim_filename "${TEST_FIXTURE_ROOT}")"
-# }
-
+# Check we're not running bash 3.x
+if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+    echo "Bash 4.1 or later is required to run these tests"
+    exit 1
+fi
 
 
 ## Generate key
@@ -28,8 +27,21 @@ generate_key () {
 }
 
 
-# Check we're not running bash 3.x
-if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
-    echo "Bash 4.1 or later is required to run these tests"
-    exit 1
-fi
+## get target docker ID
+get_docker_id ()
+{
+    if [ -z $docker_id ]; then
+        echo $(docker ps -q)
+    else
+        echo $docker_id
+    fi
+}
+
+## set target docker id
+docker_id=$(get_docker_id)
+
+## set base of redis interactions commands
+base_cli ()
+{
+    echo "docker exec $docker_id redis-cli"
+}
