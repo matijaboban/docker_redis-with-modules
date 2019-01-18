@@ -1420,12 +1420,12 @@ jobs:
 
       - setup_remote_docker
 
-      - run:
-          name: Install local redis-cli | TODO
-          command: |
-            cp /tmp/workspace/compiled/core/redis-cli /usr/bin/
-            chmod 755 /usr/bin/redis-cli
-            redis-cli -v
+      # - run:
+      #     name: Install local redis-cli | TODO
+      #     command: |
+      #       cp /tmp/workspace/compiled/core/redis-cli /usr/bin/
+      #       chmod 755 /usr/bin/redis-cli
+      #       redis-cli -v
 
       - run:
           name: Restore local image
@@ -1434,7 +1434,31 @@ jobs:
             cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
             docker load -i build/docker/docker.tar | true
             docker run -d $(docker images -q)
-            docker exec -it e0c87faf341f sh
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+            docker exec -it $(docker ps -q) sh
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/search.bats
+
+      # - run:
+      #     name: Docker login
+      #     command: |
+      #       docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
 
       # - run: |
       #     apt-get update && apt-get install -y curl
@@ -1445,24 +1469,24 @@ jobs:
       #       curl -fsSL https://goss.rocks/install | sh
       #       goss -version
 
-      - run:
-          name: Install goss
-          command: |
-            wget https://goss.rocks/install
-            sh install
-            goss -version
+      # - run:
+      #     name: Install goss
+      #     command: |
+      #       wget https://goss.rocks/install
+      #       sh install
+      #       goss -version
 
       # - run: |
       #     apt-get update && apt-get install -y redis-tools
       #     echo "CONFIG SET save ''" | redis-cli -x
 
-      - run: redis-cli info
+      # - run: redis-cli info
 
-      - run:
-          name: Test goss
-          command: |
-            cd ~/project/test/goss
-            goss --vars goss.yaml validate
+      # - run:
+      #     name: Test goss
+      #     command: |
+      #       cd ~/project/test/goss
+      #       goss --vars goss.yaml validate
 
   temptest:
     docker:
