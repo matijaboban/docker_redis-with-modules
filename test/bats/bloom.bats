@@ -5,7 +5,7 @@ load test_helper
 
 base_cli ()
 {
-    echo "docker exec -it $(docker ps -q)"
+    echo "docker exec -it $(docker ps -q) redis-cli"
 }
 
 
