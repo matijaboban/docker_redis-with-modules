@@ -496,6 +496,11 @@ jobs:
             in the package.json does not require any change here.
           command: npm run lint
 
+
+  ################################
+  ## Image component build jobs ##
+  ################################
+  #
   build-redis:
     executor: alpine-executor
 
@@ -709,10 +714,6 @@ jobs:
       #     # Must be relative path from root
       #     paths:
       #       - compiled
-
-  ################################
-  ## Image component build jobs ##
-  ################################
 
   build-redisearch:
     executor: alpine-executor
@@ -1276,6 +1277,7 @@ jobs:
           paths:
             - docker/docker.tar
 
+
   ###################
   ## Image testing ##
   ###################
@@ -1407,16 +1409,22 @@ jobs:
             goss --vars goss.yaml validate
 
   test-redis-redisbloom:
-    docker:
-      - image: python:3.7.1
-      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
-
-    working_directory: ~/project
+    executor: docker-executor
 
     steps:
-      - *attach_workspace
+      - executor-alpine-setup-dependencies
 
       - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
 
       - run: |
           apt-get update && apt-get install -y curl
