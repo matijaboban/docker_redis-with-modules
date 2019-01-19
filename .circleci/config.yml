@@ -390,9 +390,8 @@ commands:
       #       exit 2
 
 jobs:
-  ######################
+
   ## Preparation jobs ##
-  ######################
 
   base:
     executor: docker-executor
@@ -497,10 +496,8 @@ jobs:
           command: npm run lint
 
 
-  ################################
-  ## Image component build jobs ##
-  ################################
-  #
+  ## Component builds ##
+
   build-redis:
     executor: alpine-executor
 
@@ -1236,8 +1233,10 @@ jobs:
           lib-name: RedisGraph
           make-params:  -j 8
 
-  ## Build
-  buildtest:
+
+  ## Docker builds ##
+
+  build-docker-image:
     executor: docker-executor
 
     steps:
@@ -1277,6 +1276,102 @@ jobs:
           paths:
             - docker/docker.tar
 
+
+  ## Test Docker builds ##
+
+  test-docker-image-redis-core:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/core.bats
+
+  test-docker-image-redis-redisbloom:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_bloom.bats
 
   ###################
   ## Image testing ##
@@ -1706,7 +1801,7 @@ workflows:
       #     requires:
       #       - temptest
 
-      - buildtest:
+      - build-docker-image:
           requires:
             - build-redis
             - build-redisearch
@@ -1716,6 +1811,16 @@ workflows:
             - build-redisgraph
             - build-redex
             - build-redistimeseries
+
+      - test-docker-image-redis-core:
+          requires:
+            - build-docker-image
+      - test-docker-image-redis-redisbloom:
+          requires:
+            - build-docker-image
+
+
+
 
       - docker-publish/publish:
           image: $DOCKER_LOGIN/redis-with-modules
