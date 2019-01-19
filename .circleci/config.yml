@@ -1418,7 +1418,7 @@ jobs:
           name: Run tests
           command: |
             export redis_cli_base=1
-            bats ~/project/test/bats/r_graph.bats.bats
+            bats ~/project/test/bats/r_graph.bats
 
   test-docker-image-redis-json:
     executor: docker-executor
@@ -1465,7 +1465,7 @@ jobs:
           name: Run tests
           command: |
             export redis_cli_base=1
-            bats ~/project/test/bats/r_json.bats.bats
+            bats ~/project/test/bats/r_json.bats
 
   test-docker-image-redis-search:
     executor: docker-executor
@@ -1512,7 +1512,7 @@ jobs:
           name: Run tests
           command: |
             export redis_cli_base=1
-            bats ~/project/test/bats/r_search.bats.bats
+            bats ~/project/test/bats/r_search.bats
 
   ###################
   ## Image testing ##
