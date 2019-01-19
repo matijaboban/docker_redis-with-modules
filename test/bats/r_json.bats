@@ -25,7 +25,12 @@ setup()
     [ "$output" = "true" ]
 
     ## remove key
+    run $command_base JSON.DEL $index_name name
+    [ "$status" -eq 0 ]
+    [ "$output" -eq 1 ]
+
+    ## check removed key
     run $command_base JSON.GET $index_name name
     [ "$status" -eq 0 ]
-    [ "$output" == OK ]
+    [ "$output" = "ERR key 'name' does not exist at level 0 in path" ]
 }
