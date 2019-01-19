@@ -41,13 +41,13 @@ command:
     stdout:
     - OK
   ## ReJson
-  redis-cli JSON.SET keytype-json-base . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}':
-    # required attributes
-    exit-status: 0
-    # optional attributes
-    stdout:
-    - OK
-    timeout: 100 # in milliseconds
+  # redis-cli JSON.SET keytype-json-base . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}':
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - OK
+  #   timeout: 100 # in milliseconds
   # redis-cli JSON.GET keytype-json loggedOut:
   #   # required attributes
   #   exit-status: 0
@@ -85,13 +85,13 @@ command:
   #   stdout:
   #   - OK
   #   timeout: 100 # in milliseconds
-  redis-cli BF.MADD keytype-bloom-base foo bar test-key_01 test-key_02 test-key_03:
-    # required attributes
-    exit-status: 0
-    # optional attributes
-    stdout:
-    - 1
-    timeout: 100 # in milliseconds
+  # redis-cli BF.MADD keytype-bloom-base foo bar test-key_01 test-key_02 test-key_03:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - 1
+  #   timeout: 100 # in milliseconds
   # redis-cli BF.EXISTS keytype-bloom test-key_01:
   #   # required attributes
   #   exit-status: 0

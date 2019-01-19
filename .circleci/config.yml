@@ -1340,7 +1340,10 @@ jobs:
             ./install.sh /usr/local
             bats --version
             bats ~/project/test/bats/core.bats
-            bats ~/project/test/bats/search.bats
+            bats ~/project/test/bats/r_search.bats
+            bats ~/project/test/bats/r_bloom.bats
+            bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_graph.bats
 
   test-redis-rejson:
     docker:
@@ -1458,9 +1461,11 @@ jobs:
             bats --version
             export redis_cli_base=1
             echo $redis_cli_base
-            bats ~/project/test/bats/search.bats
-            bats ~/project/test/bats/bloom.bats
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/r_search.bats
+            bats ~/project/test/bats/r_bloom.bats
             bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_graph.bats
 
       # - run:
       #     name: Docker login
