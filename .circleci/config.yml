@@ -1879,7 +1879,7 @@ workflows:
       - test-redis-core:
           requires:
             - docker-publish/publish
-            - buildtest
+            - build-docker-image
 
       - test-redis-redisearch:
           requires:
@@ -1888,7 +1888,7 @@ workflows:
       - test-redis-redisbloom:
           requires:
             - docker-publish/publish
-            - buildtest
+            - build-docker-image
 
       - test-redis-rejson:
           requires:
