@@ -1373,6 +1373,147 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_bloom.bats
 
+  test-docker-image-redis-graph:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_graph.bats.bats
+
+  test-docker-image-redis-json:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_json.bats.bats
+
+  test-docker-image-redis-search:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_search.bats.bats
+
   ###################
   ## Image testing ##
   ###################
@@ -1662,67 +1803,6 @@ jobs:
       # - run: cat /project/workspace/echo-output
 
 
-
-  # test:
-  #   build:
-  #     docker:
-  #       - image: matijaboban/docker-redismoduls:$CIRCLE_SHA1
-
-  #     steps:
-  #       - run:
-  #           name: Install goss
-  #           command: |
-  #             # rather than give internet scripts SU rights, we install to local user bin and add to path
-  #             mkdir ~/bin
-  #             export GOSS_DST=~/bin
-  #             export PATH=$PATH:~/bin
-  #             curl -fsSL https://goss.rocks/install | sh
-  #             goss -version
-
-      # - docker-publish/publish:
-      #     after_checkout:
-      #       - run:
-      #           name: Do this after checkout.
-      #           command: echo "Did this after checkout"
-      #     before_build:
-      #       - run:
-      #           name: Do this before the build.
-      #           command: echo "Did this before the build"
-      #     after_build:
-      #       - run:
-      #           name: Do this after the build.
-      #           command: echo "Did this after the build"
-
-  # build:
-
-  #   steps:
-
-  #     - run:
-  #       name: Do this after checkout.
-  #       command: echo "test"
-
-  #     # - docker-publish/check
-  #     #
-  #     #
-  #     - dockerprocess/publish
-
-
-      # - docker-publish/publish:
-      #   after_checkout:
-      #     - run:
-      #         name: Do this after checkout.
-      #         command: echo "Did this after checkout"
-      #   before_build:
-      #     - run:
-      #         name: Do this before the build.
-      #         command: echo "Did this before the build"
-      #   after_build:
-      #     - run:
-      #         name: Do this after the build.
-      #         command: echo "Did this after the build"
-    # executor: node-executor
-    # - docker-publish/check
-
 workflows:
   version: 2.1
 
@@ -1816,6 +1896,15 @@ workflows:
           requires:
             - build-docker-image
       - test-docker-image-redis-redisbloom:
+          requires:
+            - build-docker-image
+      - test-docker-image-redis-graph:
+          requires:
+            - build-docker-image
+      - test-docker-image-redis-json:
+          requires:
+            - build-docker-image
+      - test-docker-image-redis-search:
           requires:
             - build-docker-image
 
