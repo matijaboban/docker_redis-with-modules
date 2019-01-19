@@ -10,7 +10,7 @@ setup()
 }
 
 ## ReJson
-@test "rRson_01 - Create json set" {
+@test "rJson_01 - Create json set" {
     # Set test index name
     index_name=$(generate_key rJson_01)
 
