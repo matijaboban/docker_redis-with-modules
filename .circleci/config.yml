@@ -1326,7 +1326,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/core.bats
 
-  test-docker-image-redis-redisbloom:
+  test-docker-image-redis-bloom:
     executor: docker-executor
 
     steps:
@@ -1806,29 +1806,6 @@ jobs:
 workflows:
   version: 2.1
 
-  # docker_with_lifecycle:
-  #   jobs:
-      # steps:
-
-      #   - checkout
-
-      #   - docker-publish/publish:
-      #       after_checkout:
-      #         - run:
-      #             name: Do this after checkout.
-      #             command: echo "Did this after checkout"
-      #       before_build:
-      #         - run:
-      #             name: Do this before the build.
-      #             command: echo "Did this before the build"
-      #         - run:
-      #             name: docker-publish/check.
-      #             command: docker-publish/check
-      #       after_build:
-      #         - run:
-      #             name: Do this after the build.
-      #             command: echo "Did this after the build"
-
   pre-build:
     jobs:
       - base
@@ -1886,27 +1863,32 @@ workflows:
             - build-redis
             - build-redisearch
             # - build-redisml
-            - build-rejson
             - build-redisbloom
-            - build-redisgraph
-            - build-redex
+            - build-rejson
             - build-redistimeseries
+            - build-redex
+            - build-redisgraph
 
       - test-docker-image-redis-core:
-          requires:
-            - build-docker-image
-      - test-docker-image-redis-redisbloom:
-          requires:
-            - build-docker-image
-      - test-docker-image-redis-graph:
-          requires:
-            - build-docker-image
-      - test-docker-image-redis-json:
           requires:
             - build-docker-image
       - test-docker-image-redis-search:
           requires:
             - build-docker-image
+      #- test-docker-image-redis-ml:
+      - test-docker-image-redis-bloom:
+          requires:
+            - build-docker-image
+      - test-docker-image-redis-json:
+          requires:
+            - build-docker-image
+      #- test-docker-image-redis-timeseries:
+      #- test-docker-image-redis-redex:
+      - test-docker-image-redis-graph:
+          requires:
+            - build-docker-image
+
+
 
 
 
