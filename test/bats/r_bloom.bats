@@ -22,12 +22,12 @@ setup()
     [ "${lines[0]}" = "1" ]
 
     ## check existance of present key
-    run $command BF.EXISTS $index_name test-key_01
+    run $command_base BF.EXISTS $index_name test-key_01
     [ "$status" -eq 0 ]
     [ "$output" = "1" ]
 
     ## check existance of non-existant
-    run $command BF.EXISTS $index_name test-key_04
+    run $command_base BF.EXISTS $index_name test-key_04
     [ "$status" -eq 0 ]
     [ "$output" = "0" ]
 }
