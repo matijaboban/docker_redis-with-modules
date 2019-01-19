@@ -10,7 +10,7 @@ fi
 ## Generate key
 ## TODO: notes
 generate_key () {
-    # set default key prefix value if one is not
+    # set default key prefix value if one is
     # not passed as a parameter
     key_prefix=${1:-index}
 
@@ -46,10 +46,14 @@ fi
 ## set base of redis interactions commands
 base_cli ()
 {
+    # set default cli command if one is
+    # not passed as a parameter
+    base_cli_command=${1:-redis-cli}
+
     if [[ ! -z $redis_cli_base && $redis_cli_base -eq 1 ]]; then
-        echo "docker exec $docker_id redis-cli"
+        echo "docker exec $docker_id $base_cli_command"
         exit 0
     fi
 
-    echo "redis-cli"
+    echo $base_cli_command
 }

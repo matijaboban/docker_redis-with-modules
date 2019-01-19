@@ -15,10 +15,10 @@ setup()
     # Set test index name
     index_name=$(generate_key rCore_01)
 
-    ## Check redis
+    ## Check redis major version
     run bash -c "$command_base info server | grep redis_version"
     [ "$status" -eq 0 ]
-    [[ "$output" ~= "redis_version:5." ]]
+    [[ "$output" =~ "redis_version:5." ]]
 
     ## check
     run $command_base ping
@@ -30,9 +30,9 @@ setup()
     # Set test index name
     index_name=$(generate_key rCore_02)
 
-    ## Check redis
-    run $command_base redis-benchmark
+    ## Run base benchmark and confirm expected output
+    run $(base_cli redis-benchmark)
     [ "$status" -eq 0 ]
-    [[ "$output" ~= "MSET (10 keys)" ]]
+    [[ "$output" =~ "MSET (10 keys)" ]]
 }
 
