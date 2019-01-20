@@ -1236,7 +1236,7 @@ jobs:
 
   ## Docker builds ##
 
-  build-docker-image:
+  compile-docker-image:
     executor: docker-executor
 
     steps:
@@ -1858,7 +1858,7 @@ workflows:
       #     requires:
       #       - temptest
 
-      - build-docker-image:
+      - compile-docker-image:
           requires:
             - build-redis
             - build-redisearch
@@ -1869,24 +1869,24 @@ workflows:
             - build-redex
             - build-redisgraph
 
-      - test-docker-image-redis-core:
+      - test-docker-image-redis:
           requires:
-            - build-docker-image
-      - test-docker-image-redis-search:
+            - compile-docker-image
+      - test-docker-image-redisearch:
           requires:
-            - build-docker-image
+            - compile-docker-image
       #- test-docker-image-redis-ml:
-      - test-docker-image-redis-bloom:
+      - test-docker-image-redisbloom:
           requires:
-            - build-docker-image
-      - test-docker-image-redis-json:
+            - compile-docker-image
+      - test-docker-image-rejson:
           requires:
-            - build-docker-image
-      #- test-docker-image-redis-timeseries:
-      #- test-docker-image-redis-redex:
-      - test-docker-image-redis-graph:
+            - compile-docker-image
+      #- test-docker-image-timeseries:
+      #- test-docker-image-redex:
+      - test-docker-image-redisgraph:
           requires:
-            - build-docker-image
+            - compile-docker-image
 
 
 
@@ -1896,51 +1896,16 @@ workflows:
       - docker-publish/publish:
           image: $DOCKER_LOGIN/redis-with-modules
           requires:
-            - build-redis
-            - build-redisearch
-            # - build-redisml
-            - build-rejson
-            - build-redisbloom
-            - build-redisgraph
-            - build-redex
-            - build-redistimeseries
+            - test-docker-image-redis
+            - test-docker-image-redisearch
+            # - test-docker-image-redis-ml
+            - test-docker-image-redisbloom
+            - test-docker-image-rejson
+            - test-docker-image-timeseries
+            - test-docker-image-redex
+            - test-docker-image-redisgraph
           after_checkout:
             - *attach_workspace
-
-            # - run:
-            #     name: location
-            #     command: |
-            #       cd /tmp/workspace/compiled/modules
-            #       pwd
-
-            # - run:
-            #     name: Create workspace directory
-            #     command: |
-            #       mkdir -p ~/project/build/redis/modules
-            #
-            # - run:
-            #     name: Create workspace directory
-            #     command: |
-            #       mkdir -p ~/project/build/redis/modules
-            #
-            # - run:
-            #     name: Create workspace directory
-            #     command: |
-            #       sudo mkdir -p /tmp/workspace/build/redis/modules
-
-            # - restore_cache:
-            #     keys:
-            #       - v1-rejson-4
-            #     paths:
-            #       - /tmp/cache/build/
-
-            # - run:
-            #     name: Do this after checkout.
-            #     command: |
-            #       cd /tmp/workspace/compiled/
-            #       pwd
-            #       ls
-
             - run:
                 name: Do this after checkout.
                 command: |
@@ -1950,7 +1915,7 @@ workflows:
       - test-redis-core:
           requires:
             - docker-publish/publish
-            - build-docker-image
+            # - compile-docker-image
 
       - test-redis-redisearch:
           requires:
@@ -1959,11 +1924,11 @@ workflows:
       - test-redis-redisbloom:
           requires:
             - docker-publish/publish
-            - build-docker-image
+            # - compile-docker-image
 
-      - test-redis-rejson:
-          requires:
-            - docker-publish/publish
+      # - test-redis-rejson:
+      #     requires:
+      #       - docker-publish/publish
 
 
 
