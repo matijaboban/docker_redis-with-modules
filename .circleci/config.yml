@@ -606,112 +606,6 @@ jobs:
           paths:
             - /tmp/workspace/compiled/core
 
-      # - run:
-      #     name: temp exit
-      #     command: |
-      #       ls /tmp/workspace/compiled/core/
-      #       exit 2
-      #
-      #
-    #   - *attach_workspace
-
-      # - run:
-      #     name: Install Dependencies
-      #     command: |
-      #       apt-get update
-      #       apt-get install -y cmake
-
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       mkdir -p /tmp/workspace/compiled/core
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       curl -OL https://github.com/antirez/redis/archive/5.0.2.tar.gz
-      #       tar xzf *.tar.gz
-      #
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       cp /tmp/workspace/download/redis-${lib_redis_release}.zip ~/project/
-      #       unzip -q redis-${lib_redis_release}.zip
-
-
-    # disable Redis protected mode [1] as it is unnecessary in context of Docker
-    # (ports are not automatically exposed when running inside Docker, but rather explicitly by specifying -p / -P)
-    # [1]: https://github.com/antirez/redis/commit/edd4d555df57dc84265fdfb4ef59a4678832f6da
-      # grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' /usr/src/redis/src/server.h; \
-      # sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
-      # grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h; \
-
-      # - run:
-      #     name: Pre-build updates
-      #     command: |
-      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/r*/src/server.h
-      #       sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/r*/src/server.h
-      #       grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/r*/src/server.h
-
-      # - run:
-      #     name: Build redis core
-      #     command: |
-      #       cd ~/project/r*
-      #       make
-
-      # - run:
-      #     name: Test redis core
-      #     command: |
-      #       cd ~/project/r*
-      #       make test
-
-      # - run:
-      #     name: Test redis sentinel
-      #     command: |
-      #       cd ~/project/r*
-      #       sh runtest
-      #       sh runtest-sentinel
-
-      # - run:
-      #     name: Move compiled assets to workspace
-      #     command: |
-      #       cd ~/project/r*
-      #       cp src/redis-benchmark ~/project/build/redis/core/
-      #       cp src/redis-check-aof ~/project/build/redis/core/
-      #       cp src/redis-check-rdb ~/project/build/redis/core/
-      #       cp src/redis-cli ~/project/build/redis/core/
-      #       cp src/redis-sentinel ~/project/build/redis/core/
-      #       cp src/redis-server ~/project/build/redis/core/
-      #       cp redis.conf ~/project/build/redis/core/
-      #       cp sentinel.conf ~/project/build/redis/core/
-
-      # - run:
-      #     name: Make install and move
-      #     command: |
-      #       cd ~/project/
-      #       tar -czvf /tmp/workspace/build/redis/core/core.tar.gz  r*/
-
-
-      # - run: |
-      #     echo "build-redis"
-
-      # - run: mkdir -p ~/project/build/redis/core
-      # - run: echo "build-redis!" > ~/project/build/redis/core/echo-output.txt
-
-      # - run: |
-      #     ls
-      #     cd ~/project/build
-      #     ls
-
-      # # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
-      # - persist_to_workspace:
-      #     # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-      #     # taken to be the root directory of the workspace.
-      #     root: *workspace_root
-      #     # Must be relative path from root
-      #     paths:
-      #       - compiled
-
   build-redisearch:
     executor: alpine-executor
 
@@ -733,83 +627,6 @@ jobs:
           pre-make-command: mkdir -p ~/project/build/libs/RediSearch/compile && cd ~/project/build/libs/RediSearch/compile &&  cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
           make-params:  -j 8
 
-      # - restore_cache:
-      #     key: external-dependencies-compile-cache-v01-redisearch-q1
-
-      # - run:
-      #     name: Unpack external lib
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
-      #       && (echo file exists, skipping && exit 0) || \
-      #       (unzip -q /tmp/workspace/download/RediSearch/*.zip -d ~/project/build && \
-      #       mv ~/project/build/*  ~/project/build/RediSearch)
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
-      #       && (echo file exists, skipping && exit 0) || \
-      #       (mkdir -p ~/project/build/libs/RediSearch/compile && \
-      #       cd ~/project/build/libs/RediSearch/compile && \
-      #       cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
-      #       make -j 8)
-
-      # - run:
-      #     name: Test module | TODO
-      #     command: |
-      #       pip install git+https://github.com/RedisLabsModules/RLTest
-      #       make test
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       test -e /tmp/workspace/compiled/modules/redisearch.so \
-      #       && echo file exists, skipping || \
-      #       (mkdir -p /tmp/workspace/compiled/modules/ && \
-      #       cp ~/project/build/libs/RediSearch/compile/*.so /tmp/workspace/compiled/modules/)
-
-      # - save_cache:
-      #     key: external-dependencies-compile-cache-v01-redisearch-q1
-      #     paths:
-      #       - /tmp/workspace/compiled/modules/redisearch.so
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - compiled/modules
-
-      # - run: exit 2
-
-
-
-
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       mkdir -p /tmp/cache/build/redis/modules
-      #       mkdir -p /tmp/workspace/build/redis/modules
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       curl -OL https://github.com/RedisLabsModules/RediSearch/archive/v1.4.2.tar.gz
-      #       tar xzf *.tar.gz
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       cd ~/project/R*
-      #       mkdir build
-      #       cd build
-      #       cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-      #       make
-      #       cp *.so /tmp/workspace/build/redis/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - build
-
   build-redisml:
     executor: python-executor
     ## TODO: has to be build on Alpine to avoid: # Module /usr/src/redis/modules/redis-ml.so failed to load: Error relocating /usr/src/redis/modules/redis-ml.so: __strndup: symbol not found
@@ -830,68 +647,6 @@ jobs:
           lib-build-dir: src
           make-params:  -j 8
 
-
-
-
-
-
-      # - run:
-      #     name: Unpack external lib
-      #     command: |
-      #       unzip -q /tmp/workspace/download/redis-ml/r*.zip -d ~/project/build/ && \
-      #       mv ~/project/build/r*  ~/project/build/redis-ml
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       make -C ~/project/build/redis-ml/src -j 8
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       mkdir -p /tmp/workspace/compiled/modules/
-      #       cp ~/project/build/redis-ml/src/*.so /tmp/workspace/compiled/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - compiled/modules
-
-    # steps:
-    #   - *attach_workspace
-
-    #   - run:
-    #       name: Install Dependencies
-    #       command: |
-    #         apt-get update
-    #         apt-get install -y cmake
-    #         apt-get install -y zip
-    #         apt-get install -y libatlas-base-dev
-
-    #   - run:
-    #       name: Create workspace directory
-    #       command: |
-    #         mkdir -p ~/project/build/redis/modules
-
-    #   - run:
-    #       name: Get module tag from Github
-    #       command: |
-    #         curl -OL https://github.com/RedisLabsModules/redis-ml/archive/master.zip
-    #         unzip *.zip
-
-
-    #   - run:
-    #       name: Build module
-    #       command: |
-    #         cd ~/project/r*/src
-    #         make
-    #         cp *.so ~/project/build/redis/modules/
-
-    #   - persist_to_workspace:
-    #       root: *workspace_root
-    #       paths:
-    #         - redis
-
   build-redisbloom:
     executor: alpine-executor
 
@@ -910,61 +665,6 @@ jobs:
       - libs-external-make:
           lib-name: rebloom
           make-params:  -j 8
-
-
-      # - run:
-      #     name: Unpack external lib
-      #     command: |
-      #       unzip -q /tmp/workspace/download/rebloom/r*.zip -d ~/project/build/ && \
-      #       mv ~/project/build/r*  ~/project/build/rebloom
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       make -C ~/project/build/libs/rebloom -j 8;
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       mkdir -p /tmp/workspace/compiled/modules/
-      #       cp ~/project/build/libs/rebloom/*.so /tmp/workspace/compiled/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - compiled/modules
-
-
-
-
-      # - run:
-      #     name: Install Dependencies
-      #     command: |
-      #       apt-get update
-      #       apt-get install -y zip
-
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       mkdir -p ~/project/build/redis/modules
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       curl -OL https://github.com/RedisLabsModules/rebloom/archive/master.zip
-      #       unzip *.zip
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       cd ~/project/r*
-      #       make
-      #       cp *.so ~/project/build/redis/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - redis
 
   build-rejson:
     executor: alpine-executor
@@ -985,128 +685,6 @@ jobs:
           lib-name: rejson
           lib-build-dir: src
           make-params:  -j 8
-
-      # - run:
-      #     name: Unpack external lib
-      #     command: |
-      #       unzip -q /tmp/workspace/download/rejson/r*.zip -d ~/project/build/ && \
-      #       mv ~/project/build/r*  ~/project/build/rejson
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       make -C ~/project/build/libs/rejson/src -j 8;
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       mkdir -p /tmp/workspace/compiled/modules/
-      #       cp ~/project/build/libs/rejson/src/*.so /tmp/workspace/compiled/modules/
-
-
-      # - run:
-      #     name: exit 2
-      #     command: |
-      #       ls ~/project/build/rejson
-      #       ls /tmp/workspace/compiled/rejson/
-
-
-      # - restore_cache:
-      #     keys:
-      #       - v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       test -e /tmp/workspace/build/redis/modules/rejson/ \
-      #       && ls /tmp/workspace/build/redis/modules/rejson/ \
-      #       || echo file doesnt exist, skipping
-
-      # - run:
-      #     name: Process external lib
-      #     command: |
-      #       source ${BASH_ENV}
-      #       unzip -q /tmp/workspace/download/rejson-${lib_rejson_release}.zip -d ~/project/ && \
-      #       mv ~/project/r* ~/project/rejson
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       cd ~/project/rejson/src && \
-      #       make
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       mkdir -p /tmp/workspace/build/redis/modules/rejson/
-      #       cp ~/project/rejson/src/*.so /tmp/workspace/build/redis/modules/rejson/
-
-      # - save_cache:
-      #     key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-      #     paths:
-      #       - /tmp/workspace/build/redis/modules/rejson/
-
-      # - run:
-      #     name: add user and group for consistent id assigned
-      #     command: |
-      #       addgroup -S circleci && adduser -S -G circleci circleci
-
-      # - *attach_workspace
-
-      # - executor-alpine-setup-dependencies
-
-
-      # - run:
-      #     name: Create workspace directory
-      #     command: |
-      #       exit 2
-      #       mkdir -p /tmp/workspace/build/redis/modules
-
-      # - restore_cache:
-      #     keys:
-      #       - v03-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       pwd
-      #       ls
-
-      # - run:
-      #     name: Get module tag from Github
-      #     command: |
-      #       wget -O rejson.zip https://github.com/RedisLabsModules/rejson/archive/08b10ce3045f9b24cf69ae00d25bee18f8807154.zip
-      #       unzip *.zip
-      #       rm *.zip
-      #       mv r* rejson
-
-      # - run:
-      #     name: Build module
-      #     command: |
-      #       pwd
-      #       ls
-      #       cd ~/project/rejson/src
-      #       make
-
-      # - run:
-      #     name: Perm
-      #     command: |
-      #       chmod -R 777 /cache/build/redis/modules
-
-      # - save_cache:
-      #     key: v04-rejson--08b10ce3045f9b24cf69ae00d25bee18f8807154
-      #     paths:
-      #       - rejson/src/rejson.so
-
-      # - run:
-      #     name: Copy compiled module to workspace
-      #     command: |
-      #       cp ~/project/r*/src/*.so /tmp/workspace/build/redis/modules/
-
-      # - persist_to_workspace:
-      #     root: *workspace_root
-      #     paths:
-      #       - compiled/modules
 
   build-redistimeseries:
     executor: alpine-executor
@@ -1326,6 +904,100 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/core.bats
 
+  test-docker-image-redisearch:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_search.bats
+
+  # test-docker-image-ml:
+  #   executor: docker-executor
+
+  #   steps:
+  #     - executor-alpine-setup-dependencies
+
+  #     - checkout
+
+  #     - *attach_workspace
+
+  #     - setup_remote_docker
+
+  #     - run:
+  #         name: Restore local docker image
+  #         command: |
+  #           mkdir -p ~/project/build/docker
+  #           cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+  #           docker load -i ~/project/build/docker/docker.tar
+
+  #     - run:
+  #         name: Run docker image
+  #         command: |
+  #           docker run -d $(docker images -q)
+
+  #     - libs-external-get:
+  #         lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+  #         lib-name: bats
+  #         lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+  #         lib-category: utils
+
+  #     - libs-external-unpack:
+  #         lib-name: bats
+  #         lib-category: utils
+
+  #     - run:
+  #         name: Install Bats
+  #         command: |
+  #           cd ~/project/build/utils/bats
+  #           ./install.sh /usr/local
+  #           bats --version
+
+  #     - run:
+  #         name: Run tests
+  #         command: |
+  #           export redis_cli_base=1
+  #           bats ~/project/test/bats/r_ml.bats
+
   test-docker-image-redisbloom:
     executor: docker-executor
 
@@ -1372,53 +1044,6 @@ jobs:
           command: |
             export redis_cli_base=1
             bats ~/project/test/bats/r_bloom.bats
-
-  test-docker-image-redisgraph:
-    executor: docker-executor
-
-    steps:
-      - executor-alpine-setup-dependencies
-
-      - checkout
-
-      - *attach_workspace
-
-      - setup_remote_docker
-
-      - run:
-          name: Restore local docker image
-          command: |
-            mkdir -p ~/project/build/docker
-            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
-            docker load -i ~/project/build/docker/docker.tar
-
-      - run:
-          name: Run docker image
-          command: |
-            docker run -d $(docker images -q)
-
-      - libs-external-get:
-          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
-          lib-name: bats
-          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
-          lib-category: utils
-
-      - libs-external-unpack:
-          lib-name: bats
-          lib-category: utils
-
-      - run:
-          name: Install Bats
-          command: |
-            cd ~/project/build/utils/bats
-            ./install.sh /usr/local
-            bats --version
-
-      - run:
-          name: Run tests
-          command: |
-            export redis_cli_base=1
-            bats ~/project/test/bats/r_graph.bats
 
   test-docker-image-rejson:
     executor: docker-executor
@@ -1467,7 +1092,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_json.bats
 
-  test-docker-image-redisearch:
+  test-docker-image-redisgraph:
     executor: docker-executor
 
     steps:
@@ -1512,7 +1137,11 @@ jobs:
           name: Run tests
           command: |
             export redis_cli_base=1
-            bats ~/project/test/bats/r_search.bats
+            bats ~/project/test/bats/r_graph.bats
+
+
+
+
 
   ###################
   ## Image testing ##
