@@ -1901,8 +1901,8 @@ workflows:
             # - test-docker-image-redis-ml
             - test-docker-image-redisbloom
             - test-docker-image-rejson
-            - test-docker-image-timeseries
-            - test-docker-image-redex
+            # - test-docker-image-timeseries
+            # - test-docker-image-redex
             - test-docker-image-redisgraph
           after_checkout:
             - *attach_workspace
