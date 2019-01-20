@@ -1279,7 +1279,7 @@ jobs:
 
   ## Test Docker builds ##
 
-  test-docker-image-redis-core:
+  test-docker-image-redis:
     executor: docker-executor
 
     steps:
@@ -1326,7 +1326,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/core.bats
 
-  test-docker-image-redis-bloom:
+  test-docker-image-redisbloom:
     executor: docker-executor
 
     steps:
@@ -1373,7 +1373,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_bloom.bats
 
-  test-docker-image-redis-graph:
+  test-docker-image-redisgraph:
     executor: docker-executor
 
     steps:
@@ -1420,7 +1420,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_graph.bats
 
-  test-docker-image-redis-json:
+  test-docker-image-rejson:
     executor: docker-executor
 
     steps:
@@ -1467,7 +1467,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_json.bats
 
-  test-docker-image-redis-search:
+  test-docker-image-redisearch:
     executor: docker-executor
 
     steps:
