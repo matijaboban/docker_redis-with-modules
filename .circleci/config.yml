@@ -35,9 +35,8 @@ executors:
         user: root
     working_directory: ~/project
 
-  python-executor-machine:
-    machine:
-      image: python:3.7.1
+  machine-executor:
+    machine
     working_directory: ~/project
 
   docker-executor:
@@ -1114,7 +1113,7 @@ jobs:
             bats ~/project/test/bats/r_graph.bats
 
   test1:
-    executor: python-executor-machine
+    executor: machine-executor
 
     steps:
       - executor-python-setup-dependencies
