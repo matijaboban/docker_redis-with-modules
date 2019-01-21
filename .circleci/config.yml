@@ -98,6 +98,7 @@ commands:
             << parameters.command-prefix >> apt install zip -y
             << parameters.command-prefix >> apt install libatlas-base-dev -y
             << parameters.command-prefix >> apt install moreutils -y
+            << parameters.command-prefix >> apt install python-dev -y
             << parameters.command-prefix >> pip install yq
 
   executor-env-variables:
