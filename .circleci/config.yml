@@ -1148,7 +1148,7 @@ jobs:
       - run:
           name: Run docker image
           command: |
-            docker run -d $(docker images -q)
+            docker run -p 6379:6379 -d $(docker images -q)
 
       - run:
           name: Install goss
