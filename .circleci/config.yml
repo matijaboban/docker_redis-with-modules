@@ -419,8 +419,7 @@ jobs:
           name: Check project configuration file existance
           description: This step checks if the project configuration file is present and not empty.
           command: |
-            test -s config.yaml
-            if [ $? -ne 0 ]; then
+            if [[ -s config.yaml ]]; then
                 echo "Project configuration file not present or empty."
                 exit 1
             fi
@@ -603,11 +602,8 @@ jobs:
       - run:
           name: Copy compiled assets to workspace
           command: |
-
-            test -e /tmp/workspace/compiled/core/redis-server
-            if [ $? -ne 0 ]; then
+            if [ -e /tmp/workspace/compiled/core/redis-server ]; then
                 echo "Compiled assets found, skipping, skipping."
-                exit 0
             else
               mkdir -p /tmp/workspace/compiled/core/utils
               cd ~/project/build/libs/redis
