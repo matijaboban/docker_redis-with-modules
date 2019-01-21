@@ -864,11 +864,6 @@ jobs:
           paths:
             - docker/docker.tar
 
-      - slack/notify:
-          color: '#055938'
-          message: Docker image built, commencing tests
-          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
-
 
   ## Test Docker builds ##
 
