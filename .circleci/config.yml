@@ -1108,6 +1108,51 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_graph.bats
 
+  test1:
+    machine: true
+
+    steps:
+      # - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      # - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            bats ~/project/test/bats/core.bats
 
   ## Publish docker images
   #
@@ -1536,7 +1581,9 @@ workflows:
       - test-docker-image-redisgraph:
           requires:
             - compile-docker-image
-
+      - test1:
+          requires:
+            - compile-docker-image
 
       - publish-docker-image:
           requires:
