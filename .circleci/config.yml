@@ -1129,12 +1129,31 @@ jobs:
             sudo apt install moreutils -y
             sudo apt install python-dev -y
             sudo pip install yq
+            sudo apt install -y redis-tools
 
       - checkout
 
       - *attach_workspace
 
       # - setup_remote_docker
+      #
+
+      - run:
+          name: Install goss
+          command: |
+            sudo curl -fsSL https://goss.rocks/install | sudo sh
+            goss -version
+
+      - run: |
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
 
       - run:
           name: Restore local docker image
