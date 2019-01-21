@@ -1109,6 +1109,44 @@ jobs:
             bats ~/project/test/bats/r_graph.bats
 
 
+  ## Publish docker images
+  #
+  publish-docker-image:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Docker registry login
+          command: |
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag redis_with_modules:$CIRCLE_SHA1 $DOCKER_LOGIN/redis-with-modules:latest
+
+
+      - run:
+          name: Publish docker image
+          command: |
+            docker push $DOCKER_LOGIN/redis-with-modules:latest
+
+
   ## Workflow wrap-up jobs ##
 
   workflow-wrapup:
@@ -1500,7 +1538,13 @@ workflows:
             - compile-docker-image
 
 
-
+      - publish-docker-image:
+          requires:
+            - test-docker-image-redis
+            - test-docker-image-redisearch
+            - test-docker-image-redisbloom
+            - test-docker-image-rejson
+            - test-docker-image-redisgraph
 
 
 
