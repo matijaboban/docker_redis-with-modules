@@ -12,6 +12,7 @@ references:
 
 orbs:
   docker-publish: circleci/docker-publish@0.1.2
+  slack: circleci/slack@1.0.0
 
 executors:
   node-executor:
@@ -466,6 +467,15 @@ jobs:
                 exit 1
             fi
 
+      - run:
+          name: Check other env variables
+          description: TODO
+          command: |
+            if [[ -z "${NOTIFICATIONS_DOCKER_WEBHOOK}" ]]; then
+              echo "NOTIFICATIONS_DOCKER_WEBHOOK is not set, will not be able to procede."
+              exit 1
+            fi
+
   lint:
     executor: node-executor
 
@@ -854,6 +864,11 @@ jobs:
           paths:
             - docker/docker.tar
 
+      - slack/notify:
+          color: '#055938'
+          message: Docker image built, commencing tests
+          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
+
 
   ## Test Docker builds ##
 
@@ -951,52 +966,7 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_search.bats
 
-  # test-docker-image-ml:
-  #   executor: docker-executor
-
-  #   steps:
-  #     - executor-alpine-setup-dependencies
-
-  #     - checkout
-
-  #     - *attach_workspace
-
-  #     - setup_remote_docker
-
-  #     - run:
-  #         name: Restore local docker image
-  #         command: |
-  #           mkdir -p ~/project/build/docker
-  #           cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
-  #           docker load -i ~/project/build/docker/docker.tar
-
-  #     - run:
-  #         name: Run docker image
-  #         command: |
-  #           docker run -d $(docker images -q)
-
-  #     - libs-external-get:
-  #         lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
-  #         lib-name: bats
-  #         lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
-  #         lib-category: utils
-
-  #     - libs-external-unpack:
-  #         lib-name: bats
-  #         lib-category: utils
-
-  #     - run:
-  #         name: Install Bats
-  #         command: |
-  #           cd ~/project/build/utils/bats
-  #           ./install.sh /usr/local
-  #           bats --version
-
-  #     - run:
-  #         name: Run tests
-  #         command: |
-  #           export redis_cli_base=1
-  #           bats ~/project/test/bats/r_ml.bats
+  #test-docker-image-redisml:
 
   test-docker-image-redisbloom:
     executor: docker-executor
@@ -1092,6 +1062,10 @@ jobs:
             export redis_cli_base=1
             bats ~/project/test/bats/r_json.bats
 
+  #test-docker-image-redistimeseries:
+
+  #test-docker-image-redex:
+
   test-docker-image-redisgraph:
     executor: docker-executor
 
@@ -1138,6 +1112,19 @@ jobs:
           command: |
             export redis_cli_base=1
             bats ~/project/test/bats/r_graph.bats
+
+
+  ## Workflow wrap-up jobs ##
+
+  workflow-wrapup:
+    executor: python-executor
+
+    steps:
+      - slack/notify:
+          color: '#055938'
+          message: Workflow completed
+          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
+
 
 
 
@@ -1560,6 +1547,12 @@ workflows:
       #       - docker-publish/publish
 
 
+
+      - workflow-wrapup:
+          requires:
+            - test-redis-core
+            - test-redis-redisearch
+            - test-redis-redisbloom
 
 
       # - build
