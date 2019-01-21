@@ -1127,28 +1127,13 @@ jobs:
           command-prefix: sudo
 
       - run:
-          name: Package manager | update list of available packages
-          command: sudo apt update
-
-      - run:
           name: Package manager | install packages
           command: |
-            sudo apt install jq -y
-            sudo apt install build-essential -y
-            sudo apt install cmake -y
-            sudo apt install zip -y
-            sudo apt install libatlas-base-dev -y
-            sudo apt install moreutils -y
-            sudo apt install python-dev -y
-            sudo pip install yq
             sudo apt install -y redis-tools
 
       - checkout
 
       - *attach_workspace
-
-      # - setup_remote_docker
-      #
 
       - run:
           name: Restore local docker image
@@ -1201,6 +1186,10 @@ jobs:
           name: Run tests
           command: |
             bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/r_bloom.bats
+            bats ~/project/test/bats/r_graph.bats
+            bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_search.bats
 
   ## Publish docker images
   #
