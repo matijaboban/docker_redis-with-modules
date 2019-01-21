@@ -7,13 +7,13 @@ RUN addgroup -S redis && adduser -S -G redis redis
 # .. grab su-exec for easy step-down from root
 # .. add tzdata for https://github.com/docker-library/redis/issues/138
 # .. libgomp required for redisgraph
-RUN set -ex;\
-    apk update; \
-    apk add --no-cache \
-    'su-exec>=0.2' \
-    # apk add chkconfig \
-    libgomp \
-    tzdata
+# RUN set -ex;\
+#     apk update; \
+#     apk add --no-cache \
+#     'su-exec>=0.2' \
+#     # apk add chkconfig \
+#     libgomp \
+#     tzdata
 
 RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
