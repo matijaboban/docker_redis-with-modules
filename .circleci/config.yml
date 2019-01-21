@@ -1123,7 +1123,7 @@ jobs:
           command: |
             sudo apt install jq -y
             sudo apt install zip -y
-            sudo apt install python3-pip -y
+            sudo apt install python-pip -y
             sudo pip install yq
 
       - checkout
