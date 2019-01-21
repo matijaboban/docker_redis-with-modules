@@ -1112,7 +1112,18 @@ jobs:
     machine: true
 
     steps:
-      - executor-python-setup-dependencies
+      # - executor-python-setup-dependencies
+
+      - run:
+          name: Package manager | update list of available packages
+          command: sudo apt update
+
+      - run:
+          name: Package manager | install packages
+          command: |
+            sudo apt install jq -y
+            sudo apt install zip -y
+            sudo pip install yq
 
       - checkout
 
