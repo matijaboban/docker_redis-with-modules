@@ -7,13 +7,12 @@ RUN addgroup -S redis && adduser -S -G redis redis
 # .. grab su-exec for easy step-down from root
 # .. add tzdata for https://github.com/docker-library/redis/issues/138
 # .. libgomp required for redisgraph
-# RUN set -ex;\
-#     apk update; \
-#     apk add --no-cache \
-#     'su-exec>=0.2' \
-#     # apk add chkconfig \
-#     libgomp \
-#     tzdata
+RUN set -ex;\
+    apk update; \
+    apk add --no-cache \
+    'su-exec>=0.2' \
+    libgomp \
+    tzdata
 
 RUN mkdir -p /usr/src/redis/core
 RUN mkdir -p /usr/src/redis/modules
@@ -35,34 +34,6 @@ RUN set -ex; \
     install redis-check-aof /usr/local/bin; \
     ln -sf redis-server /usr/local/bin/redis-sentinel;
 
-# ## depe build
-# RUN set -ex; \
-#     \
-#     apk add --no-cache --virtual .build-deps \
-#     coreutils \
-#     gcc \
-#     jemalloc-dev \
-#     linux-headers \
-#     make \
-#     musl-dev
-
-
-# ## get source
-# RUN set -ex; \
-#     wget -O redis.tar.gz http://download.redis.io/releases/redis-5.0.2.tar.gz; \
-#     tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1; \
-#     rm redis.tar.gz
-
-# #prepare
-# RUN set -ex; \
-#     grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' /usr/src/redis/src/server.h; \
-#     sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' /usr/src/redis/src/server.h; \
-#     grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' /usr/src/redis/src/server.h;
-
-# # make
-# RUN set -ex; \
-#     make -C /usr/src/redis -j 8; \
-#     make -C /usr/src/redis install;
 
 # install
 RUN \
