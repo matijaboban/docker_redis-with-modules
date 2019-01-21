@@ -419,7 +419,7 @@ jobs:
           name: Check project configuration file existance
           description: This step checks if the project configuration file is present and not empty.
           command: |
-            if [[ -s config.yaml ]]; then
+            if [[ ! -s config.yaml ]]; then
                 echo "Project configuration file not present or empty."
                 exit 1
             fi
