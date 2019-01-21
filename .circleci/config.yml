@@ -35,6 +35,10 @@ executors:
         user: root
     working_directory: ~/project
 
+  python-executor-machine:
+    image: python:3.7.1
+    working_directory: ~/project
+
   docker-executor:
     description: TODO
     docker:
@@ -1109,10 +1113,10 @@ jobs:
             bats ~/project/test/bats/r_graph.bats
 
   test1:
-    machine: true
+    executor: python-executor-machine
 
     steps:
-      # - executor-python-setup-dependencies
+      - executor-python-setup-dependencies
 
       - run:
           name: Package manager | update list of available packages
