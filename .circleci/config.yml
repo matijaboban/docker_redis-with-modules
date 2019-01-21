@@ -36,7 +36,8 @@ executors:
     working_directory: ~/project
 
   machine-executor:
-    machine
+    description: TODO
+    machine: true
     working_directory: ~/project
 
   docker-executor:
