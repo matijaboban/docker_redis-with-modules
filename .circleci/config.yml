@@ -1119,7 +1119,6 @@ jobs:
           color: '#055938'
           message: Workflow completed
           webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
-          url: https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
 
 
 
