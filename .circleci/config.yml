@@ -1123,7 +1123,7 @@ jobs:
 
     steps:
       - executor-python-setup-dependencies:
-        - command-prefix: sudo
+          command-prefix: sudo
 
       - run:
           name: Package manager | update list of available packages
