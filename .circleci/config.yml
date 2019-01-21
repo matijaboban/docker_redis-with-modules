@@ -79,6 +79,11 @@ commands:
 
   executor-python-setup-dependencies:
     description: "Python image dependencies install"
+    parameters:
+      command-prefix:
+        type: string
+        default: ""
+
     steps:
       - run:
           name: Package manager | update list of available packages
@@ -87,13 +92,13 @@ commands:
       - run:
           name: Package manager | install packages
           command: |
-            apt install jq -y
-            apt install build-essential -y
-            apt install cmake -y
-            apt install zip -y
-            apt install libatlas-base-dev -y
-            apt install moreutils -y
-            pip install yq
+            << parameters.command-prefix >> apt install jq -y
+            << parameters.command-prefix >> apt install build-essential -y
+            << parameters.command-prefix >> apt install cmake -y
+            << parameters.command-prefix >> apt install zip -y
+            << parameters.command-prefix >> apt install libatlas-base-dev -y
+            << parameters.command-prefix >> apt install moreutils -y
+            << parameters.command-prefix >> pip install yq
 
   executor-env-variables:
     description: "Prepare env Variables"
@@ -1117,17 +1122,8 @@ jobs:
     executor: machine-executor
 
     steps:
-      - run:
-          name: enter sudo shell
-          command: |
-            sudo -i
-
-      - executor-python-setup-dependencies
-
-      - run:
-          name: exit sudo shell
-          command: |
-            exit
+      - executor-python-setup-dependencies:
+        - command-prefix: sudo
 
       - run:
           name: Package manager | update list of available packages
