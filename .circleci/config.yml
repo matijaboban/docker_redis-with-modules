@@ -1117,7 +1117,7 @@ jobs:
     steps:
       - slack/notify:
           color: '#055938'
-          message: Workflow completed
+          message: Workflow Wrap-up completed
           webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
 
 
@@ -1549,9 +1549,13 @@ workflows:
             - test-redis-redisearch
             - test-redis-redisbloom
 
+      - slack/notify:
+          color: '#42e2f4'
+          message: Workflow end
+          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
+          requires:
+            - test-redis-core
+            - test-redis-redisearch
+            - test-redis-redisbloom
 
-      # - build
-      # - docker-publish/check
-          # requires:
-            # - lint
 
