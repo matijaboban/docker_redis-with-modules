@@ -1117,7 +1117,17 @@ jobs:
     executor: machine-executor
 
     steps:
+      - run:
+          name: enter sudo shell
+          command: |
+            sudo -i
+
       - executor-python-setup-dependencies
+
+      - run:
+          name: exit sudo shell
+          command: |
+            exit
 
       - run:
           name: Package manager | update list of available packages
