@@ -87,7 +87,7 @@ commands:
     steps:
       - run:
           name: Package manager | update list of available packages
-          command: apt update
+          command: << parameters.command-prefix >> apt update
 
       - run:
           name: Package manager | install packages
