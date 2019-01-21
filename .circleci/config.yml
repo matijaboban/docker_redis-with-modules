@@ -1549,7 +1549,7 @@ workflows:
             - test-redis-redisearch
             - test-redis-redisbloom
 
-      - slack/notify:
+      - approval-notification:
           color: '#42e2f4'
           message: Workflow end
           webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
