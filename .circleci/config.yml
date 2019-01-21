@@ -1122,8 +1122,12 @@ jobs:
           name: Package manager | install packages
           command: |
             sudo apt install jq -y
+            sudo apt install build-essential -y
+            sudo apt install cmake -y
             sudo apt install zip -y
-            sudo apt install python-pip -y
+            sudo apt install libatlas-base-dev -y
+            sudo apt install moreutils -y
+            sudo apt install python3-pip -y
             sudo pip install yq
 
       - checkout
