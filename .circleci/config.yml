@@ -1127,7 +1127,7 @@ jobs:
             sudo apt install zip -y
             sudo apt install libatlas-base-dev -y
             sudo apt install moreutils -y
-            sudo apt install python3-pip -y
+            sudo apt install python-dev -y
             sudo pip install yq
 
       - checkout
