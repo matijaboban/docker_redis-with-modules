@@ -1,0 +1,1690 @@
+version: 2.1
+
+
+## base conf
+
+references:
+  workspace_root: &workspace_root
+    /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+orbs:
+  docker-publish: circleci/docker-publish@0.1.2
+  slack: circleci/slack@1.0.0
+
+executors:
+  node-executor:
+    docker:
+      - image: circleci/node:10.14.1-browsers
+        user: root
+    # environment:
+    #   CC_TEST_REPORTER_ID: 495302278153b95fae5fd910eeec440bf8bf27bec8e14c5afcca43beed03d3c2
+    working_directory: ~/project
+
+  alpine-executor:
+    docker:
+      - image: alpine:3.8
+        user: root
+    working_directory: ~/project
+
+  python-executor:
+    docker:
+      - image: python:3.7.1
+        user: root
+    working_directory: ~/project
+
+  machine-executor:
+    description: TODO
+    machine: true
+    working_directory: ~/project
+
+  docker-executor:
+    description: TODO
+    docker:
+      - image: docker:18.06.1-ce-git
+        user: root
+    working_directory: ~/project
+
+commands:
+  executor-alpine-setup-dependencies:
+    description: "Alpine image dependencies install"
+    steps:
+      - run:
+          name: Package manager | update list of available packages
+          command: apk update
+
+      - run:
+          name: Package manager | install packages
+          command: |
+            apk add build-base
+            apk add coreutils
+            apk add zip
+            apk add curl
+            apk add jemalloc-dev
+            apk add linux-headers
+            apk add cmake
+            apk add ca-certificates
+            apk add bash
+            apk add tcl
+            apk add moreutils --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/
+
+      - run:
+          name: python / pip install
+          command: |
+            apk add jq
+            apk add py-pip
+            pip install yq
+
+  executor-python-setup-dependencies:
+    description: "Python image dependencies install"
+    parameters:
+      command-prefix:
+        type: string
+        default: ""
+
+    steps:
+      - run:
+          name: Package manager | update list of available packages
+          command: << parameters.command-prefix >> apt update
+
+      - run:
+          name: Package manager | install packages
+          command: |
+            << parameters.command-prefix >> apt install jq -y
+            << parameters.command-prefix >> apt install build-essential -y
+            << parameters.command-prefix >> apt install cmake -y
+            << parameters.command-prefix >> apt install zip -y
+            << parameters.command-prefix >> apt install libatlas-base-dev -y
+            << parameters.command-prefix >> apt install moreutils -y
+            << parameters.command-prefix >> apt install python-dev -y
+            << parameters.command-prefix >> pip install yq
+
+  executor-env-variables:
+    description: "Prepare env Variables"
+    parameters:
+      env-file-name:
+        type: string
+        default: "new-env-vars"
+    steps:
+      - run:
+          name: Integrating env parameters from << parameters.env-file-name >> into BASH_ENV
+          command: |
+            cat /tmp/workspace/<< parameters.env-file-name >> >> $BASH_ENV
+
+  libs-external-create-config:
+    description: "TBA"
+    parameters:
+      base-build-dir:
+        type: string
+        default: ~/project
+      lib-name:
+        type: string
+      lib-category:
+        type: string
+        default: libs
+    steps:
+      - run:
+          name: Create << parameters.lib-name >> parameters file
+          command: |
+            > lib.config
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >>lib.config
+
+  libs-external-get:
+    description: "TBA"
+    parameters:
+      base-cache-key:
+        type: string
+        default: external-dependencies-package-cache
+      base-cache-prefix:
+        type: string
+        default: v032
+      lib-github-org:
+        type: string
+        default: RedisLabsModules
+      lib-name:
+        type: string
+        default: rejson
+      lib-release:
+        type: string
+      lib-release-package-extension:
+        type: string
+        default: zip
+      lib-category:
+        type: string
+        default: libs
+    steps:
+      - run:
+          name: Create << parameters.lib-name >> parameters
+          command: |
+            > lib.version
+            echo "base-cache-prefix=<< parameters.base-cache-prefix >>" >>lib.version
+            echo "lib-github-org=<< parameters.lib-github-org >>" >>lib.version
+            echo "lib-name=<< parameters.lib-name >>" >>lib.version
+            echo "lib-release=<< parameters.lib-release >>" >>lib.version
+            echo "lib-release-package-extension=<< parameters.lib-release-package-extension >>" >>lib.version
+            echo "lib-category=<< parameters.lib-category >>" >>lib.version
+            cat lib.version
+
+      - restore_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
+      #       yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+      #       cat config.yaml
+      #       exit 2
+
+      - run:
+          name: Create << parameters.lib-name >> workspace download directory
+          command: mkdir -p /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      - run:
+          name: Get << parameters.lib-name >> tag from Github
+          command: |
+            test -e /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> \
+            && echo file exists, skipping \
+            || \
+            (wget -O /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.<< parameters.lib-release-package-extension >> https://github.com/<< parameters.lib-github-org >>/<< parameters.lib-name >>/archive/<< parameters.lib-release >>.<< parameters.lib-release-package-extension >> && \
+            cp ~/project/lib.version /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/ && \
+            cd /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >> && \
+            echo "lib-package=<< parameters.lib-name >>.<< parameters.lib-release-package-extension >>" >>lib.version && \
+            echo "lib-package-sha256=$(sha256sum << parameters.lib-name >>.<< parameters.lib-release-package-extension >>  | cut -d " " -f 1)" >>lib.version)
+
+      ## TODO test file existance before cache save
+
+      - save_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.version" }}
+          paths:
+            - /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
+
+      # - run:
+      #     command: |
+      #       ls /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/
+      #       cat /tmp/workspace/download/<< parameters.lib-category >>/<< parameters.lib-name >>/lib.version
+
+  libs-external-unpack:
+    description: "TBA"
+    parameters:
+      base-workplace-download-dir:
+        type: string
+        default: /tmp/workspace/download
+      base-build-dir:
+        type: string
+        default: ~/project/build
+      base-cache-prefix:
+        type: string
+        default: v01
+      lib-github-org:
+        type: string
+        default: RedisLabsModules
+      lib-name:
+        type: string
+        default: rejson
+      lib-release-package-extension:
+        type: string
+        default: zip
+      lib-category:
+        type: string
+        default: libs
+      cache-available:
+        type: string
+        default: false
+    steps:
+      - run:
+          name: Cache status check
+          command: |
+            echo << parameters.cache-available >>
+            test << parameters.cache-available >> = true && echo Cache available, skipping subsequent steps. || echo Cache not available, continuing processing
+
+      - run:
+          name: Create << parameters.lib-name >> build directory
+          command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: status
+      #     command: |
+      #       echo << parameters.base-workplace-download-dir >>
+      #       echo << parameters.base-build-dir >>
+
+      - run:
+          name: Unpack << parameters.lib-name >>
+          command: |
+            unzip -q << parameters.base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+            mv -f << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/* << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 1
+      #     command: |
+      #       ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
+
+  libs-external-make:
+    description: "TBA"
+    parameters:
+      base-workplace-compiled-dir:
+        type: string
+        default: /tmp/workspace/compiled
+      base-workplace-compiled-type:
+        type: string
+        default: modules
+      base-build-dir:
+        type: string
+        default: ~/project/build
+      base-cache-key:
+        type: string
+        default: external-dependencies-compile-cache
+      base-cache-prefix:
+        type: string
+        default: v01
+      lib-github-org:
+        type: string
+        default: RedisLabsModules
+      lib-name:
+        type: string
+        default: rejson
+      lib-release-package-extension:
+        type: string
+        default: zip
+      lib-category:
+        type: string
+        default: libs
+      lib-build-dir:
+        type: string
+        default: ''
+      make-params:
+        type: string
+        default: ''
+      pre-make-command:
+        type: string
+        default: echo null
+    steps:
+      - libs-external-create-config:
+          lib-name: << parameters.lib-name >>
+          lib-category: << parameters.lib-category >>
+
+      - run:
+          name: Create << parameters.lib-name >> parameters
+          command: |
+            > lib.config
+            echo $(yq .<< parameters.lib-category >>.<< parameters.lib-name >>.github /tmp/workspace/config.yaml) >>lib.config
+            cat lib.config
+
+      - restore_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       yq -y '.<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload=true' config.yaml | sponge config.yaml
+      #       cat config.yaml
+
+
+      - libs-external-unpack:
+          lib-name: << parameters.lib-name >>
+          cache-available: $(yq -r .<< parameters.lib-category >>.<< parameters.lib-name >>.cacheStatus.packageDownload config.yaml)
+
+      # - run:
+      #     name: status1
+      #     command: |
+      #       test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+      #       && ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> ||
+      #       echo file doesnt exist, skipping
+
+      - run:
+          name: Build << parameters.lib-name >>
+          command: |
+            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+            && (echo compiled exists, skipping && exit 0) || \
+            (<< parameters.pre-make-command >> && make -C << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-build-dir >> << parameters.make-params >>)
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            test -e << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >> \
+            && (echo compiled exists, skipping && exit 0) || \
+            (mkdir -p << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+            cp << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/*.so << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>)
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - compiled/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+
+      - save_cache:
+          key: << parameters.base-cache-key >>-<< parameters.base-cache-prefix >>-<< parameters.lib-name >>-{{ checksum "lib.config" }}
+          paths:
+            - << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+
+
+      # - run:
+      #     name: status2
+      #     command: |
+      #       ls << parameters.base-workplace-compiled-dir >>/<< parameters.base-workplace-compiled-type >>/<< parameters.lib-name >>
+
+
+      # - run:
+      #     name: QQQQ
+      #     command: |
+      #       exit 2
+
+      # - run:
+      #     name: Create << parameters.lib-name >> build directory
+      #     command: mkdir -p << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: status
+      #     command: |
+      #       echo << parameters.base-workplace-download-dir >>
+      #       echo << parameters.base-build-dir >>
+
+      # - run:
+      #     name: Unpack << parameters.lib-name >>
+      #     command: |
+      #       unzip -q << parameters.base-workplace-download-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/<< parameters.lib-name >>.zip -d << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+      #       mv -f << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>/**/* << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 1
+      #     command: |
+      #       ls << parameters.base-build-dir >>/<< parameters.lib-category >>/<< parameters.lib-name >>
+
+      # - run:
+      #     name: exit 2
+      #     command: |
+      #       exit 2
+
+jobs:
+
+  ## Preparation jobs ##
+
+  base:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - checkout
+
+      - run:
+          name: Check project configuration file existance
+          description: This step checks if the project configuration file is present and not empty.
+          command: |
+            if [[ ! -s config.yaml ]]; then
+                echo "Project configuration file not present or empty."
+                exit 1
+            fi
+
+      - run:
+          name: Move project configuration file into workspace
+          description: |
+            At this point, the project configuration is moved into the base workspace folder
+            for persistence thru the workflow. The workspace directory is outside the base project
+            directory to accommodate different base image structures and user permission differences
+            thru workflow steps.
+          command: |
+            cp config.yaml /tmp/workspace
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - config.yaml
+
+      - setup_remote_docker
+
+      - run:
+          name: Check Docker related Variables
+          description: TODO
+          command: |
+            if [[ $(yq -r .docker.registry /tmp/workspace/config.yaml) == null ]]; then
+                echo "Docker registry value is not set in project configuration, docker image would not \
+                be remotely deployable. Please review the configuration"
+                exit 1
+            fi
+
+            if [[ $(yq -r .docker.repoName /tmp/workspace/config.yaml) == null ]]; then
+                echo "Docker repository name value is not set in project configuration, docker image would not \
+                be remotely deployable. Please review the configuration"
+                exit 1
+            fi
+
+            if [[ -z "${DOCKER_LOGIN}" ]]; then
+              echo "DOCKER_LOGIN is not set, will not be able to push image."
+              exit 1
+            fi
+
+            if [[ -z "${DOCKER_PASSWORD}" ]]; then
+              echo "DOCKER_PASSWORD is not set, will not be able to push image."
+              exit 1
+            fi
+
+      - run:
+          name: Check remote docker registry login
+          description: TODO
+          command: |
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD $(yq -r .docker.registry /tmp/workspace/config.yaml)
+            if [ $? -ne 0 ]; then
+                echo "Project configuration file not present or empty."
+                exit 1
+            fi
+
+      - run:
+          name: Check other env variables
+          description: TODO
+          command: |
+            if [[ -z "${NOTIFICATIONS_DOCKER_WEBHOOK}" ]]; then
+              echo "NOTIFICATIONS_DOCKER_WEBHOOK is not set, will not be able to procede."
+              exit 1
+            fi
+
+  lint:
+    executor: node-executor
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - dependencies-npm-cache-v1-{{ checksum "package-lock.json" }}
+            - dependencies-npm-cache-v1-
+
+      - run:
+            name: Install NPM
+            command: |
+                npm install
+
+      - save_cache:
+          key: dependencies-npm-cache-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+      - run:
+          name: Lint project code
+          description: |
+            Run unified linting command.
+            This is a preferred way of running npm based lint commands as any addition or change
+            in the package.json does not require any change here.
+          command: npm run lint
+
+
+  ## Component builds ##
+
+  build-redis:
+    executor: alpine-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .libs.redis.github.org /tmp/workspace/config.yaml)
+          lib-name: redis
+          lib-release: $(yq -r .libs.redis.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: redis
+
+      - libs-external-create-config:
+          lib-name: redis
+
+      - run:
+          name: Pre-build updates
+          command: |
+            pwd
+            ls
+
+
+      - restore_cache:
+          key: external-dependencies-compile-cache-v05-redis-q2
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/core/redis-server \
+      #       && (echo Compiled assets found, skipping, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/redis/*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/* ~/project/build/redis)
+
+      - run:
+          name: Pre-build updates
+          command: |
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 1$' ~/project/build/libs/redis/src/server.h && \
+            sed -ri 's!^(#define CONFIG_DEFAULT_PROTECTED_MODE) 1$!\1 0!' ~/project/build/libs/redis/src/server.h && \
+            grep -q '^#define CONFIG_DEFAULT_PROTECTED_MODE 0$' ~/project/build/libs/redis/src/server.h)
+
+      - run:
+          name: Build module
+          command: |
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            make -C ~/project/build/libs/redis/src -j 8
+
+      ## Tests are prepared with brute-force removal of some
+      ## desting due to musl libc instead of glibc on Alpine
+      ## https://github.com/antirez/redis/issues/2814
+      ## Could posible be solved in the future by adding glibc
+      ## or a dedicated glibc capable glibc docker like
+      ## https://github.com/frol/docker-alpine-glibc
+      - run:
+          name: Test redis core
+          command: |
+            test -e /tmp/workspace/compiled/core/redis-server \
+            && (echo Compiled assets found, skipping, skipping && exit 0) || \
+            (cd ~/project/build/libs/redis && \
+            rm tests/integration/aof.tcl && \
+            rm tests/integration/logging.tcl && \
+            rm tests/unit/slowlog.tcl && \
+            mv tests/test_helper.tcl tests/test_helper.tcl.original && \
+            egrep -v 'integration/(aof|logging)' tests/test_helper.tcl.original > tests/test_helper.tcl && \
+            rm tests/test_helper.tcl.original && \
+            mv tests/test_helper.tcl tests/test_helper.tcl.original && \
+            egrep -v 'unit/slowlog' tests/test_helper.tcl.original > tests/test_helper.tcl && \
+            make test -j 2)
+
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/core/
+      #       cp ~/project/build/RediSearch/compile/*.so /tmp/workspace/compiled/modules/
+
+      - run:
+          name: Copy compiled assets to workspace
+          command: |
+            if [ -e /tmp/workspace/compiled/core/redis-server ]; then
+                echo "Compiled assets found, skipping, skipping."
+            else
+              mkdir -p /tmp/workspace/compiled/core/utils
+              cd ~/project/build/libs/redis
+              cp src/redis-benchmark /tmp/workspace/compiled/core/
+              cp src/redis-check-aof /tmp/workspace/compiled/core/
+              cp src/redis-check-rdb /tmp/workspace/compiled/core/
+              cp src/redis-cli /tmp/workspace/compiled/core/
+              cp src/redis-sentinel /tmp/workspace/compiled/core/
+              cp src/redis-server /tmp/workspace/compiled/core/
+              cp -r utils/ /tmp/workspace/compiled/core/
+              cp redis.conf /tmp/workspace/compiled/core/
+              cp sentinel.conf /tmp/workspace/compiled/core/
+            fi
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - compiled/core
+
+      - save_cache:
+          key: external-dependencies-compile-cache-v05-redis-q2
+          paths:
+            - /tmp/workspace/compiled/core
+
+  build-redisearch:
+    executor: alpine-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: RediSearch
+          lib-release: $(yq -r .libs.redisearch.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: RediSearch
+
+      - libs-external-make:
+          lib-name: RediSearch
+          lib-build-dir: compile
+          pre-make-command: mkdir -p ~/project/build/libs/RediSearch/compile && cd ~/project/build/libs/RediSearch/compile &&  cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          make-params:  -j 8
+
+  build-redisml:
+    executor: python-executor
+    ## TODO: has to be build on Alpine to avoid: # Module /usr/src/redis/modules/redis-ml.so failed to load: Error relocating /usr/src/redis/modules/redis-ml.so: __strndup: symbol not found
+    steps:
+      - executor-python-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: redis-ml
+          lib-release: $(yq -r .libs.redisml.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: redis-ml
+
+      - libs-external-make:
+          lib-name: redis-ml
+          lib-build-dir: src
+          make-params:  -j 8
+
+  build-redisbloom:
+    executor: alpine-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: rebloom
+          lib-release: $(yq -r .libs.rebloom.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: rebloom
+
+      - libs-external-make:
+          lib-name: rebloom
+          make-params:  -j 8
+
+  build-rejson:
+    executor: alpine-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: rejson
+          lib-release: $(yq -r .libs.rejson.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: rejson
+
+      - libs-external-make:
+          lib-name: rejson
+          lib-build-dir: src
+          make-params:  -j 8
+
+  build-redistimeseries:
+    executor: alpine-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: redis-timeseries
+          lib-release: $(yq -r .libs.redistimeseries.github.release /tmp/workspace/config.yaml)
+
+      - libs-external-unpack:
+          lib-name: redis-timeseries
+
+      # - restore_cache:
+      #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (unzip -q /tmp/workspace/download/redis-timeseries/*.zip -d ~/project/build && \
+      #       mv ~/project/build/*  ~/project/build/redis-timeseries)
+
+      - run:
+          name: Build module
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && (echo file exists, skipping && exit 0) || \
+            (cd ~/project/build/libs/redis-timeseries/RedisModulesSDK/ && \
+            curl -OL https://github.com/RedisLabs/RedisModulesSDK/archive/master.zip && \
+            unzip *.zip && \
+            mv R*/* . && \
+            cd ~/project/build/libs/redis-timeseries/src && \
+            make all)
+
+      # - run:
+      #     name: Test module | TODO
+      #     command: |
+      #       test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+      #       && (echo file exists, skipping && exit 0) || \
+      #       (cd ~/project/build/redis-timeseries/src && \
+      #       pip install -r tests/requirements.txt && \
+      #       make tests)
+
+      - run:
+          name: Copy compiled module to workspace
+          command: |
+            test -e /tmp/workspace/compiled/modules/redis-tsdb-module.so \
+            && echo file exists, skipping || \
+            (mkdir -p /tmp/workspace/compiled/modules/ && \
+            cp ~/project/build/libs/redis-timeseries/src/*.so /tmp/workspace/compiled/modules/)
+
+      # - save_cache:
+      #     key: external-dependencies-compile-cache-v01-redistimeseries-q1
+      #     paths:
+      #       - /tmp/workspace/compiled/modules/redis-tsdb-module.so
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - compiled/modules
+
+  build-redex:
+    executor: python-executor
+
+    steps:
+      - executor-python-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: redex
+          lib-release: $(yq -r .libs.redex.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: redex
+
+      - libs-external-make:
+          lib-name: redex
+
+      # - run:
+      #     name: Unpack external lib
+      #     command: |
+      #       unzip -q /tmp/workspace/download/redex/*.zip -d ~/project/build/ && \
+      #       mv ~/project/build/*  ~/project/build/redex
+
+      # - run:
+      #     name: Build module
+      #     command: |
+      #       make -C ~/project/build/libs/redex
+
+      # - run:
+      #     name: Copy compiled module to workspace
+      #     command: |
+      #       mkdir -p /tmp/workspace/compiled/modules/
+      #       cp ~/project/build/libs/redex/src/*.so /tmp/workspace/compiled/modules/
+
+      # - persist_to_workspace:
+      #     root: *workspace_root
+      #     paths:
+      #       - compiled/modules
+
+  build-redisgraph:
+    executor: python-executor
+    ## TODO: has to be build on Alpine to avoid: # /root/project/build/RedisGraph/src/value.h:56:5: error: unknown type name 'int32_t'
+
+    steps:
+      - executor-python-setup-dependencies
+
+      - *attach_workspace
+
+      - libs-external-get:
+          lib-name: RedisGraph
+          lib-release: $(yq -r .libs.redisgraph.github.release /tmp/workspace/config.yaml)
+
+      # - libs-external-unpack:
+      #     lib-name: RedisGraph
+
+      - libs-external-make:
+          lib-name: RedisGraph
+          make-params:  -j 8
+
+
+  ## Docker builds ##
+
+  compile-docker-image:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore compiled modules
+          description: TODO
+          command: |
+            echo start
+            mkdir -p ~/project/build/compiled
+            cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
+
+      - run:
+          name: Build docker
+          description: TODO
+          command: |
+            docker build -t redis_with_modules:$CIRCLE_SHA1 .
+
+      - run:
+          name: Save docker build to workspace
+          description: TODO
+          command: |
+            mkdir -p ~/project/build/docker
+            docker save -o build/docker/docker.tar redis_with_modules
+            mkdir -p /tmp/workspace/docker
+            cp -r ~/project/build/docker/* /tmp/workspace/docker
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - docker/docker.tar
+
+
+  ## Test Docker builds ##
+
+  test-docker-image-redis:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/core.bats
+
+  test-docker-image-redisearch:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_search.bats
+
+  #test-docker-image-redisml:
+
+  test-docker-image-redisbloom:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_bloom.bats
+
+  test-docker-image-rejson:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_json.bats
+
+  #test-docker-image-redistimeseries:
+
+  #test-docker-image-redex:
+
+  test-docker-image-redisgraph:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -d $(docker images -q)
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            export redis_cli_base=1
+            bats ~/project/test/bats/r_graph.bats
+
+  test1:
+    executor: machine-executor
+
+    steps:
+      - executor-python-setup-dependencies:
+          command-prefix: sudo
+
+      - run:
+          name: Package manager | install packages
+          command: |
+            sudo apt install -y redis-tools
+
+      - checkout
+
+      - *attach_workspace
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Run docker image
+          command: |
+            docker run -p 6379:6379 -d $(docker images -q)
+
+      - run:
+          name: Install goss
+          command: |
+            sudo curl -fsSL https://goss.rocks/install | sudo sh
+            goss -version
+
+      - run: |
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            sudo ./install.sh /usr/local
+            bats --version
+
+      - run:
+          name: Run tests
+          command: |
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/r_bloom.bats
+            bats ~/project/test/bats/r_graph.bats
+            bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_search.bats
+
+  ## Publish docker images
+  #
+  publish-docker-image:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      - run:
+          name: Restore local docker image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+
+      - run:
+          name: Docker registry login
+          command: |
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag redis_with_modules:$CIRCLE_SHA1 $DOCKER_LOGIN/redis-with-modules:latest
+
+
+      - run:
+          name: Publish docker image
+          command: |
+            docker push $DOCKER_LOGIN/redis-with-modules:latest
+
+
+  ## Workflow wrap-up jobs ##
+
+  workflow-wrapup:
+    executor: python-executor
+
+    steps:
+      - slack/notify:
+          color: '#055938'
+          message: Workflow Wrap-up completed
+          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
+
+
+
+
+
+
+  ###################
+  ## Image testing ##
+  ###################
+
+  test-redis-core:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+        # command: [--sysctl vm.overcommit_memory=1]
+
+    working_directory: ~/project
+
+    steps:
+      - executor-python-setup-dependencies
+
+      - *attach_workspace
+
+      - checkout
+
+      - run:
+          name: See if docker is persistent in workspace
+          command: |
+            ls -alh /tmp/workspace/docker
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/r_search.bats
+            bats ~/project/test/bats/r_bloom.bats
+            bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_graph.bats
+
+  test-redis-rejson:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+  test-redis-redisearch:
+    docker:
+      - image: python:3.7.1
+      - image: matijaboban/redis-with-modules:$CIRCLE_SHA1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - checkout
+
+      - run: |
+          apt-get update && apt-get install -y curl
+
+      - run:
+          name: Install goss
+          command: |
+            curl -fsSL https://goss.rocks/install | sh
+            goss -version
+
+      - run: |
+          apt-get update && apt-get install -y redis-tools
+          echo "CONFIG SET save ''" | redis-cli -x
+
+      - run: redis-cli info
+
+      - run:
+          name: Test goss
+          command: |
+            cd ~/project/test/goss
+            goss --vars goss.yaml validate
+
+  test-redis-redisbloom:
+    executor: docker-executor
+
+    steps:
+      - executor-alpine-setup-dependencies
+
+      - checkout
+
+      - *attach_workspace
+
+      - setup_remote_docker
+
+      # - run:
+      #     name: Install local redis-cli | TODO
+      #     command: |
+      #       cp /tmp/workspace/compiled/core/redis-cli /usr/bin/
+      #       chmod 755 /usr/bin/redis-cli
+      #       redis-cli -v
+
+      - run:
+          name: Restore local image
+          command: |
+            mkdir -p ~/project/build/docker
+            cp -r /tmp/workspace/docker/docker.tar ~/project/build/docker
+            docker load -i ~/project/build/docker/docker.tar
+            docker run -d $(docker images -q)
+
+      # - run:
+      #     name: Run docker in backgroud
+      #     command: docker run -d $(docker images -q)
+      #     background: true
+
+      - libs-external-get:
+          lib-github-org: $(yq -r .utils.bats.github.org /tmp/workspace/config.yaml)
+          lib-name: bats
+          lib-release: $(yq -r .utils.bats.github.release /tmp/workspace/config.yaml)
+          lib-category: utils
+
+      - libs-external-unpack:
+          lib-name: bats
+          lib-category: utils
+
+      - run:
+          name: Install Bats
+          command: |
+            cd ~/project/build/utils/bats
+            ./install.sh /usr/local
+            bats --version
+            export redis_cli_base=1
+            echo $redis_cli_base
+            bats ~/project/test/bats/core.bats
+            bats ~/project/test/bats/r_search.bats
+            bats ~/project/test/bats/r_bloom.bats
+            bats ~/project/test/bats/r_json.bats
+            bats ~/project/test/bats/r_graph.bats
+
+      # - run:
+      #     name: Docker login
+      #     command: |
+      #       docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+
+      # - run: |
+      #     apt-get update && apt-get install -y curl
+
+      # - run:
+      #     name: Install goss
+      #     command: |
+      #       curl -fsSL https://goss.rocks/install | sh
+      #       goss -version
+
+      # - run:
+      #     name: Install goss
+      #     command: |
+      #       wget https://goss.rocks/install
+      #       sh install
+      #       goss -version
+
+      # - run: |
+      #     apt-get update && apt-get install -y redis-tools
+      #     echo "CONFIG SET save ''" | redis-cli -x
+
+      # - run: redis-cli info
+
+      # - run:
+      #     name: Test goss
+      #     command: |
+      #       cd ~/project/test/goss
+      #       goss --vars goss.yaml validate
+
+  temptest:
+    docker:
+      - image: python:3.7.1
+
+    working_directory: ~/project
+
+    steps:
+      - *attach_workspace
+
+      - run: |
+          echo "temptest"
+          ls
+
+      # - attach_workspace:
+      #     # Must be absolute path or relative path from working_directory
+      #     at: /project/workspace
+
+      - run: |
+          cd ~/project/build/redis
+          ls
+          cd core
+          ls
+          cd ../modules
+          ls
+
+      # - run: cat /project/workspace/echo-output
+
+
+  build-docker:
+    docker:
+      - image: python:3.7.1
+
+    working_directory: ~/project
+
+    steps:
+      - checkout
+
+      - *attach_workspace
+
+      - run:
+          name: Check Environment Variables
+          command: |
+            if [[ -z "${DOCKER_LOGIN}" ]]; then
+              echo "DOCKER_LOGIN is not set, will not be able to push image."
+              exit 1
+            fi
+
+            if [[ -z "${DOCKER_PASSWORD}" ]]; then
+              echo "DOCKER_PASSWORD is not set, will not be able to push image."
+              exit 1
+            fi
+
+      - run:
+          name: Docker Login
+          command: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD docker.io
+
+      - run: |
+          cd ~/project/build/redis
+          ls
+          cd core
+          ls
+          cd ../modules
+          ls
+
+      # - run: cat /project/workspace/echo-output
+
+
+workflows:
+  version: 2.1
+
+  pre-build:
+    jobs:
+      - base
+      - lint
+      - build-redis:
+          requires:
+            - base
+            - lint
+      - build-redisearch:
+          requires:
+            - base
+            - lint
+      # - build-redisml:
+      #     requires:
+      #       - base
+      #       - lint
+      - build-redisbloom:
+          requires:
+            - base
+            - lint
+      - build-rejson:
+          requires:
+            - base
+            - lint
+      - build-redistimeseries:
+          requires:
+            - base
+            - lint
+      - build-redex:
+          requires:
+            - base
+            - lint
+      - build-redisgraph:
+          requires:
+            - base
+            - lint
+
+      # - temptest:
+          # requires:
+            # - build-redis
+            # - build-redisearch
+            # - build-redisml
+            # - build-redisbloom
+            # - build-rejson
+            # - build-timeseries
+            # - build-redex
+            # - build-redisgraph
+
+      # - build-docker:
+      #     requires:
+      #       - temptest
+
+      - compile-docker-image:
+          requires:
+            - build-redis
+            - build-redisearch
+            # - build-redisml
+            - build-redisbloom
+            - build-rejson
+            - build-redistimeseries
+            - build-redex
+            - build-redisgraph
+
+      - test-docker-image-redis:
+          requires:
+            - compile-docker-image
+      - test-docker-image-redisearch:
+          requires:
+            - compile-docker-image
+      #- test-docker-image-redis-ml:
+      - test-docker-image-redisbloom:
+          requires:
+            - compile-docker-image
+      - test-docker-image-rejson:
+          requires:
+            - compile-docker-image
+      #- test-docker-image-timeseries:
+      #- test-docker-image-redex:
+      - test-docker-image-redisgraph:
+          requires:
+            - compile-docker-image
+      - test1:
+          requires:
+            - compile-docker-image
+
+      - publish-docker-image:
+          requires:
+            - test-docker-image-redis
+            - test-docker-image-redisearch
+            - test-docker-image-redisbloom
+            - test-docker-image-rejson
+            - test-docker-image-redisgraph
+
+
+
+      - docker-publish/publish:
+          image: $DOCKER_LOGIN/redis-with-modules
+          requires:
+            - test-docker-image-redis
+            - test-docker-image-redisearch
+            # - test-docker-image-redis-ml
+            - test-docker-image-redisbloom
+            - test-docker-image-rejson
+            # - test-docker-image-timeseries
+            # - test-docker-image-redex
+            - test-docker-image-redisgraph
+          after_checkout:
+            - *attach_workspace
+            - run:
+                name: Do this after checkout.
+                command: |
+                  mkdir -p ~/project/build/compiled
+                  cp -r /tmp/workspace/compiled/* ~/project/build/compiled/
+
+      - test-redis-core:
+          requires:
+            - docker-publish/publish
+            # - compile-docker-image
+
+      - test-redis-redisearch:
+          requires:
+            - docker-publish/publish
+
+      - test-redis-redisbloom:
+          requires:
+            - docker-publish/publish
+            # - compile-docker-image
+
+      # - test-redis-rejson:
+      #     requires:
+      #       - docker-publish/publish
+
+
+
+      - workflow-wrapup:
+          requires:
+            - test-redis-core
+            - test-redis-redisearch
+            - test-redis-redisbloom
+
+      - slack/approval-notification:
+          color: '#42e2f4'
+          message: Workflow end
+          webhook: $NOTIFICATIONS_DOCKER_WEBHOOK
+          requires:
+            - test-redis-core
+            - test-redis-redisearch
+            - test-redis-redisbloom
+
+

@@ -1,0 +1,113 @@
+port:
+  tcp:80:
+    listening: false
+  tcp:443:
+    listening: false
+service:
+  sshd:
+    enabled: false
+    running: false
+command:
+  ## Redis Core
+  redis-cli info:
+    # required attributes
+    exit-status: 0
+    # optional attributes
+    stdout:
+    - redis_version:5.0.2
+    stderr: []
+    timeout: 100 # in milliseconds
+  redis-cli ping:
+    # required attributes
+    exit-status: 0
+    # optional attributes
+    stdout:
+    - PONG
+    timeout: 100 # in milliseconds
+  redis-benchmark:
+    # required attributes
+    exit-status: 0
+    # optional attributes
+    stdout:
+    - PING_INLINE
+    - PING_BULK
+    - SPOP
+    - MSET
+    timeout: 60000 # in milliseconds
+  redis-cli flushall:
+    # required attributes
+    exit-status: 0
+    # optional attributes
+    stdout:
+    - OK
+  ## ReJson
+  # redis-cli JSON.SET keytype-json-base . '{"name":"Leonard Cohen","lastSeen":1478476800,"loggedOut":true}':
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - OK
+  #   timeout: 100 # in milliseconds
+  # redis-cli JSON.GET keytype-json loggedOut:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - "true"
+  #   timeout: 100 # in milliseconds
+  ## RedisGraph
+  # redis-cli GRAPH.QUERY MotoGP "CREATE (:Rider {name:'Valentino Rossi'})-[:rides]->(:Team {name:'Yamaha'}), (:Rider {name:'Dani Pedrosa'})-[:rides]->(:Team {name:'Honda'}), (:Rider {name:'Andrea Dovizioso'})-[:rides]->(:Team {name:'Ducati'})":
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - "Nodes created: 6"
+  #   timeout: 100 # in milliseconds
+  # redis-cli GRAPH.QUERY MotoGP "MATCH (r:Rider)-[:rides]->(t:Team {name:'Ducati'}) RETURN count(r)":
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - "1.000000"
+  #   timeout: 100 # in milliseconds
+  # redis-cli GRAPH.DELETE MotoGP:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - "Graph removed, internal execution time:"
+  #   timeout: 100 # in milliseconds
+  # ## Redisbloom
+  # redis-cli BF.RESERVE keytype-bloom 0.0001 1000:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - OK
+  #   timeout: 100 # in milliseconds
+  # redis-cli BF.MADD keytype-bloom-base foo bar test-key_01 test-key_02 test-key_03:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - 1
+  #   timeout: 100 # in milliseconds
+  # redis-cli BF.EXISTS keytype-bloom test-key_01:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - (integer) 1
+  #   timeout: 100 # in milliseconds
+  # redis-cli BF.EXISTS keytype-bloom test-key_04:
+  #   # required attributes
+  #   exit-status: 0
+  #   # optional attributes
+  #   stdout:
+  #   - (integer) 0
+  #   timeout: 100 # in milliseconds
+
+
+
+
+
